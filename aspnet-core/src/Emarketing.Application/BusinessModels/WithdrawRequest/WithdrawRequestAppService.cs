@@ -56,9 +56,10 @@ namespace Emarketing.BusinessModels.WithdrawRequest
         {
             var result = await _withdrawRequestRepository.InsertAsync(new BusinessObjects.WithdrawRequest()
             {
-                //Name = WithdrawRequestDto.Name,
-                //Description = WithdrawRequestDto.Description,
-                //TenantId = WithdrawRequestDto.TenantId
+                Amount = withdrawRequestDto.Amount,
+                Status = false,
+                WithdrawTypeId =withdrawRequestDto.WithdrawTypeId,
+                UserId = withdrawRequestDto.UserId,
             });
 
             await UnitOfWorkManager.Current.SaveChangesAsync();
@@ -88,8 +89,10 @@ namespace Emarketing.BusinessModels.WithdrawRequest
             var result = await _withdrawRequestRepository.UpdateAsync(new BusinessObjects.WithdrawRequest()
             {
                 Id = withdrawRequestDto.Id,
-                //Name = WithdrawRequestDto.Name,
-                //Description = WithdrawRequestDto.Description,
+                Amount = withdrawRequestDto.Amount,
+                Status = withdrawRequestDto.Status,
+                WithdrawTypeId = withdrawRequestDto.WithdrawTypeId,
+                UserId = withdrawRequestDto.UserId,
             });
 
             if (result != null)
