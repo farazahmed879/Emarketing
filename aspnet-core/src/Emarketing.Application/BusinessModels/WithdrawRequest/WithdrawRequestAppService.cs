@@ -6,7 +6,10 @@ using Abp.Application.Services;
 using Abp.Application.Services.Dto;
 using Abp.Domain.Repositories;
 using Abp.Linq.Extensions;
+using Abp.Runtime.Session;
 using Emarketing.BusinessModels.WithdrawRequest.Dto;
+using Emarketing.Sessions;
+using Emarketing.Sessions.Dto;
 using Microsoft.EntityFrameworkCore;
 
 namespace Emarketing.BusinessModels.WithdrawRequest
@@ -19,22 +22,28 @@ namespace Emarketing.BusinessModels.WithdrawRequest
 
         Task<ResponseMessageDto> DeleteAsync(long withdrawRequestId);
 
-        Task<List<WithdrawRequestDto>> GetAll(long? userId);
+        Task<List<WithdrawRequestDto>> GetAll();
 
-        Task<PagedResultDto<WithdrawRequestDto>> GetPaginatedAllAsync(PagedCreateWithdrawRequestResultRequestDto input);
+        Task<PagedResultDto<WithdrawRequestDto>> GetPaginatedAllAsync(WithdrawRequestInputDto input);
     }
 
 
     public class WithdrawRequestAppService : AbpServiceBase, IWithdrawRequestAppService
     {
         private readonly IRepository<BusinessObjects.WithdrawRequest, long> _withdrawRequestRepository;
+        private readonly ISessionAppService _sessionAppService;
+        private readonly IAbpSession _abpSession;
 
 
         public WithdrawRequestAppService(
-            IRepository<BusinessObjects.WithdrawRequest, long> withdrawRequestRepository)
+            IRepository<BusinessObjects.WithdrawRequest, long> withdrawRequestRepository,
+            ISessionAppService sessionAppService,
+            IAbpSession abpSession)
 
         {
             _withdrawRequestRepository = withdrawRequestRepository;
+            _sessionAppService = sessionAppService;
+            _abpSession = abpSession;
         }
 
         public async Task<ResponseMessageDto> CreateOrEditAsync(CreateWithdrawRequestDto withdrawRequestDto)
@@ -58,7 +67,7 @@ namespace Emarketing.BusinessModels.WithdrawRequest
             {
                 Amount = withdrawRequestDto.Amount,
                 Status = false,
-                WithdrawTypeId =withdrawRequestDto.WithdrawTypeId,
+                WithdrawTypeId = withdrawRequestDto.WithdrawTypeId,
                 UserId = withdrawRequestDto.UserId,
             });
 
@@ -123,8 +132,14 @@ namespace Emarketing.BusinessModels.WithdrawRequest
                     new WithdrawRequestDto()
                     {
                         Id = i.Id,
-                        //Name = i.Name,
-                        //Description = i.Description
+                        Amount = i.Amount,
+                        WithdrawTypeId = i.WithdrawTypeId,
+                        UserId = i.UserId,
+                        UserName = $"{i.User.FullName}",
+                        CreatorUserId = i.CreatorUserId,
+                        CreationTime = i.CreationTime,
+                        LastModificationTime = i.LastModificationTime,
+                        LastModifierUserId = i.LastModifierUserId
                     })
                 .FirstOrDefaultAsync();
             return result;
@@ -145,28 +160,36 @@ namespace Emarketing.BusinessModels.WithdrawRequest
             };
         }
 
-        public async Task<List<WithdrawRequestDto>> GetAll(long? userId)
+        public async Task<List<WithdrawRequestDto>> GetAll()
         {
+            var userId = _abpSession.UserId;
+
             var result = await _withdrawRequestRepository.GetAll().Where(i => i.IsDeleted == false && i.UserId == userId)
                 .Select(i => new WithdrawRequestDto()
                 {
                     Id = i.Id,
-                    //Name = i.Name,
-                    //Description = i.Description,
+                    Amount = i.Amount,
+                    WithdrawTypeId = i.WithdrawTypeId,
+                    UserId = i.UserId,
+                    UserName = $"{i.User.FullName}",
                     CreatorUserId = i.CreatorUserId,
                     CreationTime = i.CreationTime,
-                    LastModificationTime = i.LastModificationTime
+                    LastModificationTime = i.LastModificationTime,
+                    LastModifierUserId = i.LastModifierUserId
+
                 }).ToListAsync();
             return result;
         }
 
         public async Task<PagedResultDto<WithdrawRequestDto>> GetPaginatedAllAsync(
-            PagedCreateWithdrawRequestResultRequestDto input)
+            WithdrawRequestInputDto input)
         {
+            var userId = _abpSession.UserId;
             var filteredWithdrawRequests = _withdrawRequestRepository.GetAll()
-                .WhereIf(!string.IsNullOrWhiteSpace(input.UserName), x => x.UserId== input.UserId);
-                //.Where(i => i.IsDeleted == false && (input.TenantId == null || i.TenantId == input.TenantId))
-                //.WhereIf(!string.IsNullOrWhiteSpace(input.UserName), x => x.UserName.Contains(input.Name));
+                .Where(x => x.UserId == userId)
+                .WhereIf(input.Status.HasValue, x => x.Status == input.Status);
+            //.Where(i => i.IsDeleted == false && (input.TenantId == null || i.TenantId == input.TenantId))
+            //.WhereIf(!string.IsNullOrWhiteSpace(input.UserName), x => x.UserName.Contains(input.Name));
 
             var pagedAndFilteredWithdrawRequests = filteredWithdrawRequests
                 .OrderBy(i => i.Id)
@@ -180,11 +203,18 @@ namespace Emarketing.BusinessModels.WithdrawRequest
                         new WithdrawRequestDto()
                         {
                             Id = i.Id,
-                            //Name = i.Name,
-                            //Description = i.Description,
-                            //TenantId = i.TenantId
+                            Amount = i.Amount,
+                            WithdrawTypeId = i.WithdrawTypeId,
+                            UserId = i.UserId,
+                            UserName = $"{i.User.FullName}",
+                            CreatorUserId = i.CreatorUserId,
+                            CreationTime = i.CreationTime,
+                            LastModificationTime = i.LastModificationTime,
+                            LastModifierUserId = i.LastModifierUserId
                         })
                     .ToListAsync());
         }
+
+
     }
 }

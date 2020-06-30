@@ -62,7 +62,7 @@ namespace Emarketing.Users
             user.IsEmailConfirmed = true;
 
             await _userManager.InitializeOptionsAsync(AbpSession.TenantId);
-
+            
             CheckErrors(await _userManager.CreateAsync(user, input.Password));
 
             if (input.RoleNames != null)
