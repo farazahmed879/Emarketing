@@ -197,7 +197,7 @@ namespace Emarketing.BusinessModels.WithdrawRequest
 
             var totalCount = filteredWithdrawRequests.Count();
 
-            return new PagedResultDto<WithdrawRequestDto>(
+            var result =  new PagedResultDto<WithdrawRequestDto>(
                 totalCount: totalCount,
                 items: await pagedAndFilteredWithdrawRequests.Where(i => i.IsDeleted == false).Select(i =>
                         new WithdrawRequestDto()
@@ -213,6 +213,7 @@ namespace Emarketing.BusinessModels.WithdrawRequest
                             LastModifierUserId = i.LastModifierUserId
                         })
                     .ToListAsync());
+            return result;
         }
 
 

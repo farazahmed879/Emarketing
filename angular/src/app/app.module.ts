@@ -14,6 +14,8 @@ import { ServiceProxyModule } from '@shared/service-proxies/service-proxy.module
 import { SharedModule } from '@shared/shared.module';
 import { HomeComponent } from '@app/home/home.component';
 import { AboutComponent } from '@app/about/about.component';
+import {DropdownModule} from 'primeng/dropdown';
+import {MultiSelectModule} from 'primeng/multiselect';
 // tenants
 import { TenantsComponent } from '@app/tenants/tenants.component';
 import { CreateTenantDialogComponent } from './tenants/create-tenant/create-tenant-dialog.component';
@@ -38,6 +40,9 @@ import { SidebarComponent } from './layout/sidebar.component';
 import { SidebarLogoComponent } from './layout/sidebar-logo.component';
 import { SidebarUserPanelComponent } from './layout/sidebar-user-panel.component';
 import { SidebarMenuComponent } from './layout/sidebar-menu.component';
+import {WithdrawRequestComponent} from './withdraw-request/withdraw-request.component';
+import {WithdrawHistoryComponent} from './withdraw-history/withdraw-history.component'
+import { WithdrawRequestServiceProxy } from '@shared/service-proxies/service-proxies';
 
 @NgModule({
   declarations: [
@@ -67,7 +72,9 @@ import { SidebarMenuComponent } from './layout/sidebar-menu.component';
     SidebarComponent,
     SidebarLogoComponent,
     SidebarUserPanelComponent,
-    SidebarMenuComponent
+    SidebarMenuComponent,
+    WithdrawRequestComponent,
+    WithdrawHistoryComponent
   ],
   imports: [
     CommonModule,
@@ -83,8 +90,12 @@ import { SidebarMenuComponent } from './layout/sidebar-menu.component';
     ServiceProxyModule,
     SharedModule,
     NgxPaginationModule,
+    DropdownModule,
+    MultiSelectModule
   ],
-  providers: [],
+  providers: [
+    WithdrawRequestServiceProxy 
+  ],
   entryComponents: [
     // tenants
     CreateTenantDialogComponent,
@@ -96,6 +107,9 @@ import { SidebarMenuComponent } from './layout/sidebar-menu.component';
     CreateUserDialogComponent,
     EditUserDialogComponent,
     ResetPasswordDialogComponent,
+    //Withdraw request
+    WithdrawRequestComponent,
+    WithdrawHistoryComponent
   ],
 })
 export class AppModule {}

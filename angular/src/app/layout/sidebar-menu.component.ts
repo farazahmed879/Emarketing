@@ -43,6 +43,8 @@ export class SidebarMenuComponent extends AppComponentBase implements OnInit {
 
   getMenuItems(): MenuItem[] {
     return [
+      new MenuItem(this.l('Withdraw Request'), '/app/withdraw-request', 'fas fa-home'),
+      new MenuItem(this.l('Withdraw History'), '/app/withdraw-history', 'fas fa-home'),
       new MenuItem(this.l('HomePage'), '/app/home', 'fas fa-home'),
       new MenuItem(
         this.l('Tenants'),

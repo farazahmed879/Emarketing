@@ -1,0 +1,54 @@
+﻿<div [@routerTransition]>
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-6">
+          <h1>{{ "Withdraw Request" | localize }}</h1>
+        </div>
+        <!-- <div class="col-6 text-right">
+          <a href="javascript:;" class="btn bg-blue" (click)="createUser()">
+            <i class="fa fa-plus-square"></i>
+            {{ "Create" | localize }}
+          </a>
+        </div> -->
+      </div>
+    </div>
+  </section>
+  <section class="content">
+    <div class="container-fluid">
+      <div class="card">
+        <div class="col-md-12">
+          <div class="required">
+            <p-dropdown [options]="withdrawTypes" [(ngModel)]="selectedWithdrawTypeId"></p-dropdown>
+          </div>
+          <div class="required">
+            <label class="col-md-3 col-form-label" for="name">
+              {{ "Amount" | localize }}
+              <div class="col-md-9">
+                <input type="number" class="form-control" name="name" id="name" required maxlength="32"
+                  [(ngModel)]="amount" #nameModel="ngModel" #nameEl />
+                <abp-validation-summary [control]="nameModel" [controlEl]="nameEl"></abp-validation-summary>
+              </div>
+            </label>
+          </div>
+          <div class="required">
+            <div class="custom-control custom-checkbox">
+              <input type="checkbox" class="custom-control-input" name="isActive" id="isActive" [(ngModel)]="status" />
+              <label class="custom-control-label mt-2" for="status">IsActive</label>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-12 container-fluid">
+          <a href="javascript:;" class="btn bg-blue" (click)="back()">
+            <i class="fa fa-plus-square"></i>
+            {{ "Back" | localize }}
+          </a>
+          <a href="javascript:;" class="btn bg-blue" (click)="create()">
+            <i class="fa fa-plus-square"></i>
+            {{ "Create" | localize }}
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
