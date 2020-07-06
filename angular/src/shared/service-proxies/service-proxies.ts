@@ -5127,6 +5127,7 @@ export class WithdrawRequestDto implements IWithdrawRequestDto {
     userName: string | undefined;
     amount: number;
     withdrawTypeId: WithdrawType;
+    withdrawType: string | undefined;
     isDeleted: boolean;
     deleterUserId: number | undefined;
     deletionTime: moment.Moment | undefined;
@@ -5151,6 +5152,7 @@ export class WithdrawRequestDto implements IWithdrawRequestDto {
             this.userName = _data["userName"];
             this.amount = _data["amount"];
             this.withdrawTypeId = _data["withdrawTypeId"];
+            this.withdrawType = _data["withdrawType"];
             this.isDeleted = _data["isDeleted"];
             this.deleterUserId = _data["deleterUserId"];
             this.deletionTime = _data["deletionTime"] ? moment(_data["deletionTime"].toString()) : <any>undefined;
@@ -5175,6 +5177,7 @@ export class WithdrawRequestDto implements IWithdrawRequestDto {
         data["userName"] = this.userName;
         data["amount"] = this.amount;
         data["withdrawTypeId"] = this.withdrawTypeId;
+        data["withdrawType"] = this.withdrawType;
         data["isDeleted"] = this.isDeleted;
         data["deleterUserId"] = this.deleterUserId;
         data["deletionTime"] = this.deletionTime ? this.deletionTime.toISOString() : <any>undefined;
@@ -5199,6 +5202,7 @@ export interface IWithdrawRequestDto {
     userName: string | undefined;
     amount: number;
     withdrawTypeId: WithdrawType;
+    withdrawType: string | undefined;
     isDeleted: boolean;
     deleterUserId: number | undefined;
     deletionTime: moment.Moment | undefined;

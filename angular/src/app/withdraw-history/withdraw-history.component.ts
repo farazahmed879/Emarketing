@@ -50,7 +50,7 @@ export class WithdrawHistoryComponent extends PagedListingComponentBase<Withdraw
       )
       .subscribe((result: WithdrawRequestDtoPagedResultDto) => {
         this.withdrawRequestHistory = result;
-        debugger;
+        console.log(result)
         this.showPaging(result, pageNumber);
       });
   }

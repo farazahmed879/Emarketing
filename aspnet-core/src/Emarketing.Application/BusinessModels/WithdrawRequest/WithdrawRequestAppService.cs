@@ -8,6 +8,7 @@ using Abp.Domain.Repositories;
 using Abp.Linq.Extensions;
 using Abp.Runtime.Session;
 using Emarketing.BusinessModels.WithdrawRequest.Dto;
+using Emarketing.Helper;
 using Emarketing.Sessions;
 using Emarketing.Sessions.Dto;
 using Microsoft.EntityFrameworkCore;
@@ -205,6 +206,7 @@ namespace Emarketing.BusinessModels.WithdrawRequest
                             Id = i.Id,
                             Amount = i.Amount,
                             WithdrawTypeId = i.WithdrawTypeId,
+                            WithdrawType = i.WithdrawTypeId.GetEnumFieldDescription(),
                             UserId = i.UserId,
                             UserName = $"{i.User.FullName}",
                             CreatorUserId = i.CreatorUserId,

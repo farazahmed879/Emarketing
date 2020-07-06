@@ -9,6 +9,6 @@ namespace Emarketing.BusinessModels.WithdrawRequest.Dto
 
         public decimal Amount { get; set; }
         public WithdrawType WithdrawTypeId { get; set; }
-      
+        public string WithdrawType { get; set; }
     }
 }
