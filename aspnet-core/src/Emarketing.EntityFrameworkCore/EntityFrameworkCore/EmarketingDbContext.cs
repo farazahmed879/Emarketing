@@ -14,6 +14,7 @@ namespace Emarketing.EntityFrameworkCore
 
         public DbSet<UserReferral> UserReferrals { get; set; }
         public DbSet<UserReferralRequest> UserReferralRequests { get; set; }
+        public DbSet<UserRequest> UserRequests { get; set; }
 
         public EmarketingDbContext(DbContextOptions<EmarketingDbContext> options)
             : base(options)

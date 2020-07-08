@@ -1,0 +1,206 @@
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Abp;
+using Abp.Application.Services;
+using Abp.Application.Services.Dto;
+using Abp.Domain.Repositories;
+using Abp.Linq.Extensions;
+using Abp.Runtime.Session;
+using Emarketing.BusinessModels.UserRequest.Dto;
+using Emarketing.Sessions;
+using Microsoft.EntityFrameworkCore;
+
+namespace Emarketing.BusinessModels.UserRequest
+{
+    public interface IUserRequestAppService : IApplicationService
+    {
+        Task<ResponseMessageDto> CreateOrEditAsync(CreateUserRequestDto withdrawRequestDto);
+
+        Task<UserRequestDto> GetById(long userRequestId);
+
+        Task<ResponseMessageDto> DeleteAsync(long userRequestId);
+
+        Task<List<UserRequestDto>> GetAll();
+
+        Task<PagedResultDto<UserRequestDto>> GetPaginatedAllAsync(UserRequestInputDto input);
+    }
+
+
+    public class UserRequestAppService : AbpServiceBase, IUserRequestAppService
+    {
+        private readonly IRepository<BusinessObjects.UserRequest, long> _userRequestRepository;
+        private readonly ISessionAppService _sessionAppService;
+       
+
+        public UserRequestAppService(
+            IRepository<BusinessObjects.UserRequest, long> userRequestRepository,
+            ISessionAppService sessionAppService)
+
+        {
+            _userRequestRepository = userRequestRepository;
+            _sessionAppService = sessionAppService;
+             
+        }
+
+        public async Task<ResponseMessageDto> CreateOrEditAsync(CreateUserRequestDto withdrawRequestDto)
+        {
+            ResponseMessageDto result;
+            if (withdrawRequestDto.Id == 0)
+            {
+                result = await CreateUserRequestAsync(withdrawRequestDto);
+            }
+            else
+            {
+                result = await UpdateUserRequestAsync(withdrawRequestDto);
+            }
+
+            return result;
+        }
+
+        private async Task<ResponseMessageDto> CreateUserRequestAsync(CreateUserRequestDto withdrawRequestDto)
+        {
+            var result = await _userRequestRepository.InsertAsync(new BusinessObjects.UserRequest()
+            {
+                //Amount = withdrawRequestDto.Amount,
+                //Status = false,
+                //UserTypeId = withdrawRequestDto.UserTypeId,
+                //UserId = withdrawRequestDto.UserId,
+            });
+
+            await UnitOfWorkManager.Current.SaveChangesAsync();
+
+            if (result.Id != 0)
+            {
+                return new ResponseMessageDto()
+                {
+                    Id = result.Id,
+                    SuccessMessage = AppConsts.SuccessfullyInserted,
+                    Success = true,
+                    Error = false,
+                };
+            }
+
+            return new ResponseMessageDto()
+            {
+                Id = 0,
+                ErrorMessage = AppConsts.InsertFailure,
+                Success = false,
+                Error = true,
+            };
+        }
+
+        private async Task<ResponseMessageDto> UpdateUserRequestAsync(CreateUserRequestDto userRequestDto)
+        {
+            var result = await _userRequestRepository.UpdateAsync(new BusinessObjects.UserRequest()
+            {
+                Id = userRequestDto.Id,
+                //Amount = withdrawRequestDto.Amount,
+                //Status = withdrawRequestDto.Status,
+                //UserTypeId = withdrawRequestDto.UserTypeId,
+                //UserId = withdrawRequestDto.UserId,
+            });
+
+            if (result != null)
+            {
+                return new ResponseMessageDto()
+                {
+                    Id = result.Id,
+                    SuccessMessage = AppConsts.SuccessfullyUpdated,
+                    Success = true,
+                    Error = false,
+                };
+            }
+
+            return new ResponseMessageDto()
+            {
+                Id = 0,
+                ErrorMessage = AppConsts.UpdateFailure,
+                Success = false,
+                Error = true,
+            };
+        }
+
+        public async Task<UserRequestDto> GetById(long userRequestId)
+        {
+            var result = await _userRequestRepository.GetAll()
+                .Where(i => i.Id == userRequestId)
+                .Select(i =>
+                    new UserRequestDto()
+                    {
+                        Id = i.Id,
+                        
+                        CreatorUserId = i.CreatorUserId,
+                        CreationTime = i.CreationTime,
+                        LastModificationTime = i.LastModificationTime,
+                        LastModifierUserId = i.LastModifierUserId
+                    })
+                .FirstOrDefaultAsync();
+            return result;
+        }
+
+        public async Task<ResponseMessageDto> DeleteAsync(long userRequestId)
+        {
+            var model = await _userRequestRepository.GetAll().Where(i => i.Id == userRequestId)
+                .FirstOrDefaultAsync();
+            model.IsDeleted = true;
+            var result = await _userRequestRepository.UpdateAsync(model);
+
+            return new ResponseMessageDto()
+            {
+                Id = userRequestId,
+                SuccessMessage = AppConsts.SuccessfullyDeleted,
+                Success = true,
+                Error = false,
+            };
+        }
+
+        public async Task<List<UserRequestDto>> GetAll()
+        {
+           // var userId = _abpSession.UserId;
+
+            var result = await _userRequestRepository.GetAll().Where(i => i.IsDeleted == false )
+                .Select(i => new UserRequestDto()
+                {
+                    Id = i.Id, 
+                    CreatorUserId = i.CreatorUserId,
+                    CreationTime = i.CreationTime,
+                    LastModificationTime = i.LastModificationTime,
+                    LastModifierUserId = i.LastModifierUserId
+                }).ToListAsync();
+            return result;
+        }
+
+        public async Task<PagedResultDto<UserRequestDto>> GetPaginatedAllAsync(
+            UserRequestInputDto input)
+        {
+            //var userId = _abpSession.UserId;
+            var filteredUserRequests = _userRequestRepository.GetAll();
+                //.Where(x => x.UserId == userId)
+               // .WhereIf(input.Status.HasValue, x => x.Status == input.Status);
+            //.Where(i => i.IsDeleted == false && (input.TenantId == null || i.TenantId == input.TenantId))
+            //.WhereIf(!string.IsNullOrWhiteSpace(input.UserName), x => x.UserName.Contains(input.Name));
+
+            var pagedAndFilteredUserRequests = filteredUserRequests
+                .OrderBy(i => i.Id)
+                .PageBy(input);
+
+            var totalCount = filteredUserRequests.Count();
+
+            var result = new PagedResultDto<UserRequestDto>(
+                totalCount: totalCount,
+                items: await pagedAndFilteredUserRequests.Where(i => i.IsDeleted == false).Select(i =>
+                        new UserRequestDto()
+                        {
+                            Id = i.Id,
+                         
+                            CreatorUserId = i.CreatorUserId,
+                            CreationTime = i.CreationTime,
+                            LastModificationTime = i.LastModificationTime,
+                            LastModifierUserId = i.LastModifierUserId
+                        })
+                    .ToListAsync());
+            return result;
+        }
+    }
+}
