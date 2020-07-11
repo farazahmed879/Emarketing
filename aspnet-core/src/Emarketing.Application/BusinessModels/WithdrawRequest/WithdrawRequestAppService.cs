@@ -7,6 +7,9 @@ using Abp.Application.Services.Dto;
 using Abp.Domain.Repositories;
 using Abp.Linq.Extensions;
 using Abp.Runtime.Session;
+using Abp.UI;
+using Emarketing.Authorization.Roles;
+using Emarketing.Authorization.Users;
 using Emarketing.BusinessModels.WithdrawRequest.Dto;
 using Emarketing.Helper;
 using Emarketing.Sessions;
@@ -34,17 +37,23 @@ namespace Emarketing.BusinessModels.WithdrawRequest
         private readonly IRepository<BusinessObjects.WithdrawRequest, long> _withdrawRequestRepository;
         private readonly ISessionAppService _sessionAppService;
         private readonly IAbpSession _abpSession;
+        private readonly UserManager _userManager;
+        private readonly RoleManager _roleManager;
 
 
         public WithdrawRequestAppService(
             IRepository<BusinessObjects.WithdrawRequest, long> withdrawRequestRepository,
             ISessionAppService sessionAppService,
-            IAbpSession abpSession)
+            IAbpSession abpSession,
+            UserManager userManager,
+            RoleManager roleManager)
 
         {
             _withdrawRequestRepository = withdrawRequestRepository;
             _sessionAppService = sessionAppService;
             _abpSession = abpSession;
+            _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         public async Task<ResponseMessageDto> CreateOrEditAsync(CreateWithdrawRequestDto withdrawRequestDto)
@@ -96,6 +105,11 @@ namespace Emarketing.BusinessModels.WithdrawRequest
 
         private async Task<ResponseMessageDto> UpdateWithdrawRequestAsync(CreateWithdrawRequestDto withdrawRequestDto)
         {
+            var isAdminUser = await AuthenticateAdminUser();
+            if (isAdminUser)
+            {
+                throw new UserFriendlyException("Admin Access Required");
+            }
             var result = await _withdrawRequestRepository.UpdateAsync(new BusinessObjects.WithdrawRequest()
             {
                 Id = withdrawRequestDto.Id,
@@ -148,6 +162,13 @@ namespace Emarketing.BusinessModels.WithdrawRequest
 
         public async Task<ResponseMessageDto> DeleteAsync(long withdrawRequestId)
         {
+            
+            var isAdminUser = await AuthenticateAdminUser();
+            if (isAdminUser)
+            {
+                throw new UserFriendlyException("Admin Access Required");
+            }
+
             var model = await _withdrawRequestRepository.GetAll().Where(i => i.Id == withdrawRequestId).FirstOrDefaultAsync();
             model.IsDeleted = true;
             var result = await _withdrawRequestRepository.UpdateAsync(model);
@@ -164,8 +185,12 @@ namespace Emarketing.BusinessModels.WithdrawRequest
         public async Task<List<WithdrawRequestDto>> GetAll()
         {
             var userId = _abpSession.UserId;
-
-            var result = await _withdrawRequestRepository.GetAll().Where(i => i.IsDeleted == false && i.UserId == userId)
+            var isAdminUser = await AuthenticateAdminUser();
+            if (isAdminUser)
+            {
+                throw new UserFriendlyException("Admin Access Required");
+            }
+            var result = await _withdrawRequestRepository.GetAll().Where(i => i.IsDeleted == false )
                 .Select(i => new WithdrawRequestDto()
                 {
                     Id = i.Id,
@@ -218,6 +243,23 @@ namespace Emarketing.BusinessModels.WithdrawRequest
             return result;
         }
 
+        private async Task<bool> AuthenticateAdminUser()
+        {
+            if (_abpSession.UserId == null)
+            {
+                throw new UserFriendlyException("Please log in before attempting to change password.");
+            }
+            long userId = _abpSession.UserId.Value;
+            var user = await _userManager.GetUserByIdAsync(userId);
 
+            var userRoles = await _userManager.GetRolesAsync(user);
+
+            if (userRoles.Contains("Admin"))
+            {
+                return true;
+            }
+            return false;
+
+        }
     }
 }

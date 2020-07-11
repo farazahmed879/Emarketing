@@ -7,6 +7,9 @@ using Abp.Application.Services.Dto;
 using Abp.Domain.Repositories;
 using Abp.Linq.Extensions;
 using Abp.Runtime.Session;
+using Abp.UI;
+using Emarketing.Authorization.Roles;
+using Emarketing.Authorization.Users;
 using Emarketing.BusinessModels.UserRequest.Dto;
 using Emarketing.Sessions;
 using Microsoft.EntityFrameworkCore;
@@ -31,16 +34,25 @@ namespace Emarketing.BusinessModels.UserRequest
     {
         private readonly IRepository<BusinessObjects.UserRequest, long> _userRequestRepository;
         private readonly ISessionAppService _sessionAppService;
-       
+
+        private readonly IAbpSession _abpSession;
+        private readonly UserManager _userManager;
+        private readonly RoleManager _roleManager;
 
         public UserRequestAppService(
             IRepository<BusinessObjects.UserRequest, long> userRequestRepository,
-            ISessionAppService sessionAppService)
+            ISessionAppService sessionAppService,
+            IAbpSession abpSession,
+            UserManager userManager,
+            RoleManager roleManager)
 
         {
             _userRequestRepository = userRequestRepository;
             _sessionAppService = sessionAppService;
-             
+
+            _abpSession = abpSession;
+            _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         public async Task<ResponseMessageDto> CreateOrEditAsync(CreateUserRequestDto withdrawRequestDto)
@@ -58,14 +70,15 @@ namespace Emarketing.BusinessModels.UserRequest
             return result;
         }
 
-        private async Task<ResponseMessageDto> CreateUserRequestAsync(CreateUserRequestDto withdrawRequestDto)
+        private async Task<ResponseMessageDto> CreateUserRequestAsync(CreateUserRequestDto userRequestDto)
         {
             var result = await _userRequestRepository.InsertAsync(new BusinessObjects.UserRequest()
             {
-                //Amount = withdrawRequestDto.Amount,
-                //Status = false,
-                //UserTypeId = withdrawRequestDto.UserTypeId,
-                //UserId = withdrawRequestDto.UserId,
+                FirstName = userRequestDto.FirstName,
+                LastName = userRequestDto.FirstName,
+                UserName = userRequestDto.FirstName,
+                Email = userRequestDto.FirstName,
+                Password = userRequestDto.Password
             });
 
             await UnitOfWorkManager.Current.SaveChangesAsync();
@@ -95,10 +108,11 @@ namespace Emarketing.BusinessModels.UserRequest
             var result = await _userRequestRepository.UpdateAsync(new BusinessObjects.UserRequest()
             {
                 Id = userRequestDto.Id,
-                //Amount = withdrawRequestDto.Amount,
-                //Status = withdrawRequestDto.Status,
-                //UserTypeId = withdrawRequestDto.UserTypeId,
-                //UserId = withdrawRequestDto.UserId,
+                FirstName = userRequestDto.FirstName,
+                LastName = userRequestDto.FirstName,
+                UserName = userRequestDto.FirstName,
+                Email = userRequestDto.FirstName,
+                Password = userRequestDto.Password
             });
 
             if (result != null)
@@ -129,7 +143,11 @@ namespace Emarketing.BusinessModels.UserRequest
                     new UserRequestDto()
                     {
                         Id = i.Id,
-                        
+                        FirstName = i.FirstName,
+                        LastName = i.FirstName,
+                        UserName = i.FirstName,
+                        Email = i.FirstName,
+                        Password = i.Password,
                         CreatorUserId = i.CreatorUserId,
                         CreationTime = i.CreationTime,
                         LastModificationTime = i.LastModificationTime,
@@ -157,12 +175,23 @@ namespace Emarketing.BusinessModels.UserRequest
 
         public async Task<List<UserRequestDto>> GetAll()
         {
-           // var userId = _abpSession.UserId;
+            // var loggedInUser = _sessionAppService.GetCurrentLoginInformations();
 
-            var result = await _userRequestRepository.GetAll().Where(i => i.IsDeleted == false )
+            var userId = _abpSession.UserId;
+            var isAdminUser = await AuthenticateAdminUser();
+            if (isAdminUser)
+            {
+                throw new UserFriendlyException("Admin Access Required");
+            }
+            var result = await _userRequestRepository.GetAll().Where(i => i.IsDeleted == false)
                 .Select(i => new UserRequestDto()
                 {
-                    Id = i.Id, 
+                    Id = i.Id,
+                    FirstName = i.FirstName,
+                    LastName = i.FirstName,
+                    UserName = i.FirstName,
+                    Email = i.FirstName,
+                    Password = i.Password,
                     CreatorUserId = i.CreatorUserId,
                     CreationTime = i.CreationTime,
                     LastModificationTime = i.LastModificationTime,
@@ -176,8 +205,8 @@ namespace Emarketing.BusinessModels.UserRequest
         {
             //var userId = _abpSession.UserId;
             var filteredUserRequests = _userRequestRepository.GetAll();
-                //.Where(x => x.UserId == userId)
-               // .WhereIf(input.Status.HasValue, x => x.Status == input.Status);
+            //.Where(x => x.UserId == userId)
+            // .WhereIf(input.Status.HasValue, x => x.Status == input.Status);
             //.Where(i => i.IsDeleted == false && (input.TenantId == null || i.TenantId == input.TenantId))
             //.WhereIf(!string.IsNullOrWhiteSpace(input.UserName), x => x.UserName.Contains(input.Name));
 
@@ -193,7 +222,11 @@ namespace Emarketing.BusinessModels.UserRequest
                         new UserRequestDto()
                         {
                             Id = i.Id,
-                         
+                            FirstName = i.FirstName,
+                            LastName = i.FirstName,
+                            UserName = i.FirstName,
+                            Email = i.FirstName,
+                            Password = i.Password,
                             CreatorUserId = i.CreatorUserId,
                             CreationTime = i.CreationTime,
                             LastModificationTime = i.LastModificationTime,
@@ -201,6 +234,25 @@ namespace Emarketing.BusinessModels.UserRequest
                         })
                     .ToListAsync());
             return result;
+        }
+
+        private async Task<bool> AuthenticateAdminUser()
+        {
+            if (_abpSession.UserId == null)
+            {
+                throw new UserFriendlyException("Please log in before attempting to change password.");
+            }
+            long userId = _abpSession.UserId.Value;
+            var user = await _userManager.GetUserByIdAsync(userId);
+
+            var userRoles = await _userManager.GetRolesAsync(user);
+
+            if (userRoles.Contains("Admin"))
+            {
+                return true;
+            }
+            return false;
+
         }
     }
 }
