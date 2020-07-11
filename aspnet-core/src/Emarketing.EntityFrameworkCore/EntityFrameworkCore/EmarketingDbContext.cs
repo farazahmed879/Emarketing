@@ -11,6 +11,7 @@ namespace Emarketing.EntityFrameworkCore
     {
         /* Define a DbSet for each entity of the application */
         public DbSet<WithdrawRequest> WithdrawRequests { get; set; }
+        public DbSet<UserWithdrawDetail> UserWithdrawDetails { get; set; }
 
         public DbSet<UserReferral> UserReferrals { get; set; }
         public DbSet<UserReferralRequest> UserReferralRequests { get; set; }
