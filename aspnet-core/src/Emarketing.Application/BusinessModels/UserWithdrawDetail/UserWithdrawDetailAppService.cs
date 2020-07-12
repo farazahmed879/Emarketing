@@ -71,19 +71,26 @@ namespace Emarketing.BusinessModels.UserWithdrawDetail
 
         private async Task<ResponseMessageDto> CreateUserWithdrawDetailAsync(UserWithdrawDetailDto userWithdrawDetailDto)
         {
+
+            if (_abpSession.UserId == null)
+            {
+                throw new UserFriendlyException(ErrorMessage.UserFriendly.InvalidLogin);
+            }
+
+            var userId = _abpSession.UserId;
             var result = await _userWithdrawDetailRepository.InsertAsync(new BusinessObjects.UserWithdrawDetail()
             {
                 WithdrawTypeId = userWithdrawDetailDto.WithdrawTypeId,
                 UserId = userWithdrawDetailDto.UserId,
                 AccountIBAN = userWithdrawDetailDto.AccountIBAN,
                 AccountTitle = userWithdrawDetailDto.AccountTitle,
-                IsPrimary = userWithdrawDetailDto.IsPrimary,
+                IsPrimary = true,
                 JazzCashNumber = userWithdrawDetailDto.JazzCashNumber,
                 EasyPaisaNumber = userWithdrawDetailDto.EasyPaisaNumber,
             });
 
             await UnitOfWorkManager.Current.SaveChangesAsync();
-
+            SetPrimaryUserWithdrawDetail(userId.Value, result.Id);
             if (result.Id != 0)
             {
                 return new ResponseMessageDto()
@@ -106,10 +113,17 @@ namespace Emarketing.BusinessModels.UserWithdrawDetail
 
         private async Task<ResponseMessageDto> UpdateUserWithdrawDetailAsync(UserWithdrawDetailDto userWithdrawDetailDto)
         {
+            if (_abpSession.UserId == null)
+            {
+                throw new UserFriendlyException(ErrorMessage.UserFriendly.InvalidLogin);
+            }
+
+            var userId = _abpSession.UserId;
+
             var isAdminUser = await AuthenticateAdminUser();
             if (isAdminUser)
             {
-                throw new UserFriendlyException("Admin Access Required");
+                throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
             }
             var result = await _userWithdrawDetailRepository.UpdateAsync(new BusinessObjects.UserWithdrawDetail()
             {
@@ -123,7 +137,7 @@ namespace Emarketing.BusinessModels.UserWithdrawDetail
                 EasyPaisaNumber = userWithdrawDetailDto.EasyPaisaNumber,
              
             });
-
+            SetPrimaryUserWithdrawDetail(userId.Value, result.Id);
             if (result != null)
             {
                 return new ResponseMessageDto()
@@ -174,7 +188,7 @@ namespace Emarketing.BusinessModels.UserWithdrawDetail
             var isAdminUser = await AuthenticateAdminUser();
             if (isAdminUser)
             {
-                throw new UserFriendlyException("Admin Access Required");
+                throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
             }
 
             var model = await _userWithdrawDetailRepository.GetAll().Where(i => i.Id == userWithdrawDetailId).FirstOrDefaultAsync();
@@ -196,7 +210,7 @@ namespace Emarketing.BusinessModels.UserWithdrawDetail
             var isAdminUser = await AuthenticateAdminUser();
             if (isAdminUser)
             {
-                throw new UserFriendlyException("Admin Access Required");
+                throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
             }
             var result = await _userWithdrawDetailRepository.GetAll().Where(i => i.IsDeleted == false )
                 .Select(i => new UserWithdrawDetailDto()
@@ -264,7 +278,7 @@ namespace Emarketing.BusinessModels.UserWithdrawDetail
         {
             if (_abpSession.UserId == null)
             {
-                throw new UserFriendlyException("Please log in before attempting to change password.");
+                throw new UserFriendlyException(ErrorMessage.UserFriendly.InvalidLogin);
             }
             long userId = _abpSession.UserId.Value;
             var user = await _userManager.GetUserByIdAsync(userId);
@@ -276,6 +290,28 @@ namespace Emarketing.BusinessModels.UserWithdrawDetail
                 return true;
             }
             return false;
+
+        }
+
+        private async Task<bool> SetPrimaryUserWithdrawDetail(long userId, long primaryUserWithdrawDetailId)
+        {
+            var userWithdrawDetails = _userWithdrawDetailRepository.GetAll().Where(x => x.UserId == userId).ToList();
+
+            foreach (var userWithdrawDetail in userWithdrawDetails)
+            {
+                if (userWithdrawDetail.Id == primaryUserWithdrawDetailId)
+                {
+                    userWithdrawDetail.IsPrimary = true;
+                }
+                else
+                {
+                    userWithdrawDetail.IsPrimary = false;
+                   
+                }
+                await _userWithdrawDetailRepository.UpdateAsync(userWithdrawDetail);
+            }
+           
+            return true;
 
         }
 

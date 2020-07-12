@@ -181,7 +181,7 @@ namespace Emarketing.BusinessModels.UserRequest
             var isAdminUser = await AuthenticateAdminUser();
             if (isAdminUser)
             {
-                throw new UserFriendlyException("Admin Access Required");
+                throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
             }
             var result = await _userRequestRepository.GetAll().Where(i => i.IsDeleted == false)
                 .Select(i => new UserRequestDto()
@@ -240,7 +240,7 @@ namespace Emarketing.BusinessModels.UserRequest
         {
             if (_abpSession.UserId == null)
             {
-                throw new UserFriendlyException("Please log in before attempting to change password.");
+                throw new UserFriendlyException(ErrorMessage.UserFriendly.InvalidLogin);
             }
             long userId = _abpSession.UserId.Value;
             var user = await _userManager.GetUserByIdAsync(userId);
