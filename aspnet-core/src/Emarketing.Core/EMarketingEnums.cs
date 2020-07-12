@@ -4,10 +4,12 @@ namespace Emarketing
 {
     public enum WithdrawType
     {
-        [Description("Other")]
-        Other = 1,
+        [Description("Bank Transfer")]
+        BankTransfer = 1,
         [Description("EasyPaisa")]
         EasyPaisa = 2,
+        [Description("Jazz Cash")]
+        JazzCash = 2,
     }
 
     public enum ReferralAccountStatus
@@ -34,6 +36,16 @@ namespace Emarketing
         Active = 2,
         [Description("Inactive")]
         Inactive = 3,
+    }
+
+    public enum UserPackageSubscriptionStatus
+    {
+        [Description("Pending")]
+        Pending = 1,
+        [Description("Active")]
+        Active = 2,
+        [Description("Expired")]
+        Expired = 3,
     }
 
 }

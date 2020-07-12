@@ -43,8 +43,7 @@ export class SidebarMenuComponent extends AppComponentBase implements OnInit {
 
   getMenuItems(): MenuItem[] {
     return [
-      new MenuItem(this.l('Withdraw Request'), '/app/withdraw-request', 'fas fa-home'),
-      new MenuItem(this.l('Withdraw History'), '/app/withdraw-history', 'fas fa-home'),
+      
       new MenuItem(this.l('HomePage'), '/app/home', 'fas fa-home'),
       new MenuItem(
         this.l('Tenants'),
@@ -64,6 +63,8 @@ export class SidebarMenuComponent extends AppComponentBase implements OnInit {
         'fas fa-theater-masks',
         'Pages.Roles'
       ),
+      new MenuItem(this.l('Withdraw Request'), '/app/withdraw-request', 'fas fa-home'),
+      new MenuItem(this.l('Withdraw History'), '/app/withdraw-history', 'fas fa-home'),
       new MenuItem(this.l('About'), '/app/about', 'fas fa-info-circle'),
       new MenuItem(this.l('MultiLevelMenu'), '', 'fas fa-circle', '', [
         new MenuItem('ASP.NET Boilerplate', '', 'fas fa-dot-circle', '', [

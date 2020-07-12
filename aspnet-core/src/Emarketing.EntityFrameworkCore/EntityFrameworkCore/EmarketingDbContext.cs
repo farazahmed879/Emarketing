@@ -10,11 +10,30 @@ namespace Emarketing.EntityFrameworkCore
     public class EmarketingDbContext : AbpZeroDbContext<Tenant, Role, User, EmarketingDbContext>
     {
         /* Define a DbSet for each entity of the application */
-        public DbSet<WithdrawRequest> WithdrawRequests { get; set; }
 
-        public DbSet<UserReferral> UserReferrals { get; set; }
+        #region Admin
+
+        public DbSet<Package> Packages { get; set; }
+
         public DbSet<UserReferralRequest> UserReferralRequests { get; set; }
 
+        public DbSet<UserRequest> UserRequests { get; set; }
+
+        #endregion
+
+
+        #region Users
+
+        public DbSet<UserPackageSubscriptionDetail> UserPackageSubscriptionDetails { get; set; }
+
+        public DbSet<WithdrawRequest> WithdrawRequests { get; set; }
+
+        public DbSet<UserWithdrawDetail> UserWithdrawDetails { get; set; }
+
+        public DbSet<UserReferral> UserReferrals { get; set; }
+
+        #endregion
+        
         public EmarketingDbContext(DbContextOptions<EmarketingDbContext> options)
             : base(options)
         {

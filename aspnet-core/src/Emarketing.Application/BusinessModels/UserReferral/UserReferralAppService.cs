@@ -21,7 +21,7 @@ namespace Emarketing.BusinessModels.UserReferral
 
         Task<List<UserReferralDto>> GetAll(long? userId);
 
-        Task<PagedResultDto<UserReferralDto>> GetPaginatedAllAsync(PagedCreateUserReferralResultRequestDto input);
+        Task<PagedResultDto<UserReferralDto>> GetPaginatedAllAsync(UserRefferalInputDto input);
     }
 
 
@@ -162,7 +162,7 @@ namespace Emarketing.BusinessModels.UserReferral
         }
 
         public async Task<PagedResultDto<UserReferralDto>> GetPaginatedAllAsync(
-            PagedCreateUserReferralResultRequestDto input)
+            UserRefferalInputDto input)
         {
             var filteredUserReferrals = _userReferralRepository.GetAll()
                 .WhereIf(!string.IsNullOrWhiteSpace(input.UserName), x => x.UserId == input.UserId);

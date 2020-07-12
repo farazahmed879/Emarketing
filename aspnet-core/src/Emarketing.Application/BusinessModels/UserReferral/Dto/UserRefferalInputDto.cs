@@ -2,7 +2,7 @@
 
 namespace Emarketing.BusinessModels.UserReferral.Dto
 {
-    public class PagedCreateUserReferralResultRequestDto : PagedResultRequestDto
+    public class UserRefferalInputDto : PagedResultRequestDto
     {
         public int UserId { get; set; }
         public string UserName { get; set; }
