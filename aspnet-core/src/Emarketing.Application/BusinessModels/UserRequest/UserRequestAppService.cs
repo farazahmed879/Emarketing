@@ -57,6 +57,12 @@ namespace Emarketing.BusinessModels.UserRequest
 
         public async Task<ResponseMessageDto> CreateOrEditAsync(CreateUserRequestDto withdrawRequestDto)
         {
+            var userId = _abpSession.UserId;
+            var isAdminUser = await AuthenticateAdminUser();
+            if (!isAdminUser)
+            {
+                throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
+            }
             ResponseMessageDto result;
             if (withdrawRequestDto.Id == 0)
             {
@@ -137,6 +143,12 @@ namespace Emarketing.BusinessModels.UserRequest
 
         public async Task<UserRequestDto> GetById(long userRequestId)
         {
+            var userId = _abpSession.UserId;
+            var isAdminUser = await AuthenticateAdminUser();
+            if (!isAdminUser)
+            {
+                throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
+            }
             var result = await _userRequestRepository.GetAll()
                 .Where(i => i.Id == userRequestId)
                 .Select(i =>
@@ -179,7 +191,7 @@ namespace Emarketing.BusinessModels.UserRequest
 
             var userId = _abpSession.UserId;
             var isAdminUser = await AuthenticateAdminUser();
-            if (isAdminUser)
+            if (!isAdminUser)
             {
                 throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
             }
@@ -203,6 +215,12 @@ namespace Emarketing.BusinessModels.UserRequest
         public async Task<PagedResultDto<UserRequestDto>> GetPaginatedAllAsync(
             UserRequestInputDto input)
         {
+            var userId = _abpSession.UserId;
+            var isAdminUser = await AuthenticateAdminUser();
+            if (!isAdminUser)
+            {
+                throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
+            }
             //var userId = _abpSession.UserId;
             var filteredUserRequests = _userRequestRepository.GetAll();
             //.Where(x => x.UserId == userId)

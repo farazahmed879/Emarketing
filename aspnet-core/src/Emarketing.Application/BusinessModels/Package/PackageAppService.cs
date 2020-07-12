@@ -55,7 +55,7 @@ namespace Emarketing.BusinessModels.Package
         public async Task<ResponseMessageDto> CreateOrEditAsync(CreatePackageDto packageDto)
         {
             var isAdminUser = await AuthenticateAdminUser();
-            if (isAdminUser)
+            if (!isAdminUser)
             {
                 throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
             }
@@ -143,7 +143,7 @@ namespace Emarketing.BusinessModels.Package
         public async Task<PackageDto> GetById(long packageId)
         {
             var isAdminUser = await AuthenticateAdminUser();
-            if (isAdminUser)
+            if (!isAdminUser)
             {
                 throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
             }
@@ -172,7 +172,7 @@ namespace Emarketing.BusinessModels.Package
         public async Task<ResponseMessageDto> DeleteAsync(long packageId)
         {
             var isAdminUser = await AuthenticateAdminUser();
-            if (isAdminUser)
+            if (!isAdminUser)
             {
                 throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
             }
@@ -195,7 +195,7 @@ namespace Emarketing.BusinessModels.Package
         {
             var userId = _abpSession.UserId;
             var isAdminUser = await AuthenticateAdminUser();
-            if (isAdminUser)
+            if (!isAdminUser)
             {
                 throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
             }
@@ -222,6 +222,13 @@ namespace Emarketing.BusinessModels.Package
             PackageInputDto input)
         {
             //var userId = _abpSession.UserId;
+            //var userId = _abpSession.UserId;
+            var isAdminUser = await AuthenticateAdminUser();
+            if (!isAdminUser)
+            {
+                throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
+            }
+
             var filteredPackages = _packageRepository.GetAll();
 
             var pagedAndFilteredPackages = filteredPackages

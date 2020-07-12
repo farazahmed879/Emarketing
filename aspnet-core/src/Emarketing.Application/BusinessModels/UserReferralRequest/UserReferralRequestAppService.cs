@@ -64,11 +64,7 @@ namespace Emarketing.BusinessModels.UserReferralRequest
             }
             else
             {
-                var isAdminUser = await AuthenticateAdminUser();
-                if (isAdminUser)
-                {
-                    throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
-                }
+                
                 result = await UpdateUserReferralRequestAsync(userReferralRequestDto);
             }
 
@@ -162,7 +158,7 @@ namespace Emarketing.BusinessModels.UserReferralRequest
         public async Task<ResponseMessageDto> DeleteAsync(long userReferralRequestId)
         {
             var isAdminUser = await AuthenticateAdminUser();
-            if (isAdminUser)
+            if (!isAdminUser)
             {
                 throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
             }
@@ -183,7 +179,7 @@ namespace Emarketing.BusinessModels.UserReferralRequest
         public async Task<List<UserReferralRequestDto>> GetAll(long? userId)
         {
             var isAdminUser = await AuthenticateAdminUser();
-            if (isAdminUser)
+            if (!isAdminUser)
             {
                 throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
             }
@@ -208,7 +204,7 @@ namespace Emarketing.BusinessModels.UserReferralRequest
             UserReferralRequestInputDto input)
         {
             var isAdminUser = await AuthenticateAdminUser();
-            if (isAdminUser)
+            if (!isAdminUser)
             {
                 throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
             }

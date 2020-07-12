@@ -108,7 +108,7 @@ namespace Emarketing.BusinessModels.WithdrawRequest
         private async Task<ResponseMessageDto> UpdateWithdrawRequestAsync(WithdrawRequestDto withdrawRequestDto)
         {
             var isAdminUser = await AuthenticateAdminUser();
-            if (isAdminUser)
+            if (!isAdminUser)
             {
                 throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
             }
@@ -166,7 +166,7 @@ namespace Emarketing.BusinessModels.WithdrawRequest
         {
             
             var isAdminUser = await AuthenticateAdminUser();
-            if (isAdminUser)
+            if (!isAdminUser)
             {
                 throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
             }
@@ -188,7 +188,7 @@ namespace Emarketing.BusinessModels.WithdrawRequest
         {
             var userId = _abpSession.UserId;
             var isAdminUser = await AuthenticateAdminUser();
-            if (isAdminUser)
+            if (!isAdminUser)
             {
                 throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
             }
