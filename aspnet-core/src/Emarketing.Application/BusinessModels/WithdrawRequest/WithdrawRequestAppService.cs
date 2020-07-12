@@ -11,6 +11,7 @@ using Abp.UI;
 using Emarketing.Authorization.Roles;
 using Emarketing.Authorization.Users;
 using Emarketing.BusinessModels.UserWithdrawDetail.Dto;
+using Emarketing.BusinessModels.WithdrawRequest.Dto;
 using Emarketing.Helper;
 using Emarketing.Sessions;
 using Emarketing.Sessions.Dto;
@@ -22,7 +23,7 @@ namespace Emarketing.BusinessModels.WithdrawRequest
 {
     public interface IWithdrawRequestAppService : IApplicationService
     {
-        Task<ResponseMessageDto> CreateOrEditAsync(WithdrawRequestDto withdrawRequestDto);
+        Task<ResponseMessageDto> CreateOrEditAsync(CreateWithdrawRequestDto withdrawRequestDto);
 
         Task<WithdrawRequestDto> GetById(long withdrawRequestId);
 
@@ -58,7 +59,7 @@ namespace Emarketing.BusinessModels.WithdrawRequest
             _roleManager = roleManager;
         }
 
-        public async Task<ResponseMessageDto> CreateOrEditAsync(WithdrawRequestDto withdrawRequestDto)
+        public async Task<ResponseMessageDto> CreateOrEditAsync(CreateWithdrawRequestDto withdrawRequestDto)
         {
             ResponseMessageDto result;
             if (withdrawRequestDto.Id == 0)
@@ -73,7 +74,7 @@ namespace Emarketing.BusinessModels.WithdrawRequest
             return result;
         }
 
-        private async Task<ResponseMessageDto> CreateWithdrawRequestAsync(WithdrawRequestDto withdrawRequestDto)
+        private async Task<ResponseMessageDto> CreateWithdrawRequestAsync(CreateWithdrawRequestDto withdrawRequestDto)
         {
             var result = await _withdrawRequestRepository.InsertAsync(new BusinessObjects.WithdrawRequest()
             {
@@ -105,7 +106,7 @@ namespace Emarketing.BusinessModels.WithdrawRequest
             };
         }
 
-        private async Task<ResponseMessageDto> UpdateWithdrawRequestAsync(WithdrawRequestDto withdrawRequestDto)
+        private async Task<ResponseMessageDto> UpdateWithdrawRequestAsync(CreateWithdrawRequestDto withdrawRequestDto)
         {
             var isAdminUser = await AuthenticateAdminUser();
             if (!isAdminUser)

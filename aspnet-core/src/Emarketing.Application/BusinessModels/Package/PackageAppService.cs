@@ -193,12 +193,12 @@ namespace Emarketing.BusinessModels.Package
 
         public async Task<List<PackageDto>> GetAll()
         {
-            var userId = _abpSession.UserId;
-            var isAdminUser = await AuthenticateAdminUser();
-            if (!isAdminUser)
-            {
-                throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
-            }
+            //var userId = _abpSession.UserId;
+            //var isAdminUser = await AuthenticateAdminUser();
+            //if (!isAdminUser)
+            //{
+            //    throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
+            //}
 
             var result = await _packageRepository.GetAll().Where(i => i.IsDeleted == false)
                 .Select(i => new PackageDto()
