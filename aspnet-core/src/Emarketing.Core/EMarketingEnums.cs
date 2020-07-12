@@ -38,6 +38,14 @@ namespace Emarketing
         Inactive = 3,
     }
 
-   
+    public enum UserPackageSubscriptionStatus
+    {
+        [Description("Pending")]
+        Pending = 1,
+        [Description("Active")]
+        Active = 2,
+        [Description("Expired")]
+        Expired = 3,
+    }
 
 }

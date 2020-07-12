@@ -11,14 +11,29 @@ namespace Emarketing.EntityFrameworkCore
     {
         /* Define a DbSet for each entity of the application */
 
+        #region Admin
+
         public DbSet<Package> Packages { get; set; }
+
+        public DbSet<UserReferralRequest> UserReferralRequests { get; set; }
+
+        public DbSet<UserRequest> UserRequests { get; set; }
+
+        #endregion
+
+
+        #region Users
+
+        public DbSet<UserPackageSubscriptionDetail> UserPackageSubscriptionDetails { get; set; }
+
         public DbSet<WithdrawRequest> WithdrawRequests { get; set; }
+
         public DbSet<UserWithdrawDetail> UserWithdrawDetails { get; set; }
 
         public DbSet<UserReferral> UserReferrals { get; set; }
-        public DbSet<UserReferralRequest> UserReferralRequests { get; set; }
-        public DbSet<UserRequest> UserRequests { get; set; }
 
+        #endregion
+        
         public EmarketingDbContext(DbContextOptions<EmarketingDbContext> options)
             : base(options)
         {
