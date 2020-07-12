@@ -19,11 +19,11 @@ namespace Emarketing.BusinessModels.UserWithdrawDetail
 {
     public interface IUserWithdrawDetailAppService : IApplicationService
     {
-        Task<ResponseMessageDto> CreateOrEditAsync(UserWithdrawDetailDto withdrawRequestDto);
+        Task<ResponseMessageDto> CreateOrEditAsync(UserWithdrawDetailDto userWithdrawDetailDto);
 
-        Task<UserWithdrawDetailDto> GetById(long withdrawRequestId);
+        Task<UserWithdrawDetailDto> GetById(long userWithdrawDetailId);
 
-        Task<ResponseMessageDto> DeleteAsync(long withdrawRequestId);
+        Task<ResponseMessageDto> DeleteAsync(long userWithdrawDetailId);
 
         Task<List<UserWithdrawDetailDto>> GetAll();
 
@@ -33,51 +33,53 @@ namespace Emarketing.BusinessModels.UserWithdrawDetail
 
     public class UserWithdrawDetailAppService : AbpServiceBase, IUserWithdrawDetailAppService
     {
-        private readonly IRepository<BusinessObjects.UserWithdrawDetail, long> _withdrawRequestRepository;
+        private readonly IRepository<BusinessObjects.UserWithdrawDetail, long> _userWithdrawDetailRepository;
         private readonly ISessionAppService _sessionAppService;
         private readonly IAbpSession _abpSession;
         private readonly UserManager _userManager;
         private readonly RoleManager _roleManager;
-
-
+        
         public UserWithdrawDetailAppService(
-            IRepository<BusinessObjects.UserWithdrawDetail, long> withdrawRequestRepository,
+            IRepository<BusinessObjects.UserWithdrawDetail, long> userWithdrawDetailRepository,
             ISessionAppService sessionAppService,
             IAbpSession abpSession,
             UserManager userManager,
             RoleManager roleManager)
 
         {
-            _withdrawRequestRepository = withdrawRequestRepository;
+            _userWithdrawDetailRepository = userWithdrawDetailRepository;
             _sessionAppService = sessionAppService;
             _abpSession = abpSession;
             _userManager = userManager;
             _roleManager = roleManager;
         }
 
-        public async Task<ResponseMessageDto> CreateOrEditAsync(UserWithdrawDetailDto withdrawRequestDto)
+        public async Task<ResponseMessageDto> CreateOrEditAsync(UserWithdrawDetailDto userWithdrawDetailDto)
         {
             ResponseMessageDto result;
-            if (withdrawRequestDto.Id == 0)
+            if (userWithdrawDetailDto.Id == 0)
             {
-                result = await CreateUserWithdrawDetailAsync(withdrawRequestDto);
+                result = await CreateUserWithdrawDetailAsync(userWithdrawDetailDto);
             }
             else
             {
-                result = await UpdateUserWithdrawDetailAsync(withdrawRequestDto);
+                result = await UpdateUserWithdrawDetailAsync(userWithdrawDetailDto);
             }
 
             return result;
         }
 
-        private async Task<ResponseMessageDto> CreateUserWithdrawDetailAsync(UserWithdrawDetailDto withdrawRequestDto)
+        private async Task<ResponseMessageDto> CreateUserWithdrawDetailAsync(UserWithdrawDetailDto userWithdrawDetailDto)
         {
-            var result = await _withdrawRequestRepository.InsertAsync(new BusinessObjects.UserWithdrawDetail()
+            var result = await _userWithdrawDetailRepository.InsertAsync(new BusinessObjects.UserWithdrawDetail()
             {
-                //Amount = withdrawRequestDto.Amount,
-                //Status = false,
-                WithdrawTypeId = withdrawRequestDto.WithdrawTypeId,
-                UserId = withdrawRequestDto.UserId,
+                WithdrawTypeId = userWithdrawDetailDto.WithdrawTypeId,
+                UserId = userWithdrawDetailDto.UserId,
+                AccountIBAN = userWithdrawDetailDto.AccountIBAN,
+                AccountTitle = userWithdrawDetailDto.AccountTitle,
+                IsPrimary = userWithdrawDetailDto.IsPrimary,
+                JazzCashNumber = userWithdrawDetailDto.JazzCashNumber,
+                EasyPaisaNumber = userWithdrawDetailDto.EasyPaisaNumber,
             });
 
             await UnitOfWorkManager.Current.SaveChangesAsync();
@@ -102,20 +104,24 @@ namespace Emarketing.BusinessModels.UserWithdrawDetail
             };
         }
 
-        private async Task<ResponseMessageDto> UpdateUserWithdrawDetailAsync(UserWithdrawDetailDto withdrawRequestDto)
+        private async Task<ResponseMessageDto> UpdateUserWithdrawDetailAsync(UserWithdrawDetailDto userWithdrawDetailDto)
         {
             var isAdminUser = await AuthenticateAdminUser();
             if (isAdminUser)
             {
                 throw new UserFriendlyException("Admin Access Required");
             }
-            var result = await _withdrawRequestRepository.UpdateAsync(new BusinessObjects.UserWithdrawDetail()
+            var result = await _userWithdrawDetailRepository.UpdateAsync(new BusinessObjects.UserWithdrawDetail()
             {
-                Id = withdrawRequestDto.Id,
-                //Amount = withdrawRequestDto.Amount,
-                //Status = withdrawRequestDto.Status,
-                WithdrawTypeId = withdrawRequestDto.WithdrawTypeId,
-                UserId = withdrawRequestDto.UserId,
+                Id = userWithdrawDetailDto.Id,
+                WithdrawTypeId = userWithdrawDetailDto.WithdrawTypeId,
+                UserId = userWithdrawDetailDto.UserId,
+                AccountIBAN = userWithdrawDetailDto.AccountIBAN,
+                AccountTitle = userWithdrawDetailDto.AccountTitle,
+                IsPrimary = userWithdrawDetailDto.IsPrimary,
+                JazzCashNumber = userWithdrawDetailDto.JazzCashNumber,
+                EasyPaisaNumber = userWithdrawDetailDto.EasyPaisaNumber,
+             
             });
 
             if (result != null)
@@ -138,15 +144,19 @@ namespace Emarketing.BusinessModels.UserWithdrawDetail
             };
         }
 
-        public async Task<UserWithdrawDetailDto> GetById(long withdrawRequestId)
+        public async Task<UserWithdrawDetailDto> GetById(long userWithdrawDetailId)
         {
-            var result = await _withdrawRequestRepository.GetAll()
-                .Where(i => i.Id == withdrawRequestId)
+            var result = await _userWithdrawDetailRepository.GetAll()
+                .Where(i => i.Id == userWithdrawDetailId)
                 .Select(i =>
                     new UserWithdrawDetailDto()
                     {
                         Id = i.Id,
-                       // Amount = i.Amount,
+                        AccountIBAN = i.AccountIBAN,
+                        AccountTitle = i.AccountTitle,
+                        IsPrimary = i.IsPrimary,
+                        JazzCashNumber = i.JazzCashNumber,
+                        EasyPaisaNumber = i.EasyPaisaNumber,
                         WithdrawTypeId = i.WithdrawTypeId,
                         UserId = i.UserId,
                         UserName = $"{i.User.FullName}",
@@ -159,22 +169,21 @@ namespace Emarketing.BusinessModels.UserWithdrawDetail
             return result;
         }
 
-        public async Task<ResponseMessageDto> DeleteAsync(long withdrawRequestId)
+        public async Task<ResponseMessageDto> DeleteAsync(long userWithdrawDetailId)
         {
-            
             var isAdminUser = await AuthenticateAdminUser();
             if (isAdminUser)
             {
                 throw new UserFriendlyException("Admin Access Required");
             }
 
-            var model = await _withdrawRequestRepository.GetAll().Where(i => i.Id == withdrawRequestId).FirstOrDefaultAsync();
+            var model = await _userWithdrawDetailRepository.GetAll().Where(i => i.Id == userWithdrawDetailId).FirstOrDefaultAsync();
             model.IsDeleted = true;
-            var result = await _withdrawRequestRepository.UpdateAsync(model);
+            var result = await _userWithdrawDetailRepository.UpdateAsync(model);
 
             return new ResponseMessageDto()
             {
-                Id = withdrawRequestId,
+                Id = userWithdrawDetailId,
                 SuccessMessage = AppConsts.SuccessfullyDeleted,
                 Success = true,
                 Error = false,
@@ -189,12 +198,17 @@ namespace Emarketing.BusinessModels.UserWithdrawDetail
             {
                 throw new UserFriendlyException("Admin Access Required");
             }
-            var result = await _withdrawRequestRepository.GetAll().Where(i => i.IsDeleted == false )
+            var result = await _userWithdrawDetailRepository.GetAll().Where(i => i.IsDeleted == false )
                 .Select(i => new UserWithdrawDetailDto()
                 {
                     Id = i.Id,
-                   // Amount = i.Amount,
+                    AccountIBAN = i.AccountIBAN,
+                    AccountTitle = i.AccountTitle,
+                    IsPrimary = i.IsPrimary,
+                    JazzCashNumber = i.JazzCashNumber,
+                    EasyPaisaNumber = i.EasyPaisaNumber,
                     WithdrawTypeId = i.WithdrawTypeId,
+                    WithdrawType = i.WithdrawTypeId.GetEnumFieldDescription(),
                     UserId = i.UserId,
                     UserName = $"{i.User.FullName}",
                     CreatorUserId = i.CreatorUserId,
@@ -210,7 +224,7 @@ namespace Emarketing.BusinessModels.UserWithdrawDetail
             UserWithdrawDetailInputDto input)
         {
             var userId = _abpSession.UserId;
-            var filteredUserWithdrawDetails = _withdrawRequestRepository.GetAll()
+            var filteredUserWithdrawDetails = _userWithdrawDetailRepository.GetAll()
                 .Where(x => x.UserId == userId);
                 //.WhereIf(input.Status.HasValue, x => x.Status == input.Status);
             //.Where(i => i.IsDeleted == false && (input.TenantId == null || i.TenantId == input.TenantId))
@@ -228,7 +242,11 @@ namespace Emarketing.BusinessModels.UserWithdrawDetail
                         new UserWithdrawDetailDto()
                         {
                             Id = i.Id,
-                            //Amount = i.Amount,
+                            AccountIBAN = i.AccountIBAN,
+                            AccountTitle = i.AccountTitle,
+                            IsPrimary = i.IsPrimary,
+                            JazzCashNumber = i.JazzCashNumber,
+                            EasyPaisaNumber = i.EasyPaisaNumber,
                             WithdrawTypeId = i.WithdrawTypeId,
                             WithdrawType = i.WithdrawTypeId.GetEnumFieldDescription(),
                             UserId = i.UserId,
@@ -260,5 +278,6 @@ namespace Emarketing.BusinessModels.UserWithdrawDetail
             return false;
 
         }
+
     }
 }
