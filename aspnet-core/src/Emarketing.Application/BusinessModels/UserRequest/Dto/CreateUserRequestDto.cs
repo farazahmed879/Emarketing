@@ -4,6 +4,7 @@ namespace Emarketing.BusinessModels.UserRequest.Dto
 {
     public class CreateUserRequestDto : Entity<long>
     {
+        public int PackageId { get; set; }
 
         public string FirstName { get; set; }
         public string LastName { get; set; }

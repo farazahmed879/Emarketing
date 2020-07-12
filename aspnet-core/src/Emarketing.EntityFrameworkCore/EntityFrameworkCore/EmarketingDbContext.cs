@@ -10,6 +10,8 @@ namespace Emarketing.EntityFrameworkCore
     public class EmarketingDbContext : AbpZeroDbContext<Tenant, Role, User, EmarketingDbContext>
     {
         /* Define a DbSet for each entity of the application */
+
+        public DbSet<Package> Packages { get; set; }
         public DbSet<WithdrawRequest> WithdrawRequests { get; set; }
         public DbSet<UserWithdrawDetail> UserWithdrawDetails { get; set; }
 

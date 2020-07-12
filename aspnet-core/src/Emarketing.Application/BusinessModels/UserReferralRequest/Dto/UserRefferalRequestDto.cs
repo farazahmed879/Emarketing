@@ -4,8 +4,8 @@ namespace Emarketing.BusinessModels.UserReferralRequest.Dto
 {
     public class UserReferralRequestDto : FullAuditedEntity<long>
     {
-        public int UserId { get; set; } 
-
+        public int UserId { get; set; }
+        public int PackageId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }

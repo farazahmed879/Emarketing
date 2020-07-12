@@ -9,7 +9,8 @@ namespace Emarketing.BusinessObjects
         public UserReferralRequest()
         {
         }
-
+        [ForeignKey("PackageId")] public Package Package { get; set; }
+        public long PackageId { get; set; }
         [ForeignKey("UserId")] public User User { get; set; }
         public long UserId { get; set; }
 

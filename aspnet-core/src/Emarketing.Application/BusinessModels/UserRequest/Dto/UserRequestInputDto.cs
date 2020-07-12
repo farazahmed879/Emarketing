@@ -4,7 +4,7 @@ namespace Emarketing.BusinessModels.UserRequest.Dto
 {
     public class UserRequestInputDto : PagedResultRequestDto
     {
-
+        public int PackageId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }

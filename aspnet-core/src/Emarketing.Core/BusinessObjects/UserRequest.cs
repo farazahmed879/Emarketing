@@ -10,7 +10,9 @@ namespace Emarketing.BusinessObjects
         public UserRequest()
         {
         }
-        
+        [ForeignKey("PackageId")] public Package Package { get; set; }
+        public long PackageId { get; set; }
+
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }

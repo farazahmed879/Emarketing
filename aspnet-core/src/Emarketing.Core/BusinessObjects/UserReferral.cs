@@ -13,9 +13,12 @@ namespace Emarketing.BusinessObjects
         [ForeignKey("UserId")] public User User { get; set; }
         public long UserId { get; set; }
 
+        [ForeignKey("PackageId")] public Package Package { get; set; }
+        public long PackageId { get; set; }
+
         [ForeignKey("ReferralUserId")] public User ReferralUser { get; set; }
         public long ReferralUserId { get; set; }
-        
+
         public ReferralAccountStatus ReferralAccountStatusId { get; set; }
         public ReferralBonusStatus ReferralBonusStatusId { get; set; }
     }

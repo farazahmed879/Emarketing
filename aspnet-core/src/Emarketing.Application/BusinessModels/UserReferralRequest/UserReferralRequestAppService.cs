@@ -27,7 +27,7 @@ namespace Emarketing.BusinessModels.UserReferralRequest
         Task<List<UserReferralRequestDto>> GetAll(long? userId);
 
         Task<PagedResultDto<UserReferralRequestDto>> GetPaginatedAllAsync(
-            PagedCreateUserReferralRequestResultRequestDto input);
+            UserReferralRequestInputDto input);
     }
 
 
@@ -205,7 +205,7 @@ namespace Emarketing.BusinessModels.UserReferralRequest
         }
 
         public async Task<PagedResultDto<UserReferralRequestDto>> GetPaginatedAllAsync(
-            PagedCreateUserReferralRequestResultRequestDto input)
+            UserReferralRequestInputDto input)
         {
             var isAdminUser = await AuthenticateAdminUser();
             if (isAdminUser)
