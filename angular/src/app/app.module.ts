@@ -14,8 +14,8 @@ import { ServiceProxyModule } from '@shared/service-proxies/service-proxy.module
 import { SharedModule } from '@shared/shared.module';
 import { HomeComponent } from '@app/home/home.component';
 import { AboutComponent } from '@app/about/about.component';
-import {DropdownModule} from 'primeng/dropdown';
-import {MultiSelectModule} from 'primeng/multiselect';
+import { DropdownModule } from 'primeng/dropdown';
+import { MultiSelectModule } from 'primeng/multiselect';
 // tenants
 import { TenantsComponent } from '@app/tenants/tenants.component';
 import { CreateTenantDialogComponent } from './tenants/create-tenant/create-tenant-dialog.component';
@@ -40,9 +40,12 @@ import { SidebarComponent } from './layout/sidebar.component';
 import { SidebarLogoComponent } from './layout/sidebar-logo.component';
 import { SidebarUserPanelComponent } from './layout/sidebar-user-panel.component';
 import { SidebarMenuComponent } from './layout/sidebar-menu.component';
-import {WithdrawRequestComponent} from './withdraw-request/withdraw-request.component';
-import {WithdrawHistoryComponent} from './withdraw-history/withdraw-history.component'
-import { WithdrawRequestServiceProxy } from '@shared/service-proxies/service-proxies';
+import { WithdrawRequestComponent } from './withdraw-request/withdraw-request.component';
+import { WithdrawHistoryComponent } from './withdraw-history/withdraw-history.component'
+import { WithdrawRequestServiceProxy, PackageServiceProxy } from '@shared/service-proxies/service-proxies';
+// Package
+import { PackagesComponent } from './packages/packages.component';
+import { CreatePackageDialogComponent } from './packages/create-package/create-package-dialog.component'
 
 @NgModule({
   declarations: [
@@ -74,7 +77,10 @@ import { WithdrawRequestServiceProxy } from '@shared/service-proxies/service-pro
     SidebarUserPanelComponent,
     SidebarMenuComponent,
     WithdrawRequestComponent,
-    WithdrawHistoryComponent
+    WithdrawHistoryComponent,
+    //Packages
+    PackagesComponent,
+    CreatePackageDialogComponent
   ],
   imports: [
     CommonModule,
@@ -94,7 +100,8 @@ import { WithdrawRequestServiceProxy } from '@shared/service-proxies/service-pro
     MultiSelectModule
   ],
   providers: [
-    WithdrawRequestServiceProxy 
+    WithdrawRequestServiceProxy,
+    PackageServiceProxy
   ],
   entryComponents: [
     // tenants
@@ -109,7 +116,10 @@ import { WithdrawRequestServiceProxy } from '@shared/service-proxies/service-pro
     ResetPasswordDialogComponent,
     //Withdraw request
     WithdrawRequestComponent,
-    WithdrawHistoryComponent
+    WithdrawHistoryComponent,
+    //Package 
+    PackagesComponent,
+    CreatePackageDialogComponent
   ],
 })
-export class AppModule {}
+export class AppModule { }

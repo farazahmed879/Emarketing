@@ -1,7 +1,7 @@
 import { Component, Injector, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { AppComponentBase } from '@shared/app-component-base';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
-import { CreateWithdrawRequestDto, WithdrawRequestServiceProxy } from '@shared/service-proxies/service-proxies';
+import { WithdrawRequestDto, WithdrawRequestServiceProxy } from '@shared/service-proxies/service-proxies';
 import { SelectItem } from 'primeng/api';
 //import {DropdownModule} from 'primeng/dropdown';
 
@@ -16,7 +16,7 @@ interface City {
 })
 export class WithdrawRequestComponent extends AppComponentBase implements OnInit {
   //cities1: SelectItem[];
-  createWithdrawRequestDto: CreateWithdrawRequestDto;
+  createWithdrawRequestDto: WithdrawRequestDto;
   //selectedWithdrawType: City;
   amount: number;
   status: boolean = false;
@@ -40,10 +40,10 @@ export class WithdrawRequestComponent extends AppComponentBase implements OnInit
 
   create() {
     debugger;
-    var createWithdrawRequestDto = new CreateWithdrawRequestDto;
+    var createWithdrawRequestDto = new WithdrawRequestDto;
     createWithdrawRequestDto.amount = this.amount;
     createWithdrawRequestDto.withdrawTypeId = this.selectedWithdrawTypeId;
-    createWithdrawRequestDto.status = this.status;
+    //createWithdrawRequestDto.status = this.status;
     createWithdrawRequestDto.userId = this.appSession.userId;
     this._withdrawRequestService.createOrEdit(createWithdrawRequestDto).subscribe((result) => {
       if (result) {

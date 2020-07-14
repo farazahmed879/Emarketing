@@ -65,6 +65,7 @@ export class SidebarMenuComponent extends AppComponentBase implements OnInit {
       ),
       new MenuItem(this.l('Withdraw Request'), '/app/withdraw-request', 'fas fa-home'),
       new MenuItem(this.l('Withdraw History'), '/app/withdraw-history', 'fas fa-home'),
+      new MenuItem(this.l('Packages'), '/app/package', 'fas fa-home'),
       new MenuItem(this.l('About'), '/app/about', 'fas fa-info-circle'),
       new MenuItem(this.l('MultiLevelMenu'), '', 'fas fa-circle', '', [
         new MenuItem('ASP.NET Boilerplate', '', 'fas fa-dot-circle', '', [

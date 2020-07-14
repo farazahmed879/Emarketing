@@ -10,6 +10,7 @@ import { RolesComponent } from 'app/roles/roles.component';
 import { ChangePasswordComponent } from './users/change-password/change-password.component';
 import { WithdrawRequestComponent } from './withdraw-request/withdraw-request.component';
 import { WithdrawHistoryComponent } from './withdraw-history/withdraw-history.component';
+import { PackagesComponent } from './packages/packages.component';
 
 @NgModule({
     imports: [
@@ -20,10 +21,12 @@ import { WithdrawHistoryComponent } from './withdraw-history/withdraw-history.co
                 children: [
                     { path: 'withdraw-request', component: WithdrawRequestComponent,  canActivate: [AppRouteGuard] },
                     { path: 'withdraw-history', component: WithdrawHistoryComponent,  canActivate: [AppRouteGuard] },
+                    { path: 'package', component: PackagesComponent,  canActivate: [AppRouteGuard] },
                     { path: 'users', component: UsersComponent, data: { permission: 'Pages.Users' }, canActivate: [AppRouteGuard] },
                     { path: 'roles', component: RolesComponent, data: { permission: 'Pages.Roles' }, canActivate: [AppRouteGuard] },
                     { path: 'tenants', component: TenantsComponent, data: { permission: 'Pages.Tenants' }, canActivate: [AppRouteGuard] },
-                    { path: 'home', component: AboutComponent },
+                    { path: 'home', component: HomeComponent },
+                    { path: 'about', component: AboutComponent },
                     { path: 'update-password', component: ChangePasswordComponent }
                 ]
             }
