@@ -179,8 +179,12 @@ namespace Emarketing.BusinessModels.Package
 
             var model = await _packageRepository.GetAll().Where(i => i.Id == packageId)
                 .FirstOrDefaultAsync();
-            model.IsDeleted = true;
-            var result = await _packageRepository.UpdateAsync(model);
+            if (model != null)
+            {
+                model.IsDeleted = true;
+                var result = await _packageRepository.UpdateAsync(model);
+            }
+
 
             return new ResponseMessageDto()
             {

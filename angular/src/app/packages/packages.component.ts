@@ -62,8 +62,19 @@ export class PackagesComponent extends PagedListingComponentBase<PackageDto> {
         this.showPaging(result, pageNumber);
       });
   }
-  delete(){
-
+  delete(event: PackageDto){
+    abp.message.confirm(
+      this.l('UserDeleteWarningMessage', event.name),
+      undefined,
+      (result: boolean) => {
+        if (result) {
+          this._packageService.delete(event.id).subscribe(() => {
+            abp.notify.success(this.l('SuccessfullyDeleted'));
+            this.refresh();
+          });
+        }
+      }
+    );
   }
 
 
@@ -87,7 +98,7 @@ export class PackagesComponent extends PagedListingComponentBase<PackageDto> {
       );
     } else {
       createOrEditPackageDialog = this._modalService.show(
-        EditUserDialogComponent,
+        CreatePackageDialogComponent,
         {
           class: 'modal-lg',
           initialState: {
@@ -99,6 +110,8 @@ export class PackagesComponent extends PagedListingComponentBase<PackageDto> {
 
     createOrEditPackageDialog.content.onSave.subscribe(() => {
       this.refresh();
+      var pagedHistory = new PagedWithdrawHistoryDto();
+      this.list(pagedHistory,1,undefined);
     });
   }
 

@@ -3,7 +3,9 @@ import {
   Injector,
   OnInit,
   EventEmitter,
-  Output
+  Output,
+  Optional,
+  Inject
 } from '@angular/core';
 import { finalize } from 'rxjs/operators';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
@@ -21,6 +23,7 @@ export class EditPackageDialogComponent extends AppComponentBase
   implements OnInit {
   saving = false;
   package = new PackageDto();
+  id: number;
 
   @Output() onSave = new EventEmitter<any>();
 
@@ -28,13 +31,16 @@ export class EditPackageDialogComponent extends AppComponentBase
     injector: Injector,
     public _packageService: PackageServiceProxy,
     public bsModalRef: BsModalRef,
-    private _modalService: BsModalService
+    private _modalService: BsModalService,
   ) {
     super(injector);
   }
 
   ngOnInit(): void {
-
+    this._packageService.getById(this.id).subscribe((result) => {
+      this.package = result;
+    }
+    )
   }
 
 
