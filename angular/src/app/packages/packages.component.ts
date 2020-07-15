@@ -6,6 +6,7 @@ import { finalize } from 'rxjs/operators';
 import { PagedRequestDto, PagedListingComponentBase } from '@shared/paged-listing-component-base';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { CreatePackageDialogComponent } from './create-package/create-package-dialog.component';
+import { EditUserDialogComponent } from '@app/users/edit-user/edit-user-dialog.component';
 
 
 class PagedWithdrawHistoryDto extends PagedRequestDto {
@@ -70,8 +71,8 @@ export class PackagesComponent extends PagedListingComponentBase<PackageDto> {
     this.showCreateOrEditPackageDialog();
   }
 
-  editUser(user: PackageDto): void {
-    this.showCreateOrEditPackageDialog(user.id);
+  editPackage(event: PackageDto): void {
+    this.showCreateOrEditPackageDialog(event.id);
   }
 
 
@@ -85,15 +86,15 @@ export class PackagesComponent extends PagedListingComponentBase<PackageDto> {
         }
       );
     } else {
-      // createOrEditPackageDialog = this._modalService.show(
-      //   EditUserDialogComponent,
-      //   {
-      //     class: 'modal-lg',
-      //     initialState: {
-      //       id: id,
-      //     },
-      //   }
-      // );
+      createOrEditPackageDialog = this._modalService.show(
+        EditUserDialogComponent,
+        {
+          class: 'modal-lg',
+          initialState: {
+            id: id,
+          },
+        }
+      );
     }
 
     createOrEditPackageDialog.content.onSave.subscribe(() => {

@@ -1,7 +1,7 @@
 import { Component, Injector, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { AppComponentBase } from '@shared/app-component-base';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
-import { WithdrawRequestDto, WithdrawRequestServiceProxy } from '@shared/service-proxies/service-proxies';
+import { WithdrawRequestDto, WithdrawRequestServiceProxy, CreateWithdrawRequestDto } from '@shared/service-proxies/service-proxies';
 import { SelectItem } from 'primeng/api';
 //import {DropdownModule} from 'primeng/dropdown';
 
@@ -40,7 +40,7 @@ export class WithdrawRequestComponent extends AppComponentBase implements OnInit
 
   create() {
     debugger;
-    var createWithdrawRequestDto = new WithdrawRequestDto;
+    var createWithdrawRequestDto = new CreateWithdrawRequestDto;
     createWithdrawRequestDto.amount = this.amount;
     createWithdrawRequestDto.withdrawTypeId = this.selectedWithdrawTypeId;
     //createWithdrawRequestDto.status = this.status;

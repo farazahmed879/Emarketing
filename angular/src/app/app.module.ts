@@ -45,7 +45,8 @@ import { WithdrawHistoryComponent } from './withdraw-history/withdraw-history.co
 import { WithdrawRequestServiceProxy, PackageServiceProxy } from '@shared/service-proxies/service-proxies';
 // Package
 import { PackagesComponent } from './packages/packages.component';
-import { CreatePackageDialogComponent } from './packages/create-package/create-package-dialog.component'
+import { CreatePackageDialogComponent } from './packages/create-package/create-package-dialog.component';
+import { EditPackageDialogComponent } from './packages/edit-package/edit-package-dialog.component'
 
 @NgModule({
   declarations: [
@@ -80,7 +81,8 @@ import { CreatePackageDialogComponent } from './packages/create-package/create-p
     WithdrawHistoryComponent,
     //Packages
     PackagesComponent,
-    CreatePackageDialogComponent
+    CreatePackageDialogComponent,
+    EditPackageDialogComponent
   ],
   imports: [
     CommonModule,
@@ -119,7 +121,8 @@ import { CreatePackageDialogComponent } from './packages/create-package/create-p
     WithdrawHistoryComponent,
     //Package 
     PackagesComponent,
-    CreatePackageDialogComponent
+    CreatePackageDialogComponent,
+    EditPackageDialogComponent
   ],
 })
 export class AppModule { }
