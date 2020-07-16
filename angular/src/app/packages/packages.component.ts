@@ -7,6 +7,7 @@ import { PagedRequestDto, PagedListingComponentBase } from '@shared/paged-listin
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { CreatePackageDialogComponent } from './create-package/create-package-dialog.component';
 import { EditUserDialogComponent } from '@app/users/edit-user/edit-user-dialog.component';
+import { EditPackageDialogComponent } from './edit-package/edit-package-dialog.component';
 
 
 class PagedWithdrawHistoryDto extends PagedRequestDto {
@@ -39,7 +40,6 @@ export class PackagesComponent extends PagedListingComponentBase<PackageDto> {
   ): void {
     request.keyword = this.keyword;
     request.isActive = false;
-
     this._packageService
       .getPaginatedAll(
         undefined,
@@ -98,7 +98,7 @@ export class PackagesComponent extends PagedListingComponentBase<PackageDto> {
       );
     } else {
       createOrEditPackageDialog = this._modalService.show(
-        CreatePackageDialogComponent,
+        EditPackageDialogComponent,
         {
           class: 'modal-lg',
           initialState: {

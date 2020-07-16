@@ -37,6 +37,10 @@ export class EditPackageDialogComponent extends AppComponentBase
   }
 
   ngOnInit(): void {
+    this.show();
+  }
+
+  show() {
     this._packageService.getById(this.id).subscribe((result) => {
       this.package = result;
     }
