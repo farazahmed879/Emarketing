@@ -11,6 +11,7 @@ import { ChangePasswordComponent } from './users/change-password/change-password
 import { WithdrawRequestComponent } from './withdraw-request/withdraw-request.component';
 import { WithdrawHistoryComponent } from './withdraw-history/withdraw-history.component';
 import { PackagesComponent } from './packages/packages.component';
+import { UserPackageComponent } from './user-Packages/user-Packages.component';
 
 @NgModule({
     imports: [
@@ -22,6 +23,7 @@ import { PackagesComponent } from './packages/packages.component';
                     { path: 'withdraw-request', component: WithdrawRequestComponent,  canActivate: [AppRouteGuard] },
                     { path: 'withdraw-history', component: WithdrawHistoryComponent,  canActivate: [AppRouteGuard] },
                     { path: 'package', component: PackagesComponent,  canActivate: [AppRouteGuard] },
+                    { path: 'userPackage', component: UserPackageComponent,  canActivate: [AppRouteGuard] },
                     { path: 'users', component: UsersComponent, data: { permission: 'Pages.Users' }, canActivate: [AppRouteGuard] },
                     { path: 'roles', component: RolesComponent, data: { permission: 'Pages.Roles' }, canActivate: [AppRouteGuard] },
                     { path: 'tenants', component: TenantsComponent, data: { permission: 'Pages.Tenants' }, canActivate: [AppRouteGuard] },

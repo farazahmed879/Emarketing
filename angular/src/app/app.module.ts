@@ -46,7 +46,9 @@ import { WithdrawRequestServiceProxy, PackageServiceProxy } from '@shared/servic
 // Package
 import { PackagesComponent } from './packages/packages.component';
 import { CreatePackageDialogComponent } from './packages/create-package/create-package-dialog.component';
-import { EditPackageDialogComponent } from './packages/edit-package/edit-package-dialog.component'
+import { EditPackageDialogComponent } from './packages/edit-package/edit-package-dialog.component';
+//User Package
+import {UserPackageComponent} from './user-Packages/user-Packages.component';
 
 @NgModule({
   declarations: [
@@ -82,7 +84,9 @@ import { EditPackageDialogComponent } from './packages/edit-package/edit-package
     //Packages
     PackagesComponent,
     CreatePackageDialogComponent,
-    EditPackageDialogComponent
+    EditPackageDialogComponent,
+    //User Package
+    UserPackageComponent
   ],
   imports: [
     CommonModule,
@@ -122,7 +126,9 @@ import { EditPackageDialogComponent } from './packages/edit-package/edit-package
     //Package 
     PackagesComponent,
     CreatePackageDialogComponent,
-    EditPackageDialogComponent
+    EditPackageDialogComponent,
+    //User Package
+    UserPackageComponent
   ],
 })
 export class AppModule { }
