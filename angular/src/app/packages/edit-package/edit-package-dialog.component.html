@@ -1,129 +1,58 @@
-<form
-  class="form-horizontal"
-  autocomplete="off"
-  #editPackageModal="ngForm"
-  (ngSubmit)="save()"
->
-  <abp-modal-header
-    [title]="'EditNewPackage' | localize"
-    (onCloseClick)="bsModalRef.hide()"
-  ></abp-modal-header>
+<form class="form-horizontal" autocomplete="off" #editPackageModal="ngForm" (ngSubmit)="save()">
+  <abp-modal-header [title]="'Edit Package' | localize" (onCloseClick)="bsModalRef.hide()"></abp-modal-header>
   <div class="modal-body">
     <div class="form-group row required">
       <label class="col-md-3 col-form-label" for="name">
         {{ "Code" | localize }}
       </label>
       <div class="col-md-9">
-        <input
-          type="text"
-          class="form-control"
-          name="package.code"
-          id="package.code"
-          required
-          maxlength="32"
-          [(ngModel)]="package.code"
-          #nameModel="ngModel"
-          #nameEl
-        />
-        <abp-validation-summary
-          [control]="nameModel"
-          [controlEl]="nameEl"
-        ></abp-validation-summary>
+        <input type="text" class="form-control" name="package.code" id="package.code" required maxlength="32"
+          [(ngModel)]="package.code" #nameModel="ngModel" #nameEl />
+        <abp-validation-summary [control]="nameModel" [controlEl]="nameEl"></abp-validation-summary>
       </div>
     </div>
-        <div class="form-group row required">
-          <label class="col-md-3 col-form-label" for="name">
-            {{ "Name" | localize }}
-          </label>
-          <div class="col-md-9">
-            <input
-              type="text"
-              class="form-control"
-              name="npackage.nameame"
-              id="package.name"
-              required
-              maxlength="32"
-              [(ngModel)]="package.name"
-              #nameModel="ngModel"
-              #nameEl
-            />
-            <abp-validation-summary
-              [control]="nameModel"
-              [controlEl]="nameEl"
-            ></abp-validation-summary>
-          </div>
-        </div>
+    <div class="form-group row required">
+      <label class="col-md-3 col-form-label" for="name">
+        {{ "Name" | localize }}
+      </label>
+      <div class="col-md-9">
+        <input type="text" class="form-control" name="npackage.nameame" id="package.name" required maxlength="32"
+          [(ngModel)]="package.name" #nameModel="ngModel" #nameEl />
+        <abp-validation-summary [control]="nameModel" [controlEl]="nameEl"></abp-validation-summary>
+      </div>
+    </div>
 
-        <div class="form-group row required">
-          <label class="col-md-3 col-form-label" for="name">
-            {{ "Description" | localize }}
-          </label>
-          <div class="col-md-9">
-            <input
-              type="text"
-              class="form-control"
-              name="package.description"
-              id="package.description"
-              required
-              maxlength="32"
-              [(ngModel)]="package.description"
-              #nameModel="ngModel"
-              #nameEl
-            />
-            <abp-validation-summary
-              [control]="nameModel"
-              [controlEl]="nameEl"
-            ></abp-validation-summary>
-          </div>
-        </div>
-        <div class="form-group row required">
-          <label class="col-md-3 col-form-label" for="name">
-            {{ "Profit" | localize }}
-          </label>
-          <div class="col-md-9">
-            <input
-              type="number"
-              class="form-control"
-              name="package.price"
-              id="package.price"
-              required
-              maxlength="32"
-              [(ngModel)]="package.price"
-              #nameModel="ngModel"
-              #nameEl
-            />
-            <abp-validation-summary
-              [control]="nameModel"
-              [controlEl]="nameEl"
-            ></abp-validation-summary>
-          </div>
-        </div>
-        <div class="form-group row required">
-          <label class="col-md-3 col-form-label" for="name">
-            {{ "Profit Value" | localize }}
-          </label>
-          <div class="col-md-9">
-            <input
-              type="number"
-              class="form-control"
-              name="package.profitValue"
-              id="package.profitValue"
-              required
-              maxlength="32"
-              [(ngModel)]="package.profitValue"
-              #nameModel="ngModel"
-              #nameEl
-            />
-            <abp-validation-summary
-              [control]="nameModel"
-              [controlEl]="nameEl"
-            ></abp-validation-summary>
-          </div>
-        </div>
+    <div class="form-group row required">
+      <label class="col-md-3 col-form-label" for="name">
+        {{ "Description" | localize }}
+      </label>
+      <div class="col-md-9">
+        <textarea type="text" class="form-control" name="package.description" id="package.description" required
+          [(ngModel)]="package.description" #nameModel="ngModel" #nameEl></textarea>
+        <abp-validation-summary [control]="nameModel" [controlEl]="nameEl"></abp-validation-summary>
+      </div>
+    </div>
+    <div class="form-group row required">
+      <label class="col-md-3 col-form-label" for="name">
+        {{ "Profit" | localize }}
+      </label>
+      <div class="col-md-9">
+        <input type="number" class="form-control" name="package.price" id="package.price" required maxlength="32"
+          [(ngModel)]="package.price" #nameModel="ngModel" #nameEl />
+        <abp-validation-summary [control]="nameModel" [controlEl]="nameEl"></abp-validation-summary>
+      </div>
+    </div>
+    <div class="form-group row required">
+      <label class="col-md-3 col-form-label" for="name">
+        {{ "Profit Value" | localize }}
+      </label>
+      <div class="col-md-9">
+        <input type="number" class="form-control" name="package.profitValue" id="package.profitValue" required
+          maxlength="32" [(ngModel)]="package.profitValue" #nameModel="ngModel" #nameEl />
+        <abp-validation-summary [control]="nameModel" [controlEl]="nameEl"></abp-validation-summary>
+      </div>
+    </div>
   </div>
-  <abp-modal-footer
-    [cancelDisabled]="saving"
-    [saveDisabled]="!editPackageModal.form.valid || saving"
-    (onCancelClick)="bsModalRef.hide()"
-  ></abp-modal-footer>
+  <abp-modal-footer [cancelDisabled]="saving" [saveDisabled]="!editPackageModal.form.valid || saving"
+    (onCancelClick)="bsModalRef.hide()"></abp-modal-footer>
 </form>
