@@ -81,9 +81,10 @@ namespace Emarketing.BusinessModels.UserRequest
             var result = await _userRequestRepository.InsertAsync(new BusinessObjects.UserRequest()
             {
                 FirstName = userRequestDto.FirstName,
-                LastName = userRequestDto.FirstName,
-                UserName = userRequestDto.FirstName,
-                Email = userRequestDto.FirstName,
+                LastName = userRequestDto.LastName,
+                UserName = userRequestDto.UserName,
+                Email = userRequestDto.Email,
+                PhoneNumber = userRequestDto.PhoneNumber,
                 Password = userRequestDto.Password
             });
 

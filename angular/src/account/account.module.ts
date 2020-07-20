@@ -17,6 +17,10 @@ import { AccountFooterComponent } from './layout/account-footer.component';
 // tenants
 import { TenantChangeComponent } from './tenant/tenant-change.component';
 import { TenantChangeDialogComponent } from './tenant/tenant-change-dialog.component';
+//User Package
+import { UserPackageComponent } from './user-Packages/user-Packages.component';
+import { CreatePackageRequestComponent } from './user-Packages/create-package-request/create-package-request.component';
+import { UserRequestServiceProxy, PackageServiceProxy } from '@shared/service-proxies/service-proxies';
 
 @NgModule({
     imports: [
@@ -29,6 +33,10 @@ import { TenantChangeDialogComponent } from './tenant/tenant-change-dialog.compo
         AccountRoutingModule,
         ModalModule.forChild()
     ],
+    providers: [
+        UserRequestServiceProxy,
+        PackageServiceProxy
+    ],
     declarations: [
         AccountComponent,
         LoginComponent,
@@ -39,10 +47,16 @@ import { TenantChangeDialogComponent } from './tenant/tenant-change-dialog.compo
         // tenant
         TenantChangeComponent,
         TenantChangeDialogComponent,
+        //User Package
+        UserPackageComponent,
+        CreatePackageRequestComponent
     ],
     entryComponents: [
         // tenant
-        TenantChangeDialogComponent
+        TenantChangeDialogComponent,
+        //User Package
+        UserPackageComponent,
+        CreatePackageRequestComponent
     ]
 })
 export class AccountModule {

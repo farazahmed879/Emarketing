@@ -42,13 +42,12 @@ import { SidebarUserPanelComponent } from './layout/sidebar-user-panel.component
 import { SidebarMenuComponent } from './layout/sidebar-menu.component';
 import { WithdrawRequestComponent } from './withdraw-request/withdraw-request.component';
 import { WithdrawHistoryComponent } from './withdraw-history/withdraw-history.component'
-import { WithdrawRequestServiceProxy, PackageServiceProxy } from '@shared/service-proxies/service-proxies';
+import { WithdrawRequestServiceProxy, PackageServiceProxy, UserRequestServiceProxy } from '@shared/service-proxies/service-proxies';
 // Package
 import { PackagesComponent } from './packages/packages.component';
 import { CreatePackageDialogComponent } from './packages/create-package/create-package-dialog.component';
 import { EditPackageDialogComponent } from './packages/edit-package/edit-package-dialog.component';
-//User Package
-import {UserPackageComponent} from './user-Packages/user-Packages.component';
+
 
 @NgModule({
   declarations: [
@@ -85,8 +84,7 @@ import {UserPackageComponent} from './user-Packages/user-Packages.component';
     PackagesComponent,
     CreatePackageDialogComponent,
     EditPackageDialogComponent,
-    //User Package
-    UserPackageComponent
+
   ],
   imports: [
     CommonModule,
@@ -127,8 +125,7 @@ import {UserPackageComponent} from './user-Packages/user-Packages.component';
     PackagesComponent,
     CreatePackageDialogComponent,
     EditPackageDialogComponent,
-    //User Package
-    UserPackageComponent
+
   ],
 })
 export class AppModule { }

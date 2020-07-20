@@ -1,12 +1,10 @@
 import { Component, Injector, ChangeDetectionStrategy } from '@angular/core';
-import { AppComponentBase } from '@shared/app-component-base';`1  `
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { PackageServiceProxy, PackageDtoPagedResultDto, PackageDto } from '@shared/service-proxies/service-proxies';
 import { finalize } from 'rxjs/operators';
 import { PagedRequestDto, PagedListingComponentBase } from '@shared/paged-listing-component-base';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { CreatePackageDialogComponent } from './create-package/create-package-dialog.component';
-import { EditUserDialogComponent } from '@app/users/edit-user/edit-user-dialog.component';
 import { EditPackageDialogComponent } from './edit-package/edit-package-dialog.component';
 
 
