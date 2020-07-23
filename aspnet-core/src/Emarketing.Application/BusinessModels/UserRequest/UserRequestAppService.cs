@@ -85,7 +85,9 @@ namespace Emarketing.BusinessModels.UserRequest
                 UserName = userRequestDto.UserName,
                 Email = userRequestDto.Email,
                 PhoneNumber = userRequestDto.PhoneNumber,
-                Password = userRequestDto.Password
+                Password = userRequestDto.Password,
+                PackageId = userRequestDto.PackageId
+
             });
 
             await UnitOfWorkManager.Current.SaveChangesAsync();

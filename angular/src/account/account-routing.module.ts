@@ -16,7 +16,7 @@ import { CreatePackageRequestComponent } from './user-Packages/create-package-re
                     { path: 'login', component: LoginComponent },
                     { path: 'register', component: RegisterComponent },
                     { path: 'userPackage', component: UserPackageComponent,  },
-                    { path: 'packageRequest', component: CreatePackageRequestComponent, },
+                    { path: 'packageRequest/:packageId', component: CreatePackageRequestComponent, },
                 ]
             }
         ])

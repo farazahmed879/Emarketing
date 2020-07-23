@@ -24,7 +24,7 @@ namespace Emarketing.BusinessModels.Package
 
         Task<ResponseMessageDto> DeleteAsync(long packageId);
 
-        Task<List<PackageDto>> GetAll();
+        List<PackageDto> GetAll();
 
         Task<PagedResultDto<PackageDto>> GetPaginatedAllAsync(PackageInputDto input);
     }
@@ -195,7 +195,7 @@ namespace Emarketing.BusinessModels.Package
             };
         }
 
-        public async Task<List<PackageDto>> GetAll()
+        public List<PackageDto> GetAll()
         {
             //var userId = _abpSession.UserId;
             //var isAdminUser = await AuthenticateAdminUser();
@@ -204,7 +204,7 @@ namespace Emarketing.BusinessModels.Package
             //    throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
             //}
 
-            var result = await _packageRepository.GetAll().Where(i => i.IsDeleted == false)
+            var result =  _packageRepository.GetAll().Where(i => i.IsDeleted == false)
                 .Select(i => new PackageDto()
                 {
                     Id = i.Id,
@@ -218,9 +218,36 @@ namespace Emarketing.BusinessModels.Package
                     CreationTime = i.CreationTime,
                     LastModificationTime = i.LastModificationTime,
                     LastModifierUserId = i.LastModifierUserId
-                }).ToListAsync();
+                }).ToList();
             return result;
         }
+
+        //public async Task<List<PackageDto>> GetAll()
+        //{
+        //    //var userId = _abpSession.UserId;
+        //    //var isAdminUser = await AuthenticateAdminUser();
+        //    //if (!isAdminUser)
+        //    //{
+        //    //    throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
+        //    //}
+
+        //    var result = await _packageRepository.GetAll().Where(i => i.IsDeleted == false)
+        //        .Select(i => new PackageDto()
+        //        {
+        //            Id = i.Id,
+        //            Code = i.Code,
+        //            Name = i.Name,
+        //            Description = i.Description,
+        //            Price = i.Price,
+        //            ProfitValue = i.ProfitValue,
+        //            IsActive = i.IsActive,
+        //            CreatorUserId = i.CreatorUserId,
+        //            CreationTime = i.CreationTime,
+        //            LastModificationTime = i.LastModificationTime,
+        //            LastModifierUserId = i.LastModifierUserId
+        //        }).ToListAsync();
+        //    return result;
+        //}
 
         public async Task<PagedResultDto<PackageDto>> GetPaginatedAllAsync(
             PackageInputDto input)
