@@ -309,7 +309,7 @@ namespace Emarketing.BusinessModels.UserWithdrawDetail
 
         public async Task<List<object>> GetWithdrawTypes()
         {
-            var list = EnumHelper.GetListObjects<WithdrawType>("withdrawTypeId");
+            var list = EnumHelper.GetListObjects<WithdrawType>("WithdrawTypeId");
             return list;
         }
 
