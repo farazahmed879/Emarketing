@@ -14,6 +14,7 @@ namespace Emarketing.EntityFrameworkCore
         #region Admin
 
         public DbSet<Package> Packages { get; set; }
+        public DbSet<PackageAd> PackageAds { get; set; }
 
         public DbSet<UserReferralRequest> UserReferralRequests { get; set; }
 
