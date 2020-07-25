@@ -25,6 +25,7 @@ namespace Emarketing.BusinessModels.UserPackageSubscriptionDetail
         Task<UserPackageSubscriptionDetailDto> GetActivePackageSubscriptionByUser();
 
         Task<List<UserPackageSubscriptionDetailDto>> GetAll();
+        Task<List<object>> GetUserPackageSubscriptionStatuses();
     }
 
 
@@ -268,6 +269,12 @@ namespace Emarketing.BusinessModels.UserPackageSubscriptionDetail
                         })
                     .ToListAsync());
             return result;
+        }
+
+        public async Task<List<object>> GetUserPackageSubscriptionStatuses()
+        {
+            var list = EnumHelper.GetListObjects<UserPackageSubscriptionStatus>("UserPackageSubscriptionStatusId");
+            return list;
         }
 
         private async Task<bool> AuthenticateAdminUser()

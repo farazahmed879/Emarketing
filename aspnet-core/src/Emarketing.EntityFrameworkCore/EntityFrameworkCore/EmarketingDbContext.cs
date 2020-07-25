@@ -29,6 +29,7 @@ namespace Emarketing.EntityFrameworkCore
         public DbSet<WithdrawRequest> WithdrawRequests { get; set; }
 
         public DbSet<UserWithdrawDetail> UserWithdrawDetails { get; set; }
+        public DbSet<UserPersonalDetail> UserPersonalDetails { get; set; }
 
         public DbSet<UserReferral> UserReferrals { get; set; }
 

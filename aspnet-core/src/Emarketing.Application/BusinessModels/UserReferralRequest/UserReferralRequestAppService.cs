@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Abp;
@@ -11,6 +12,7 @@ using Abp.UI;
 using Emarketing.Authorization.Roles;
 using Emarketing.Authorization.Users;
 using Emarketing.BusinessModels.UserReferralRequest.Dto;
+using Emarketing.Helper;
 using Emarketing.Sessions;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,6 +30,8 @@ namespace Emarketing.BusinessModels.UserReferralRequest
 
         Task<PagedResultDto<UserReferralRequestDto>> GetPaginatedAllAsync(
             UserReferralRequestInputDto input);
+
+        Task<List<Object>> GetReferralRequestStatuses();
     }
 
 
@@ -237,6 +241,13 @@ namespace Emarketing.BusinessModels.UserReferralRequest
                     .ToListAsync());
         }
 
+        
+        public async Task<List<object>> GetReferralRequestStatuses()
+        {
+            var list = EnumHelper.GetListObjects<ReferralRequestStatus>("ReferralRequestStatusId");
+            return list;
+        }
+
         private async Task<bool> AuthenticateAdminUser()
         {
             if (_abpSession.UserId == null)
@@ -255,5 +266,7 @@ namespace Emarketing.BusinessModels.UserReferralRequest
             return false;
 
         }
+
+
     }
 }
