@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Abp;
@@ -31,6 +32,9 @@ namespace Emarketing.BusinessModels.UserWithdrawDetail
         Task<List<UserWithdrawDetailDto>> GetAll();
 
         Task<PagedResultDto<UserWithdrawDetailDto>> GetPaginatedAllAsync(UserWithdrawDetailInputDto input);
+
+        Task<List<Object>> GetWithdrawTypes();
+
     }
 
 
@@ -301,6 +305,12 @@ namespace Emarketing.BusinessModels.UserWithdrawDetail
                         })
                     .ToListAsync());
             return result;
+        }
+
+        public async Task<List<object>> GetWithdrawTypes()
+        {
+            var list = EnumHelper.GetListObjects<WithdrawType>("withdrawTypeId");
+            return list;
         }
 
         private async Task<bool> AuthenticateAdminUser()
