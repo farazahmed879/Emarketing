@@ -18,9 +18,9 @@ import { AccountFooterComponent } from './layout/account-footer.component';
 import { TenantChangeComponent } from './tenant/tenant-change.component';
 import { TenantChangeDialogComponent } from './tenant/tenant-change-dialog.component';
 //User Package
-import { UserPackageComponent } from './user-Packages/user-Packages.component';
-import { CreatePackageRequestComponent } from './user-Packages/create-package-request/create-package-request.component';
+import { CreatePackageRequestComponent } from './create-package-request/create-package-request.component';
 import { UserRequestServiceProxy, PackageServiceProxy } from '@shared/service-proxies/service-proxies';
+import { DropdownModule } from 'primeng/dropdown';
 
 @NgModule({
     imports: [
@@ -31,6 +31,7 @@ import { UserRequestServiceProxy, PackageServiceProxy } from '@shared/service-pr
         SharedModule,
         ServiceProxyModule,
         AccountRoutingModule,
+        DropdownModule,
         ModalModule.forChild()
     ],
     providers: [
@@ -48,14 +49,12 @@ import { UserRequestServiceProxy, PackageServiceProxy } from '@shared/service-pr
         TenantChangeComponent,
         TenantChangeDialogComponent,
         //User Package
-        UserPackageComponent,
         CreatePackageRequestComponent
     ],
     entryComponents: [
         // tenant
         TenantChangeDialogComponent,
         //User Package
-        UserPackageComponent,
         CreatePackageRequestComponent
     ]
 })

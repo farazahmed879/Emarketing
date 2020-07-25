@@ -40,8 +40,8 @@ export class UserPackageComponent extends AppComponentBase
       if (result) {
         this.packages = result;
       }
-      console.log("packages",this.packages );
-      console.log("packages",this.HEROES );
+      // console.log("packages", this.packages);
+      // console.log("packages", this.HEROES);
     })
   }
 }

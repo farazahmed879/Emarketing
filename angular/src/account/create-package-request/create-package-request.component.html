@@ -1,0 +1,79 @@
+﻿<div class="login-box">
+  <h4 class="text-center mb-3">{{ "Register" | localize }}</h4>
+  <form novalidate autocomplete="off" (ngSubmit)="create()">
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="col-md-6">
+          <div class="form-group">
+            <div class="input-group">
+              <input type="text" class="form-control" name="firstName" [(ngModel)]="firstName" placeholder="First Name"
+                required maxlength="256"  #firtNameModel="ngModel" #firtNameEl/>
+            </div>
+            <abp-validation-summary [control]="firtNameModel" [controlEl]="firtNameEl"></abp-validation-summary>
+          </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <div class="input-group">
+              <input type="text" class="form-control" name="lastName" [(ngModel)]="lastName" placeholder="Last Name"
+                required maxlength="256"  #lastNameModel="ngModel" #lastNameEl />
+            </div>
+            <abp-validation-summary [control]="lastNameModel" [controlEl]="lastNameEl"></abp-validation-summary>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="input-group">
+        <input type="text" class="form-control" name="email" [(ngModel)]="email" placeholder="Email" required
+          maxlength="256" #emailModel="ngModel" #emailEl/>
+      </div>
+      <abp-validation-summary [control]="emailModel" [controlEl]="emailEl"></abp-validation-summary>
+    </div>
+    <div class="form-group">
+      <div class="input-group">
+        <input type="text" class="form-control" name="userName" [(ngModel)]="userName" placeholder="User Name" required
+          maxlength="256" #userNameModel="ngModel" #userNameEl/>
+      </div>
+      <abp-validation-summary [control]="userNameModel" [controlEl]="userNameEl"></abp-validation-summary>
+    </div>
+    <div class="form-group">
+      <div class="input-group">
+        <input type="text" class="form-control" name="phoneNumber" [(ngModel)]="phoneNumber" placeholder="Phone Numer"
+          required maxlength="256"  />
+      </div>
+     
+    </div>
+    <div class="form-group">
+      <div class="input-group">
+        <p-dropdown [options]="HEROES" name="userPackage" [(ngModel)]="packageId" placeholder="Select Package">
+        </p-dropdown>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="input-group">
+        <input type="password" class="form-control" name="password" [(ngModel)]="password" placeholder="Password"
+          required maxlength="32" #passwordModel="ngModel" #passwordEl (change)="confirmPassword()" />
+      </div>
+      <span style="font-size: 12px; color: red;">{{passordMessage}}</span>
+      <abp-validation-summary [control]="passwordModel" [controlEl]="passwordEl"></abp-validation-summary>
+    </div>
+    <div class="form-group">
+      <div class="input-group">
+        <input type="password" class="form-control" name="confirmPassword" [(ngModel)]="passwordConfirm"
+          placeholder="Confirm Password" required maxlength="32" #confirmPasswordModel="ngModel" #passwordEl
+          (change)="confirmPassword()" />
+      </div>
+      <span style="font-size: 12px;" [style.color]="passwordMatch ? 'green': 'red' ">{{passwordValidationMessage}}</span>
+      <abp-validation-summary [control]="confirmPasswordModel" [controlEl]="passwordEl"></abp-validation-summary>
+    </div>
+    <div class="col-md-4">
+      <button  type="submit" class="btn btn-primary btn-block">
+        Create
+      </button>
+    </div>
+  </form>
+
+</div>

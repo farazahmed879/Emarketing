@@ -11,6 +11,8 @@ import { ChangePasswordComponent } from './users/change-password/change-password
 import { WithdrawRequestComponent } from './withdraw-request/withdraw-request.component';
 import { WithdrawHistoryComponent } from './withdraw-history/withdraw-history.component';
 import { PackagesComponent } from './packages/packages.component';
+import { UserProfileComponent } from './user-Profile/user-Profile.component';
+import { UserPackageComponent } from './user-Packages/user-Packages.component';
 
 @NgModule({
     imports: [
@@ -27,7 +29,9 @@ import { PackagesComponent } from './packages/packages.component';
                     { path: 'tenants', component: TenantsComponent, data: { permission: 'Pages.Tenants' }, canActivate: [AppRouteGuard] },
                     { path: 'home', component: HomeComponent },
                     { path: 'about', component: AboutComponent },
-                    { path: 'update-password', component: ChangePasswordComponent }
+                    { path: 'update-password', component: ChangePasswordComponent },
+                    { path: 'user-profile', component: UserProfileComponent },
+                    { path: 'user-packages', component: UserPackageComponent },
                 ]
             }
         ])
