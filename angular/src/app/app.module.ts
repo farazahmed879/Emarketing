@@ -47,7 +47,9 @@ import { WithdrawRequestServiceProxy, PackageServiceProxy, UserRequestServicePro
 import { PackagesComponent } from './packages/packages.component';
 import { CreatePackageDialogComponent } from './packages/create-package/create-package-dialog.component';
 import { EditPackageDialogComponent } from './packages/edit-package/edit-package-dialog.component';
-
+//User Profile
+import { UserProfileComponent } from './user-Profile/user-Profile.component';
+import { UserPackageComponent } from './user-Packages/user-Packages.component';
 
 @NgModule({
   declarations: [
@@ -84,6 +86,10 @@ import { EditPackageDialogComponent } from './packages/edit-package/edit-package
     PackagesComponent,
     CreatePackageDialogComponent,
     EditPackageDialogComponent,
+     //User Package
+     UserPackageComponent,
+    //User Profile
+    UserProfileComponent
 
   ],
   imports: [
@@ -125,6 +131,10 @@ import { EditPackageDialogComponent } from './packages/edit-package/edit-package
     PackagesComponent,
     CreatePackageDialogComponent,
     EditPackageDialogComponent,
+    //User Package
+    UserPackageComponent,
+    //User Profile
+    UserProfileComponent
 
   ],
 })

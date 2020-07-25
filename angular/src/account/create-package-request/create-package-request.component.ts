@@ -3,7 +3,7 @@ import { AppComponentBase } from '@shared/app-component-base';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { WithdrawRequestDto, WithdrawRequestServiceProxy, CreateWithdrawRequestDto, CreateUserRequestDto, UserRequestServiceProxy } from '@shared/service-proxies/service-proxies';
 import { SelectItem } from 'primeng/api';
-import {Router, ActivatedRoute} from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 interface City {
   name: string;
@@ -23,24 +23,46 @@ export class CreatePackageRequestComponent extends AppComponentBase implements O
   userName: string;
   phoneNumber: string;
   password: string;
+  passwordConfirm: string;
   packageId: number;
+  passwordMatch = false;
+  passwordValidationMessage: string;
+  passordMessage: string;
+
+  HEROES = [
+    { value: 1, label: 'Superman' },
+    { value: 2, label: 'Batman' },
+    { value: 5, label: 'BatGirl' },
+    { value: 3, label: 'Robin' },
+    { value: 4, label: 'Flash' }
+  ];
   constructor(injector: Injector,
     private _userRequestService: UserRequestServiceProxy,
     private router: Router,
     private activatedRoute: ActivatedRoute
-    ) {
+  ) {
     super(injector);
 
   }
 
 
   ngOnInit() {
-    debugger;
     this.packageId = parseInt(this.activatedRoute.snapshot.paramMap.get('packageId'));
   }
 
+  checkPassword(str) {
+    // at least one number, one lowercase and one uppercase letter
+    // at least six characters
+    var re = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/;
+    return re.test(str);
+  }
+
   create() {
-    debugger;
+    if (this.firstName == null || this.lastName == null ||
+      this.userName == null || this.email == null
+      || this.password == null || this.packageId == null) {
+      return;
+    }
     var createUserRequestDto = new CreateUserRequestDto;
     createUserRequestDto.firstName = this.firstName;
     createUserRequestDto.lastName = this.lastName;
@@ -63,4 +85,23 @@ export class CreatePackageRequestComponent extends AppComponentBase implements O
   back() {
 
   }
+
+  confirmPassword() {
+    if (this.checkPassword(this.password)) {
+      if (this.passwordConfirm == this.password) {
+        this.passordMessage = "";
+        this.passwordValidationMessage = "Password match";
+        this.passwordMatch = true;
+      }
+      else {
+        this.passordMessage = "";
+        this.passwordValidationMessage = "Password does not match";
+        this.passwordMatch = false;
+      }
+    } else {
+      this.passordMessage = "at least one number, one lowercase and one uppercase letter, at least six characters";
+    }
+  }
 }
+
+// [disbaled]="!firstName || !lastName || !userName || !email || !password || !packageId || !passwordConfirm"
