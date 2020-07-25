@@ -57,12 +57,7 @@ namespace Emarketing.BusinessModels.UserRequest
 
         public async Task<ResponseMessageDto> CreateOrEditAsync(CreateUserRequestDto withdrawRequestDto)
         {
-            var userId = _abpSession.UserId;
-            var isAdminUser = await AuthenticateAdminUser();
-            if (!isAdminUser)
-            {
-                throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
-            }
+          
             ResponseMessageDto result;
             if (withdrawRequestDto.Id == 0)
             {
@@ -70,6 +65,12 @@ namespace Emarketing.BusinessModels.UserRequest
             }
             else
             {
+                var userId = _abpSession.UserId;
+                var isAdminUser = await AuthenticateAdminUser();
+                if (!isAdminUser)
+                {
+                    throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
+                }
                 result = await UpdateUserRequestAsync(withdrawRequestDto);
             }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Dynamic;
 using System.Linq;
 using System.Text;
 
@@ -109,6 +110,26 @@ namespace Emarketing.Helper
                     typeof(TU),
                     typeof(T)));
             }
+        }
+
+        public static List<Object> GetListObjects<T>(string idPropertyName, string namePropertyName = "Name")
+            where T : struct, IConvertible
+        {
+            var allEnums = EnumHelper.GetAllFromEnum<T>();
+            var list = new List<object>();
+
+            foreach (var maritalStatus in allEnums)
+            {
+                var enumItemEnum = maritalStatus as Enum;
+                var myObject = new ExpandoObject() as IDictionary<string, Object>;
+
+                myObject.Add(idPropertyName, Convert.ToInt32(enumItemEnum));
+                myObject.Add(namePropertyName, enumItemEnum.GetEnumFieldDescription());
+
+                list.Add(myObject);
+            }
+
+            return list;
         }
     }
 }

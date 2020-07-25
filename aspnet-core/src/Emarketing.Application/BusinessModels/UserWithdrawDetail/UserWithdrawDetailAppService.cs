@@ -23,6 +23,9 @@ namespace Emarketing.BusinessModels.UserWithdrawDetail
 
         Task<UserWithdrawDetailDto> GetById(long userWithdrawDetailId);
 
+
+        Task<UserWithdrawDetailDto> GetByUserId();
+
         Task<ResponseMessageDto> DeleteAsync(long userWithdrawDetailId);
 
         Task<List<UserWithdrawDetailDto>> GetAll();
@@ -162,6 +165,32 @@ namespace Emarketing.BusinessModels.UserWithdrawDetail
         {
             var result = await _userWithdrawDetailRepository.GetAll()
                 .Where(i => i.Id == userWithdrawDetailId)
+                .Select(i =>
+                    new UserWithdrawDetailDto()
+                    {
+                        Id = i.Id,
+                        AccountIBAN = i.AccountIBAN,
+                        AccountTitle = i.AccountTitle,
+                        IsPrimary = i.IsPrimary,
+                        JazzCashNumber = i.JazzCashNumber,
+                        EasyPaisaNumber = i.EasyPaisaNumber,
+                        WithdrawTypeId = i.WithdrawTypeId,
+                        UserId = i.UserId,
+                        UserName = $"{i.User.FullName}",
+                        CreatorUserId = i.CreatorUserId,
+                        CreationTime = i.CreationTime,
+                        LastModificationTime = i.LastModificationTime,
+                        LastModifierUserId = i.LastModifierUserId
+                    })
+                .FirstOrDefaultAsync();
+            return result;
+        }
+
+        public async Task<UserWithdrawDetailDto> GetByUserId()
+        {
+            var userId = _abpSession.UserId;
+            var result = await _userWithdrawDetailRepository.GetAll()
+                .Where(i => i.UserId == userId)
                 .Select(i =>
                     new UserWithdrawDetailDto()
                     {
