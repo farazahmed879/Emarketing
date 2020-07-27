@@ -20,8 +20,7 @@
                 </label>
                 <div class="col-md-9">
                   <input type="text" class="form-control" name="name" id="name" required maxlength="32"
-                    [(ngModel)]="user.name" #nameModel="ngModel" #nameEl />
-                  <abp-validation-summary [control]="nameModel" [controlEl]="nameEl"></abp-validation-summary>
+                    [(ngModel)]="user.name" />
                 </div>
               </div>
               <div class="form-group row required">
@@ -30,8 +29,7 @@
                 </label>
                 <div class="col-md-9">
                   <input type="text" class="form-control" name="surname" id="surname" required maxlength="32"
-                    [(ngModel)]="user.surname" #surnameModel="ngModel" #surnameEl />
-                  <abp-validation-summary [control]="surnameModel" [controlEl]="surnameEl"></abp-validation-summary>
+                    [(ngModel)]="user.surname" />
                 </div>
               </div>
               <div class="form-group row required">
@@ -40,8 +38,7 @@
                 </label>
                 <div class="col-md-9">
                   <input type="text" class="form-control" name="userName" id="userName" required minlength="2"
-                    maxlength="32" [(ngModel)]="user.userName" #userNameModel="ngModel" #userNameEl />
-                  <abp-validation-summary [control]="userNameModel" [controlEl]="userNameEl"></abp-validation-summary>
+                    maxlength="32" [(ngModel)]="user.userName" />
                 </div>
               </div>
               <div class="form-group row required">
@@ -51,9 +48,7 @@
                 <div class="col-md-9">
                   <input type="email" class="form-control" name="emailAddress" id="emailAddress" required
                     maxlength="256" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{1,})+$"
-                    [(ngModel)]="user.emailAddress" #emailAddressModel="ngModel" #emailAddressEl />
-                  <abp-validation-summary [control]="emailAddressModel" [controlEl]="emailAddressEl">
-                  </abp-validation-summary>
+                    [(ngModel)]="user.emailAddress" />
                 </div>
               </div>
               <div class="form-group row mb-0">
@@ -68,23 +63,167 @@
                   </div>
                 </div>
               </div>
-            </tab>
-            <tab [heading]="'Payment Detail' | localize" class="pt-3 px-2">
-              <div class="form-group row mb-0">
-                <ng-container>
-
-                </ng-container>
+              <div class="card-footer">
+                <div class="col-md-12">
+                  <a href="javascript:;" class="btn bg-primary" (click)="saveUserProfile()">
+                    <i class="fa fa-plus-square"></i>
+                    {{ "Save" | localize }}
+                  </a>
+                </div>
               </div>
             </tab>
+            <tab [heading]="'Payment Details' | localize" class="pt-3 px-2">
+              <div class="form-group row required">
+                <label class="col-md-3 col-form-label" for="surname">
+                  {{ "Withdraw Type" | localize }}
+                </label>
+                <div class="col-md-9">
+                  <p-dropdown [options]="withdrawTypeArrayObj" name="withDrawType" [(ngModel)]="withDrawTypeId"
+                    placeholder="Select Type">
+                    <option value="">Please Select</option>
+                  </p-dropdown>
+                </div>
+              </div>
+              <div class="form-group row required" *ngIf="withDrawTypeId == 1">
+                <label class="col-md-3 col-form-label" for="surname">
+                  {{ "Account Title" | localize }}
+                </label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" name="accountTitle" id="accountTitle" required maxlength="32"
+                    [(ngModel)]="accountTitle" placeholder="Enter Account Title" />
+                </div>
+              </div>
+              <div class="form-group row required" *ngIf="withDrawTypeId == 1">
+                <label class="col-md-3 col-form-label" for="surname">
+                  {{ "Account Number" | localize }}
+                </label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" name="accountNumber" id="accountNumber" required
+                    maxlength="32" [(ngModel)]="accountNumber" placeholder="Enter Account Number" />
+                </div>
+              </div>
+              <div class="form-group row required" *ngIf="withDrawTypeId == 3">
+                <label class="col-md-3 col-form-label" for="surname">
+                  {{ "JazzCash Number" | localize }}
+                </label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" name="jazzCashNumber" id="jazzCashNumber" required
+                    maxlength="32" [(ngModel)]="jazzCashNumber" placeholder="Enter JazzCash  Number" />
+                </div>
+              </div>
+              <div class="form-group row required" *ngIf="withDrawTypeId == 2">
+                <label class="col-md-3 col-form-label" for="surname">
+                  {{ "EasyPaisa Number" | localize }}
+                </label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" name="easyPaisaNumber" id="easyPaisaNumber" required
+                    maxlength="32" [(ngModel)]="easyPaisaNumber" placeholder="Enter EasyPaisa Number" />
+                </div>
+              </div>
+              <div class="card-footer">
+                <div class="col-md-12">
+                  <a href="javascript:;" class="btn bg-primary" (click)="SavePaymentDetails()">
+                    <i class="fa fa-plus-square"></i>
+                    {{ "Save" | localize }}
+                  </a>
+                </div>
+              </div>
+            </tab>
+            <tab [heading]="'Personal Details' | localize" class="pt-3 px-2">
+              <div class="form-group row required">
+                <label class="col-md-3 col-form-label" for="cnic">
+                  {{ "CNIC" | localize }}
+                </label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" name="cnic" id="cnic" required maxlength="32"
+                    [(ngModel)]="cnic" placeholder="Enter CNIC Number" />
+                </div>
+              </div>
+              <div class="form-group row required">
+                <label class="col-md-3 col-form-label" for="dob">
+                  {{ "Date of Birth" | localize }}
+                </label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" name="dob" id="dob" required maxlength="32" [(ngModel)]="dob"
+                    placeholder="Enter Date of Birth" />
+                </div>
+              </div>
+              <div class="form-group row required">
+                <label class="col-md-3 col-form-label" for="gender">
+                  {{ "Gender" | localize }}
+                </label>
+                <div class="col-md-9">
+                  <p-dropdown [options]="gender" name="gender" [(ngModel)]="selectedGender" placeholder="Select Gender">
+                    <option value="">Please Select</option>
+                  </p-dropdown>
+                </div>
+              </div>
+              <div class="form-group row required">
+                <label class="col-md-3 col-form-label" for="phoneNumber">
+                  {{ "Phone Number" | localize }}
+                </label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" name="phoneNumber" id="phoneNumber" required maxlength="32"
+                    [(ngModel)]="phoneNumber" placeholder="Enter Phone Number" />
+                </div>
+              </div>
+              <div class="form-group row required">
+                <label class="col-md-3 col-form-label" for="address">
+                  {{ "Address" | localize }}
+                </label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" name="address" id="address" required maxlength="32"
+                    [(ngModel)]="address" placeholder="Enter Address" />
+                </div>
+              </div>
+              <div class="form-group row required">
+                <label class="col-md-3 col-form-label" for="city">
+                  {{ "City" | localize }}
+                </label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" name="city" id="city" required maxlength="32"
+                    [(ngModel)]="city" placeholder="Enter City" />
+                </div>
+              </div>
+              <div class="form-group row required">
+                <label class="col-md-3 col-form-label" for="postalCode">
+                  {{ "Postal Code" | localize }}
+                </label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" name="postalCode" id="postalCode" required maxlength="32"
+                    [(ngModel)]="postalCode" placeholder="Enter Postal Code" />
+                </div>
+              </div>
+              <div class="form-group row required">
+                <label class="col-md-3 col-form-label" for="state">
+                  {{ "State" | localize }}
+                </label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" name="state" id="state" required maxlength="32"
+                    [(ngModel)]="state" placeholder="Enter State" />
+                </div>
+              </div>
+              <div class="form-group row required">
+                <label class="col-md-3 col-form-label" for="country">
+                  {{ "Country" | localize }}
+                </label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" name="country" id="country" required maxlength="32"
+                    [(ngModel)]="country" placeholder="Enter Country" />
+                </div>
+              </div>
+              <div class="card-footer">
+                <div class="col-md-12">
+                  <a href="javascript:;" class="btn bg-primary" (click)="savePersonalDetails()">
+                    <i class="fa fa-plus-square"></i>
+                    {{ "Save" | localize }}
+                  </a>
+                </div>
+              </div>
+            </tab>
+            <tab [heading]="'Active Package' | localize">
+            </tab>
           </tabset>
-        </div>
-        <div class="card-footer">
-          <div class="col-md-12">
-            <a href="javascript:;" class="btn bg-primary" (click)="save()">
-              <i class="fa fa-plus-square"></i>
-              {{ "Save" | localize }}
-            </a>
-          </div>
         </div>
       </div>
     </div>

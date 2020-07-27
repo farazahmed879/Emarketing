@@ -28,6 +28,7 @@ export class CreatePackageRequestComponent extends AppComponentBase implements O
   passwordMatch = false;
   passwordValidationMessage: string;
   passordMessage: string;
+  emailValidationMessage: string;
 
   HEROES = [
     { value: 1, label: 'Superman' },
@@ -101,6 +102,15 @@ export class CreatePackageRequestComponent extends AppComponentBase implements O
     } else {
       this.passordMessage = "at least one number, one lowercase and one uppercase letter, at least six characters";
     }
+  }
+
+
+  ValidateEmail() {
+    debugger;
+    if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(this.email)) {
+      this.emailValidationMessage = ""
+    }
+    this.emailValidationMessage = "Please prove correct email address";
   }
 }
 

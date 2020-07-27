@@ -46,3 +46,7 @@ export class AppComponent extends AppComponentBase implements OnInit {
     this._layoutStore.setSidebarExpanded(!this.sidebarExpanded);
   }
 }
+export class PrimefacesDropDownObject {
+  label: string;
+  value: number;
+}

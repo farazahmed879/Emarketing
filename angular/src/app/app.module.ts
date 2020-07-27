@@ -42,7 +42,13 @@ import { SidebarUserPanelComponent } from './layout/sidebar-user-panel.component
 import { SidebarMenuComponent } from './layout/sidebar-menu.component';
 import { WithdrawRequestComponent } from './withdraw-request/withdraw-request.component';
 import { WithdrawHistoryComponent } from './withdraw-history/withdraw-history.component'
-import { WithdrawRequestServiceProxy, PackageServiceProxy, UserRequestServiceProxy } from '@shared/service-proxies/service-proxies';
+import {
+  WithdrawRequestServiceProxy,
+  PackageServiceProxy,
+  UserRequestServiceProxy,
+  UserWithdrawDetailServiceProxy,
+  UserPersonalDetailServiceProxy
+} from '@shared/service-proxies/service-proxies';
 // Package
 import { PackagesComponent } from './packages/packages.component';
 import { CreatePackageDialogComponent } from './packages/create-package/create-package-dialog.component';
@@ -86,8 +92,8 @@ import { UserPackageComponent } from './user-Packages/user-Packages.component';
     PackagesComponent,
     CreatePackageDialogComponent,
     EditPackageDialogComponent,
-     //User Package
-     UserPackageComponent,
+    //User Package
+    UserPackageComponent,
     //User Profile
     UserProfileComponent
 
@@ -111,7 +117,10 @@ import { UserPackageComponent } from './user-Packages/user-Packages.component';
   ],
   providers: [
     WithdrawRequestServiceProxy,
-    PackageServiceProxy
+    PackageServiceProxy,
+    UserRequestServiceProxy,
+    UserWithdrawDetailServiceProxy,
+    UserPersonalDetailServiceProxy
   ],
   entryComponents: [
     // tenants

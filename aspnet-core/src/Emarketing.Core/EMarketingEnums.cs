@@ -9,7 +9,7 @@ namespace Emarketing
         [Description("EasyPaisa")]
         EasyPaisa = 2,
         [Description("Jazz Cash")]
-        JazzCash = 2,
+        JazzCash = 3,
     }
 
     public enum ReferralAccountStatus

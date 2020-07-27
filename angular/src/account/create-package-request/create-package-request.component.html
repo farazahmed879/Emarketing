@@ -28,8 +28,9 @@
     <div class="form-group">
       <div class="input-group">
         <input type="text" class="form-control" name="email" [(ngModel)]="email" placeholder="Email" required
-          maxlength="256" #emailModel="ngModel" #emailEl/>
+          maxlength="256" #emailModel="ngModel" #emailEl (change)="ValidateEmail()"/>
       </div>
+      <span style="font-size: 12px; color: red;">{{emailValidationMessage}}</span>
       <abp-validation-summary [control]="emailModel" [controlEl]="emailEl"></abp-validation-summary>
     </div>
     <div class="form-group">
