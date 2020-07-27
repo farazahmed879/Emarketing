@@ -119,6 +119,46 @@
             ></abp-validation-summary>
           </div>
         </div>
+        <div class="form-group row required">
+          <label class="col-md-3 col-form-label" for="name">
+            {{ "Referral Amount" | localize }}
+          </label>
+          <div class="col-md-9">
+            <input type="number" class="form-control" name="package.referralAmount" id="package.referralAmount" required
+              maxlength="32" [(ngModel)]="package.referralAmount" #nameModel="ngModel" #nameEl />
+            <abp-validation-summary [control]="nameModel" [controlEl]="nameEl"></abp-validation-summary>
+          </div>
+        </div>
+        <div class="form-group row required">
+          <label class="col-md-3 col-form-label" for="name">
+            {{ "Daily Ad Count" | localize }}
+          </label>
+          <div class="col-md-9">
+            <input type="number" class="form-control" name="package.dailyAdCount" id="package.dailyAdCount" required
+              maxlength="32" [(ngModel)]="package.dailyAdCount" #nameModel="ngModel" #nameEl />
+            <abp-validation-summary [control]="nameModel" [controlEl]="nameEl"></abp-validation-summary>
+          </div>
+        </div>
+        <div class="form-group row required">
+          <label class="col-md-3 col-form-label" for="name">
+            {{ "Duration In Days" | localize }}
+          </label>
+          <div class="col-md-9">
+            <input type="number" class="form-control" name="package.durationInDays" id="package.durationInDays" required
+              maxlength="32" [(ngModel)]="package.durationInDays" #nameModel="ngModel" #nameEl />
+            <abp-validation-summary [control]="nameModel" [controlEl]="nameEl"></abp-validation-summary>
+          </div>
+        </div>
+        <div class="form-group row required">
+          <label class="col-md-3 col-form-label" for="name">
+            {{ "Total Earning" | localize }}
+          </label>
+          <div class="col-md-9">
+            <input type="number" class="form-control" name="package.totalEarning" id="package.totalEarning" required
+              maxlength="32" [(ngModel)]="package.totalEarning" #nameModel="ngModel" #nameEl />
+            <abp-validation-summary [control]="nameModel" [controlEl]="nameEl"></abp-validation-summary>
+          </div>
+        </div>
   </div>
   <abp-modal-footer
     [cancelDisabled]="saving"
