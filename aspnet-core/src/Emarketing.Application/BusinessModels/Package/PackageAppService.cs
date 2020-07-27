@@ -276,7 +276,8 @@ namespace Emarketing.BusinessModels.Package
                 throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
             }
 
-            var filteredPackages = _packageRepository.GetAll();
+            var filteredPackages = _packageRepository.GetAll()
+             .WhereIf(!string.IsNullOrWhiteSpace(input.Name), x => x.Name.Contains(input.Name));;
 
             var pagedAndFilteredPackages = filteredPackages
                 .OrderBy(i => i.Id)
