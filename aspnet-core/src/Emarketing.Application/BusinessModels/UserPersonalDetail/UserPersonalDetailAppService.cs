@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Abp;
@@ -192,31 +193,40 @@ namespace Emarketing.BusinessModels.UserPersonalDetail
 
         public async Task<UserPersonalDetailDto> GetByUserId()
         {
-            var userId = _abpSession.UserId;
-            var result = await _userPersonalDetailRepository.GetAll()
-                .Where(i => i.UserId == userId)
-                .Select(i =>
-                    new UserPersonalDetailDto()
-                    {
-                        Id = i.Id,
-                        Gender = i.Gender,
-                        PhoneNumber = i.PhoneNumber,
-                        NicNumber = i.NicNumber,
-                        Birthday = i.Birthday,
-                        Address = i.Address,
-                        City = i.City,
-                        State = i.State,
-                        PostalCode = i.PostalCode,
-                        Country = i.Country,
-                        UserId = i.UserId,
-                        UserName = $"{i.User.FullName}",
-                        CreatorUserId = i.CreatorUserId,
-                        CreationTime = i.CreationTime,
-                        LastModificationTime = i.LastModificationTime,
-                        LastModifierUserId = i.LastModifierUserId
-                    })
-                .FirstOrDefaultAsync();
-            return result;
+            try
+            {
+                var userId = _abpSession.UserId;
+                var result = await _userPersonalDetailRepository.GetAll()
+                    .Where(i => i.UserId == userId)
+                    .Select(i =>
+                        new UserPersonalDetailDto()
+                        {
+                            Id = i.Id,
+                            Gender = i.Gender,
+                            PhoneNumber = i.PhoneNumber,
+                            NicNumber = i.NicNumber,
+                            Birthday = i.Birthday,
+                            Address = i.Address,
+                            City = i.City,
+                            State = i.State,
+                            PostalCode = i.PostalCode,
+                            Country = i.Country,
+                            UserId = i.UserId,
+                            UserName = $"{i.User.FullName}",
+                            CreatorUserId = i.CreatorUserId,
+                            CreationTime = i.CreationTime,
+                            LastModificationTime = i.LastModificationTime,
+                            LastModifierUserId = i.LastModifierUserId
+                        })
+                    .FirstOrDefaultAsync();
+                return result;
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e);
+                throw e;
+            }
+           
         }
 
         public async Task<ResponseMessageDto> DeleteAsync(long userPersonalDetailId)

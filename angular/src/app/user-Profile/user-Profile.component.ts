@@ -31,12 +31,11 @@ export class UserProfileComponent extends AppComponentBase {
 
   //Personal Details
   cnic: string;
-  dob: string;
+  dob: moment.Moment;
   phoneNumber: string;
   address: string;
   city: string;
   country: string;
-  postal: string;
   postalCode: string;
   state: string;
 
@@ -52,12 +51,15 @@ export class UserProfileComponent extends AppComponentBase {
   }
 
   ngOnInit(): void {
-    this._userService.get(this.appSession.userId).subscribe((result) => {
-      this.user = result;
-    });
+    this.getUserInofrmation();
     this.getWithdrawType();
     this.getPaymentDetaiwlByUserId();
     this.getPersonalInformation();
+  }
+  getUserInofrmation() {
+    this._userService.get(this.appSession.userId).subscribe((result) => {
+      this.user = result;
+    });
   }
 
   getWithdrawType() {
@@ -74,9 +76,18 @@ export class UserProfileComponent extends AppComponentBase {
     })
   }
 
-  getPersonalInformation(){
+  getPersonalInformation() {
     this._userPersonalDetailsService.getByUserId().subscribe((result) => {
       if (result) {
+        this.cnic = result.nicNumber;
+        this.dob = moment(result.birthday);
+        this.phoneNumber = result.phoneNumber;
+        this.address = result.address;
+        this.city = result.city;
+        this.postalCode = result.postalCode;
+        this.state = result.state;
+        this.country = result.country;
+        this.selectedGender.value = result.gender;
         console.log("getPersonalInformation", result);
       }
     })
@@ -85,6 +96,11 @@ export class UserProfileComponent extends AppComponentBase {
   getPaymentDetaiwlByUserId() {
     this._userWithdrawDetailsService.getByUserId().subscribe((result) => {
       if (result) {
+        this.withDrawTypeId = result.withdrawTypeId;
+        this.accountNumber = result.accountIBAN;
+        this.accountTitle = result.accountTitle;
+        this.easyPaisaNumber = result.easyPaisaNumber;
+        this.jazzCashNumber = result.jazzCashNumber;
         console.log("getPaymentDetaiwlByUserId", result);
       }
     })
@@ -112,7 +128,7 @@ export class UserProfileComponent extends AppComponentBase {
     userWithdrawDetail.accountIBAN = this.accountNumber;
     userWithdrawDetail.accountTitle = this.accountTitle;
     userWithdrawDetail.userId = this.appSession.userId;
-    userWithdrawDetail.withdrawTypeId = this.selectedWithdrawType.value;
+    userWithdrawDetail.withdrawTypeId = this.withDrawTypeId;
     this._userWithdrawDetailsService.createOrEdit(userWithdrawDetail).pipe(
       finalize(() => {
         this.saving = false;

@@ -238,6 +238,7 @@ namespace Emarketing.BusinessModels.PackageAd
 
             var totalCount = filteredPackageAds.Count();
 
+
             var result = new PagedResultDto<PackageAdDto>(
                 totalCount: totalCount,
                 items: await pagedAndFilteredPackageAds.Where(i => i.IsDeleted == false).Select(i =>

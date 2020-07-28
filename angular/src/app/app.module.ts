@@ -47,7 +47,8 @@ import {
   PackageServiceProxy,
   UserRequestServiceProxy,
   UserWithdrawDetailServiceProxy,
-  UserPersonalDetailServiceProxy
+  UserPersonalDetailServiceProxy,
+  PackageAdServiceProxy
 } from '@shared/service-proxies/service-proxies';
 // Package
 import { PackagesComponent } from './packages/packages.component';
@@ -56,6 +57,10 @@ import { EditPackageDialogComponent } from './packages/edit-package/edit-package
 //User Profile
 import { UserProfileComponent } from './user-Profile/user-Profile.component';
 import { UserPackageComponent } from './user-Packages/user-Packages.component';
+//Packages-Advertisement
+import { PackagesAdvertisementComponent } from './packages-advertisement/packages-advertisement.component';
+import { EditPackagesAdvertisementComponent } from './packages-advertisement/edit-packages-advertisement/edit-package-advertisement-dialog.component';
+import { CreatePackagesAdvertisementComponent } from './packages-advertisement/create-packages-advertisement/create-package-advertisement-dialog.component';
 
 @NgModule({
   declarations: [
@@ -95,7 +100,11 @@ import { UserPackageComponent } from './user-Packages/user-Packages.component';
     //User Package
     UserPackageComponent,
     //User Profile
-    UserProfileComponent
+    UserProfileComponent,
+    //PAckages-Advertisement
+    PackagesAdvertisementComponent,
+    EditPackagesAdvertisementComponent,
+    CreatePackagesAdvertisementComponent
 
   ],
   imports: [
@@ -120,7 +129,8 @@ import { UserPackageComponent } from './user-Packages/user-Packages.component';
     PackageServiceProxy,
     UserRequestServiceProxy,
     UserWithdrawDetailServiceProxy,
-    UserPersonalDetailServiceProxy
+    UserPersonalDetailServiceProxy,
+    PackageAdServiceProxy
   ],
   entryComponents: [
     // tenants
@@ -143,7 +153,11 @@ import { UserPackageComponent } from './user-Packages/user-Packages.component';
     //User Package
     UserPackageComponent,
     //User Profile
-    UserProfileComponent
+    UserProfileComponent,
+    //PAckages-Advertisement
+    PackagesAdvertisementComponent,
+    EditPackagesAdvertisementComponent,
+    CreatePackagesAdvertisementComponent
 
   ],
 })

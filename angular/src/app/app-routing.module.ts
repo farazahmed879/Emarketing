@@ -13,6 +13,7 @@ import { WithdrawHistoryComponent } from './withdraw-history/withdraw-history.co
 import { PackagesComponent } from './packages/packages.component';
 import { UserProfileComponent } from './user-Profile/user-Profile.component';
 import { UserPackageComponent } from './user-Packages/user-Packages.component';
+import { PackagesAdvertisementComponent } from './packages-advertisement/packages-advertisement.component';
 
 @NgModule({
     imports: [
@@ -32,6 +33,7 @@ import { UserPackageComponent } from './user-Packages/user-Packages.component';
                     { path: 'update-password', component: ChangePasswordComponent },
                     { path: 'user-profile', component: UserProfileComponent },
                     { path: 'user-packages', component: UserPackageComponent },
+                    { path: 'packageAd', component: PackagesAdvertisementComponent },
                 ]
             }
         ])
