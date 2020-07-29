@@ -51,7 +51,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr
+              <tr 
                 *ngFor="
                   let package of (packages.items
                     | paginate
@@ -63,10 +63,9 @@
                         })
                 "
               >
-                <td>{{ package.code }}</td>
-                <td>{{ package.name }}</td>                
+                <td>{{ package.title }}</td>
+                <td>{{ package.url }}</td>                
                 <td>{{ package.price }}</td>
-                <td>{{ package.profitValue }}</td>
                 <td>
                   <button
                     type="button"

@@ -6,6 +6,7 @@ import { PagedRequestDto, PagedListingComponentBase } from '@shared/paged-listin
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { CreatePackagesAdvertisementComponent } from './create-packages-advertisement/create-package-advertisement-dialog.component';
 import { EditPackagesAdvertisementComponent } from './edit-packages-advertisement/edit-package-advertisement-dialog.component';
+import { ActivatedRoute } from '@angular/router';
 
 
 class PagedPackageAdDto extends PagedRequestDto {
@@ -20,7 +21,8 @@ class PagedPackageAdDto extends PagedRequestDto {
 export class PackagesAdvertisementComponent extends PagedListingComponentBase<PackageAdDto> {
   constructor(injector: Injector,
     private _packageAdsService: PackageAdServiceProxy,
-    private _modalService: BsModalService
+    private _modalService: BsModalService,
+    private activatedRoute: ActivatedRoute
     ) {
     super(injector);
     
@@ -30,7 +32,8 @@ export class PackagesAdvertisementComponent extends PagedListingComponentBase<Pa
   keyword: string;
   packages: PackageDtoPagedResultDto;
   ngOnInIt(){
-
+    debugger;
+    this.packageId = parseInt(this.activatedRoute.snapshot.paramMap.get('packageId'));    
   }
   protected list(
     request: PagedPackageAdDto,
@@ -92,7 +95,8 @@ export class PackagesAdvertisementComponent extends PagedListingComponentBase<Pa
         CreatePackagesAdvertisementComponent,
         {
           class: 'modal-lg',
-        }
+        },
+        
       );
     } else {
       createOrEditPackageDialog = this._modalService.show(
@@ -101,6 +105,7 @@ export class PackagesAdvertisementComponent extends PagedListingComponentBase<Pa
           class: 'modal-lg',
           initialState: {
             id: id,
+            packageId: this.packageId
           },
         }
       );

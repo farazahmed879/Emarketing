@@ -56,10 +56,10 @@
                 <td>{{ package.price }}</td>
                 <td>{{ package.profitValue }}</td>
                 <td>
-                  <a type="button" class="btn btn-sm bg-secondary" [routerLink]="['/app/packageAd']">
+                  <button type="button" class="btn btn-sm bg-secondary" [routerLink]="['/app/packageAd/',package.id]">
                     <i class="fas fa-pencil-alt"></i>
                     {{ "View Ads" | localize }}
-                  </a>
+                  </button>
                   <button type="button" class="btn btn-sm bg-secondary" (click)="editPackage(package)">
                     <i class="fas fa-pencil-alt"></i>
                     {{ "Edit" | localize }}

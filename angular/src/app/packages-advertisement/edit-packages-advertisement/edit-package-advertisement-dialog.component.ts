@@ -26,6 +26,7 @@ export class EditPackagesAdvertisementComponent extends AppComponentBase
   saving = false;
   packageAd = new PackageAdDto();
   id: number;
+  packageId: number;
 
   @Output() onSave = new EventEmitter<any>();
 
@@ -43,6 +44,8 @@ export class EditPackagesAdvertisementComponent extends AppComponentBase
   }
 
   show() {
+    this.packageId;
+    debugger;
     this._packageAdService.getById(this.id).subscribe((result) => {
       this.packageAd = result;
     }
