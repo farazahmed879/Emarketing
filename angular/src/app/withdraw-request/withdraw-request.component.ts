@@ -39,7 +39,6 @@ export class WithdrawRequestComponent extends AppComponentBase implements OnInit
   }
 
   create() {
-    debugger;
     var createWithdrawRequestDto = new CreateWithdrawRequestDto;
     createWithdrawRequestDto.amount = this.amount;
     createWithdrawRequestDto.withdrawTypeId = this.selectedWithdrawTypeId;

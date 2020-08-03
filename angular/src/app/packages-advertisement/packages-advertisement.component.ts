@@ -31,9 +31,11 @@ export class PackagesAdvertisementComponent extends PagedListingComponentBase<Pa
   packageId: number;
   keyword: string;
   packages: PackageDtoPagedResultDto;
-  ngOnInIt(){
-    debugger;
+  
+  ngOnInit(): void {
     this.packageId = parseInt(this.activatedRoute.snapshot.paramMap.get('packageId'));    
+    var pagedHistory = new PagedPackageAdDto(); 
+    this.list(pagedHistory,1,undefined);
   }
   protected list(
     request: PagedPackageAdDto,
@@ -95,10 +97,14 @@ export class PackagesAdvertisementComponent extends PagedListingComponentBase<Pa
         CreatePackagesAdvertisementComponent,
         {
           class: 'modal-lg',
+          initialState: {
+            id: this.packageId
+          },
         },
         
       );
     } else {
+      this.packageId;
       createOrEditPackageDialog = this._modalService.show(
         EditPackagesAdvertisementComponent,
         {

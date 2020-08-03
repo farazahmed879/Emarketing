@@ -28,9 +28,12 @@ export class PackagesComponent extends PagedListingComponentBase<PackageDto> {
  
   keyword: string;
   packages: PackageDtoPagedResultDto;
-  ngOnInIt(){
-
+  
+  ngOnInit(): void {
+    var pagedHistory = new PagedWithdrawHistoryDto();
+    this.list(pagedHistory,1,undefined);
   }
+
   protected list(
     request: PagedWithdrawHistoryDto,
     pageNumber: number,

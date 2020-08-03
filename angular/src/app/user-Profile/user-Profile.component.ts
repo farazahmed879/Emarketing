@@ -65,7 +65,6 @@ export class UserProfileComponent extends AppComponentBase {
   getWithdrawType() {
     this._userWithdrawDetailsService.getWithdrawTypes().subscribe((result) => {
       if (result) {
-        debugger;
         this.withdrawTypeArrayObj = result.map(item =>
           ({
             label: item.Name,

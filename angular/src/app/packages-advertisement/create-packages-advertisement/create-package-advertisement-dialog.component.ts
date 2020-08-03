@@ -24,7 +24,7 @@ export class CreatePackagesAdvertisementComponent extends AppComponentBase
   implements OnInit {
   saving = false;
   packageAd = new PackageAdDto();
-  packageId: number;
+  id: number;
 
   @Output() onSave = new EventEmitter<any>();
 
@@ -40,17 +40,12 @@ export class CreatePackagesAdvertisementComponent extends AppComponentBase
   }
 
   ngOnInit(): void {
-    this.packageId = parseInt(this.activatedRoute.snapshot.paramMap.get('packageId'));
+  
   }
-  show(packageId){
-    debugger;
-  }
-
 
   save(): void {
     this.saving = true;
-    debugger;
-    this.packageAd.packageId = this.packageId;
+    this.packageAd.packageId = this.id;
     this._packageAdService
       .createOrEdit(this.packageAd)
       .pipe(

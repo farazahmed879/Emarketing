@@ -230,7 +230,7 @@ namespace Emarketing.BusinessModels.PackageAd
                 throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
             }
 
-            var filteredPackageAds = _packageRepository.GetAll();
+            var filteredPackageAds = _packageRepository.GetAll().Where(i=> i.PackageId == input.PackageId);
 
             var pagedAndFilteredPackageAds = filteredPackageAds
                 .OrderBy(i => i.Id)

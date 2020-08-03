@@ -106,7 +106,6 @@ export class CreatePackageRequestComponent extends AppComponentBase implements O
 
 
   ValidateEmail() {
-    debugger;
     if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(this.email)) {
       this.emailValidationMessage = ""
     }
