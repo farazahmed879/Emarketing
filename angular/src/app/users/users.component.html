@@ -169,7 +169,23 @@
                   </div>
                 </td>
                 <td>
-                  <button
+                  <div class="nav-item dropdown nav-user-menu" dropdown>
+                    <a href="javascript:;" class="nav-link" dropdownToggle>
+                      Actions
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" *dropdownMenu>
+                      <a class="dropdown-item" href="javascript:;"  (click)="resetPassword(user)">
+                        <i class="fas fa-pencil-alt"></i> Reset Password
+                      </a>
+                      <a class="dropdown-item" href="javascript:;"  (click)="editUser(user)">
+                        <i class="fas fa-pencil-alt"></i> Edit
+                      </a>
+                      <a class="dropdown-item" href="javascript:;"  (click)="delete(user)">
+                        <i class="fas fa-trash"></i> Delete
+                      </a>
+                    </div>
+                  </div>
+                  <!-- <button
                     type="button"
                     class="btn btn-sm bg-secondary"
                     (click)="editUser(user)"
@@ -192,7 +208,7 @@
                   >
                     <i class="fas fa-lock"></i>
                     {{ "ResetPassword" | localize }}
-                  </button>
+                  </button> -->
                 </td>
               </tr>
             </tbody>

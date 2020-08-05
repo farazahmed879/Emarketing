@@ -33,6 +33,7 @@ import { PackagesAdvertisementComponent } from './packages-advertisement/package
                     { path: 'update-password', component: ChangePasswordComponent },
                     { path: 'user-profile', component: UserProfileComponent },
                     { path: 'user-packages', component: UserPackageComponent },
+                    { path: '', component: HomeComponent },
                     { path: 'packageAd/:packageId', component: PackagesAdvertisementComponent },
                 ]
             }

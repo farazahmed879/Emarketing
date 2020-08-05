@@ -63,22 +63,19 @@
                 <td>{{ role.name }}</td>
                 <td>{{ role.displayName }}</td>
                 <td>
-                  <button
-                    type="button"
-                    class="btn btn-sm bg-secondary"
-                    (click)="editRole(role)"
-                  >
-                    <i class="fas fa-pencil-alt"></i>
-                    {{ "Edit" | localize }}
-                  </button>
-                  <button
-                    type="button"
-                    class="btn btn-sm bg-danger mx-2"
-                    (click)="delete(role)"
-                  >
-                    <i class="fas fa-trash"></i>
-                    {{ "Delete" | localize }}
-                  </button>
+                  <div class="nav-item dropdown nav-user-menu" dropdown>
+                    <a href="javascript:;" class="nav-link" dropdownToggle>
+                      Actions
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" *dropdownMenu>
+                      <a class="dropdown-item" href="javascript:;"   (click)="editRole(role)">
+                        <i class="fas fa-pencil-alt"></i> Edit
+                      </a>
+                      <a class="dropdown-item" href="javascript:;"  (click)="delete(role)">
+                        <i class="fas fa-trash"></i> Delete
+                      </a>
+                    </div>
+                  </div>
                 </td>
               </tr>
             </tbody>

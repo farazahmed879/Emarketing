@@ -1,0 +1,40 @@
+import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { HttpClientJsonpModule } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
+import { ModalModule } from 'ngx-bootstrap/modal';
+import { PublicRoutingModule } from './public-routing.module';
+// import { ServiceProxyModule } from '@shared/service-proxies/service-proxy.module';
+// import { SharedModule } from '@shared/shared.module';
+import { PublicComponent } from './public.component';
+import { DropdownModule } from 'primeng/dropdown';
+import { UserPackageComponent } from './user-Packages/user-Packages.component';
+import { PackageServiceProxy } from '@shared/service-proxies/service-proxies';
+
+@NgModule({
+    imports: [
+        CommonModule,
+        FormsModule,
+        HttpClientModule,
+        HttpClientJsonpModule,
+        PublicRoutingModule,
+        // SharedModule,
+        // ServiceProxyModule,
+        DropdownModule,
+        ModalModule.forChild()
+    ],
+    providers: [
+        PackageServiceProxy
+    ],
+    declarations: [
+        PublicComponent,
+        UserPackageComponent
+    ],
+    entryComponents: [
+        UserPackageComponent
+    ]
+})
+export class PublicModule {
+
+}
