@@ -141,6 +141,124 @@ export class AccountServiceProxy {
 }
 
 @Injectable()
+export class AdminServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * @return Success
+     */
+    getAll(): Observable<PackageDto[]> {
+        let url_ = this.baseUrl + "/api/services/app/Admin/GetAll";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAll(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAll(<any>response_);
+                } catch (e) {
+                    return <Observable<PackageDto[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PackageDto[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAll(response: HttpResponseBase): Observable<PackageDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200.push(PackageDto.fromJS(item));
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PackageDto[]>(<any>null);
+    }
+
+    /**
+     * @return Success
+     */
+    seedPackages(): Observable<boolean> {
+        let url_ = this.baseUrl + "/api/services/app/Admin/SeedPackages";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processSeedPackages(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processSeedPackages(<any>response_);
+                } catch (e) {
+                    return <Observable<boolean>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<boolean>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processSeedPackages(response: HttpResponseBase): Observable<boolean> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<boolean>(<any>null);
+    }
+}
+
+@Injectable()
 export class ConfigurationServiceProxy {
     private http: HttpClient;
     private baseUrl: string;
@@ -5077,6 +5195,121 @@ export interface IRegisterOutput {
     canLogin: boolean;
 }
 
+export class PackageDto implements IPackageDto {
+    code: string | undefined;
+    name: string | undefined;
+    description: string | undefined;
+    price: number;
+    profitValue: number;
+    referralAmount: number;
+    dailyAdCount: number;
+    durationInDays: number;
+    pricePerAd: number;
+    totalEarning: number;
+    isActive: boolean;
+    isDeleted: boolean;
+    deleterUserId: number | undefined;
+    deletionTime: moment.Moment | undefined;
+    lastModificationTime: moment.Moment | undefined;
+    lastModifierUserId: number | undefined;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+
+    constructor(data?: IPackageDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.code = _data["code"];
+            this.name = _data["name"];
+            this.description = _data["description"];
+            this.price = _data["price"];
+            this.profitValue = _data["profitValue"];
+            this.referralAmount = _data["referralAmount"];
+            this.dailyAdCount = _data["dailyAdCount"];
+            this.durationInDays = _data["durationInDays"];
+            this.pricePerAd = _data["pricePerAd"];
+            this.totalEarning = _data["totalEarning"];
+            this.isActive = _data["isActive"];
+            this.isDeleted = _data["isDeleted"];
+            this.deleterUserId = _data["deleterUserId"];
+            this.deletionTime = _data["deletionTime"] ? moment(_data["deletionTime"].toString()) : <any>undefined;
+            this.lastModificationTime = _data["lastModificationTime"] ? moment(_data["lastModificationTime"].toString()) : <any>undefined;
+            this.lastModifierUserId = _data["lastModifierUserId"];
+            this.creationTime = _data["creationTime"] ? moment(_data["creationTime"].toString()) : <any>undefined;
+            this.creatorUserId = _data["creatorUserId"];
+            this.id = _data["id"];
+        }
+    }
+
+    static fromJS(data: any): PackageDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PackageDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["code"] = this.code;
+        data["name"] = this.name;
+        data["description"] = this.description;
+        data["price"] = this.price;
+        data["profitValue"] = this.profitValue;
+        data["referralAmount"] = this.referralAmount;
+        data["dailyAdCount"] = this.dailyAdCount;
+        data["durationInDays"] = this.durationInDays;
+        data["pricePerAd"] = this.pricePerAd;
+        data["totalEarning"] = this.totalEarning;
+        data["isActive"] = this.isActive;
+        data["isDeleted"] = this.isDeleted;
+        data["deleterUserId"] = this.deleterUserId;
+        data["deletionTime"] = this.deletionTime ? this.deletionTime.toISOString() : <any>undefined;
+        data["lastModificationTime"] = this.lastModificationTime ? this.lastModificationTime.toISOString() : <any>undefined;
+        data["lastModifierUserId"] = this.lastModifierUserId;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
+        data["creatorUserId"] = this.creatorUserId;
+        data["id"] = this.id;
+        return data; 
+    }
+
+    clone(): PackageDto {
+        const json = this.toJSON();
+        let result = new PackageDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IPackageDto {
+    code: string | undefined;
+    name: string | undefined;
+    description: string | undefined;
+    price: number;
+    profitValue: number;
+    referralAmount: number;
+    dailyAdCount: number;
+    durationInDays: number;
+    pricePerAd: number;
+    totalEarning: number;
+    isActive: boolean;
+    isDeleted: boolean;
+    deleterUserId: number | undefined;
+    deletionTime: moment.Moment | undefined;
+    lastModificationTime: moment.Moment | undefined;
+    lastModifierUserId: number | undefined;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+}
+
 export class ChangeUiThemeInput implements IChangeUiThemeInput {
     theme: string;
 
@@ -5129,6 +5362,7 @@ export class CreatePackageDto implements ICreatePackageDto {
     referralAmount: number;
     dailyAdCount: number;
     durationInDays: number;
+    pricePerAd: number;
     totalEarning: number;
     isActive: boolean;
     id: number;
@@ -5152,6 +5386,7 @@ export class CreatePackageDto implements ICreatePackageDto {
             this.referralAmount = _data["referralAmount"];
             this.dailyAdCount = _data["dailyAdCount"];
             this.durationInDays = _data["durationInDays"];
+            this.pricePerAd = _data["pricePerAd"];
             this.totalEarning = _data["totalEarning"];
             this.isActive = _data["isActive"];
             this.id = _data["id"];
@@ -5175,6 +5410,7 @@ export class CreatePackageDto implements ICreatePackageDto {
         data["referralAmount"] = this.referralAmount;
         data["dailyAdCount"] = this.dailyAdCount;
         data["durationInDays"] = this.durationInDays;
+        data["pricePerAd"] = this.pricePerAd;
         data["totalEarning"] = this.totalEarning;
         data["isActive"] = this.isActive;
         data["id"] = this.id;
@@ -5198,6 +5434,7 @@ export interface ICreatePackageDto {
     referralAmount: number;
     dailyAdCount: number;
     durationInDays: number;
+    pricePerAd: number;
     totalEarning: number;
     isActive: boolean;
     id: number;
@@ -5260,117 +5497,6 @@ export interface IResponseMessageDto {
     success: boolean;
     errorMessage: string | undefined;
     error: boolean;
-}
-
-export class PackageDto implements IPackageDto {
-    code: string | undefined;
-    name: string | undefined;
-    description: string | undefined;
-    price: number;
-    profitValue: number;
-    referralAmount: number;
-    dailyAdCount: number;
-    durationInDays: number;
-    totalEarning: number;
-    isActive: boolean;
-    isDeleted: boolean;
-    deleterUserId: number | undefined;
-    deletionTime: moment.Moment | undefined;
-    lastModificationTime: moment.Moment | undefined;
-    lastModifierUserId: number | undefined;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-
-    constructor(data?: IPackageDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.code = _data["code"];
-            this.name = _data["name"];
-            this.description = _data["description"];
-            this.price = _data["price"];
-            this.profitValue = _data["profitValue"];
-            this.referralAmount = _data["referralAmount"];
-            this.dailyAdCount = _data["dailyAdCount"];
-            this.durationInDays = _data["durationInDays"];
-            this.totalEarning = _data["totalEarning"];
-            this.isActive = _data["isActive"];
-            this.isDeleted = _data["isDeleted"];
-            this.deleterUserId = _data["deleterUserId"];
-            this.deletionTime = _data["deletionTime"] ? moment(_data["deletionTime"].toString()) : <any>undefined;
-            this.lastModificationTime = _data["lastModificationTime"] ? moment(_data["lastModificationTime"].toString()) : <any>undefined;
-            this.lastModifierUserId = _data["lastModifierUserId"];
-            this.creationTime = _data["creationTime"] ? moment(_data["creationTime"].toString()) : <any>undefined;
-            this.creatorUserId = _data["creatorUserId"];
-            this.id = _data["id"];
-        }
-    }
-
-    static fromJS(data: any): PackageDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new PackageDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["code"] = this.code;
-        data["name"] = this.name;
-        data["description"] = this.description;
-        data["price"] = this.price;
-        data["profitValue"] = this.profitValue;
-        data["referralAmount"] = this.referralAmount;
-        data["dailyAdCount"] = this.dailyAdCount;
-        data["durationInDays"] = this.durationInDays;
-        data["totalEarning"] = this.totalEarning;
-        data["isActive"] = this.isActive;
-        data["isDeleted"] = this.isDeleted;
-        data["deleterUserId"] = this.deleterUserId;
-        data["deletionTime"] = this.deletionTime ? this.deletionTime.toISOString() : <any>undefined;
-        data["lastModificationTime"] = this.lastModificationTime ? this.lastModificationTime.toISOString() : <any>undefined;
-        data["lastModifierUserId"] = this.lastModifierUserId;
-        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
-        data["creatorUserId"] = this.creatorUserId;
-        data["id"] = this.id;
-        return data; 
-    }
-
-    clone(): PackageDto {
-        const json = this.toJSON();
-        let result = new PackageDto();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IPackageDto {
-    code: string | undefined;
-    name: string | undefined;
-    description: string | undefined;
-    price: number;
-    profitValue: number;
-    referralAmount: number;
-    dailyAdCount: number;
-    durationInDays: number;
-    totalEarning: number;
-    isActive: boolean;
-    isDeleted: boolean;
-    deleterUserId: number | undefined;
-    deletionTime: moment.Moment | undefined;
-    lastModificationTime: moment.Moment | undefined;
-    lastModifierUserId: number | undefined;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
 }
 
 export class PackageDtoPagedResultDto implements IPackageDtoPagedResultDto {

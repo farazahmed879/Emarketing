@@ -88,6 +88,7 @@ namespace Emarketing.BusinessModels.Package
                 ReferralAmount = modelDto.ReferralAmount,
                 TotalEarning = modelDto.TotalEarning,
                 DailyAdCount = modelDto.DailyAdCount,
+                PricePerAd = modelDto.PricePerAd,
                 IsActive = modelDto.IsActive,
             });
 
@@ -127,6 +128,7 @@ namespace Emarketing.BusinessModels.Package
                 ReferralAmount = modelDto.ReferralAmount,
                 TotalEarning = modelDto.TotalEarning,
                 DailyAdCount = modelDto.DailyAdCount,
+                PricePerAd = modelDto.PricePerAd,
                 IsActive = modelDto.IsActive,
             });
 
@@ -173,6 +175,7 @@ namespace Emarketing.BusinessModels.Package
                         ReferralAmount = i.ReferralAmount,
                         TotalEarning = i.TotalEarning,
                         DailyAdCount = i.DailyAdCount,
+                        PricePerAd=i.PricePerAd,
                         IsActive = i.IsActive,
                         CreatorUserId = i.CreatorUserId,
                         CreationTime = i.CreationTime,
@@ -231,6 +234,7 @@ namespace Emarketing.BusinessModels.Package
                     ReferralAmount = i.ReferralAmount,
                     TotalEarning = i.TotalEarning,
                     DailyAdCount = i.DailyAdCount,
+                    PricePerAd = i.PricePerAd,
                     IsActive = i.IsActive,
                     CreatorUserId = i.CreatorUserId,
                     CreationTime = i.CreationTime,
@@ -258,6 +262,7 @@ namespace Emarketing.BusinessModels.Package
                     Description = i.Description,
                     Price = i.Price,
                     ProfitValue = i.ProfitValue,
+                    PricePerAd = i.PricePerAd,
                     IsActive = i.IsActive,
                     CreatorUserId = i.CreatorUserId,
                     CreationTime = i.CreationTime,
@@ -302,6 +307,7 @@ namespace Emarketing.BusinessModels.Package
                             ReferralAmount = i.ReferralAmount,
                             TotalEarning = i.TotalEarning,
                             DailyAdCount = i.DailyAdCount,
+                            PricePerAd = i.PricePerAd,
                             IsActive = i.IsActive,
                             CreatorUserId = i.CreatorUserId,
                             CreationTime = i.CreationTime,

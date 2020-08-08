@@ -18,6 +18,7 @@ namespace Emarketing.BusinessObjects
         public decimal ReferralAmount { get; set; }
         public int DailyAdCount { get; set; }
         public int DurationInDays { get; set; }
+        public decimal PricePerAd { get; set; }
         public decimal TotalEarning { get; set; }
         public bool IsActive { get; set; }
         
