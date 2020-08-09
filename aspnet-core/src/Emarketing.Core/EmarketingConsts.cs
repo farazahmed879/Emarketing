@@ -25,7 +25,8 @@
     {
         public static class NotFound 
         {
-            
+            public const string UserPackageAdId = "Invalid UserPackageAdId. UserPackageAd not found.";
+
         }
         public static class UserFriendly  
         {

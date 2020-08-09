@@ -26,6 +26,7 @@ namespace Emarketing.EntityFrameworkCore
         #region Users
 
         public DbSet<UserPackageSubscriptionDetail> UserPackageSubscriptionDetails { get; set; }
+        public DbSet<UserPackageAdDetail> UserPackageAdDetails { get; set; }
 
         public DbSet<WithdrawRequest> WithdrawRequests { get; set; }
 
