@@ -1,8 +1,9 @@
 import { Component, Injector, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { AppComponentBase } from '@shared/app-component-base';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
-import { WithdrawRequestDto, WithdrawRequestServiceProxy, CreateWithdrawRequestDto } from '@shared/service-proxies/service-proxies';
+import { WithdrawRequestDto, WithdrawRequestServiceProxy, CreateWithdrawRequestDto, UserWithdrawDetailServiceProxy } from '@shared/service-proxies/service-proxies';
 import { SelectItem } from 'primeng/api';
+import { PrimefacesDropDownObject } from '@app/app.component';
 //import {DropdownModule} from 'primeng/dropdown';
 
 interface City {
@@ -21,6 +22,8 @@ export class WithdrawRequestComponent extends AppComponentBase implements OnInit
   amount: number;
   status: boolean = false;
   selectedWithdrawTypeId: number;
+  withdrawTypeArrayObj: PrimefacesDropDownObject[];
+  selectedWithdrawType: PrimefacesDropDownObject;
   //companyArrayObj: PrimefacesDropDownObject[];
   withdrawTypes = [
     { label: 'Select Withdraw Type', value: null },
@@ -28,7 +31,8 @@ export class WithdrawRequestComponent extends AppComponentBase implements OnInit
     { label: 'Easypaisa', value: 2 },
   ];
   constructor(injector: Injector,
-    private _withdrawRequestService: WithdrawRequestServiceProxy) {
+    private _withdrawRequestService: WithdrawRequestServiceProxy,
+    public _userWithdrawDetailsService: UserWithdrawDetailServiceProxy) {
     super(injector);
 
   }
@@ -36,6 +40,20 @@ export class WithdrawRequestComponent extends AppComponentBase implements OnInit
 
   ngOnInit() {
 
+    this.getWithdrawType();
+  }
+
+  getWithdrawType() {
+    this._userWithdrawDetailsService.getWithdrawTypes().subscribe((result) => {
+      if (result) {
+        this.withdrawTypeArrayObj = result.map(item =>
+          ({
+            label: item.Name,
+            value: item.WithdrawTypeId
+          }));
+        console.log("withdrawTypeArrayObj", this.withdrawTypeArrayObj);
+      }
+    })
   }
 
   create() {

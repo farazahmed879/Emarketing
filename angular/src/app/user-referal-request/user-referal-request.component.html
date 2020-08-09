@@ -3,10 +3,10 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-6">
-          <h1>{{package.name}}</h1>
+          <h1>{{ "User Referal Request"}}</h1>
         </div>
         <div class="col-6 text-right">
-          <a href="javascript:;" class="btn bg-blue" (click)="createPackageAds()">
+          <a href="javascript:;" class="btn bg-blue" (click)="createUserReferalRequest()">
             <i class="fa fa-plus-square"></i>
             {{ "Create" | localize }}
           </a>
@@ -20,22 +20,12 @@
         <div class="card-header">
           <div class="input-group">
             <div class="input-group-prepend">
-              <button
-                type="button"
-                class="btn bg-blue"
-                (click)="getDataPage(1)"
-              >
+              <button type="button" class="btn bg-blue" (click)="getDataPage(1)">
                 <i class="fas fa-search"></i>
               </button>
             </div>
-            <input
-              type="text"
-              class="form-control"
-              name="keyword"
-              [placeholder]="'SearchWithThreeDot' | localize"
-              [(ngModel)]="keyword"
-              (keyup.enter)="getDataPage(1)"
-            />
+            <input type="text" class="form-control" name="keyword" [placeholder]="'SearchWithThreeDot' | localize"
+              [(ngModel)]="keyword" (keyup.enter)="getDataPage(1)" />
           </div>
         </div>
         <div class="card-body table-responsive p-0">
@@ -46,14 +36,12 @@
                 <th>{{ "Name"}}</th>
                 <th>{{ "Price"}}</th>
                 <th>{{ "Profit"}}</th>
-                
-                <!-- <th style="width: 200px;">{{ "Actions" | localize }}</th> -->
+                <th style="width: 200px;">{{ "Actions" | localize }}</th>
               </tr>
             </thead>
             <tbody>
-              <tr 
-                *ngFor="
-                  let package of (packages.items
+              <tr *ngFor="
+                  let package of (userReferalRequest.items
                     | paginate
                       : {
                           id: 'server',
@@ -61,18 +49,18 @@
                           currentPage: pageNumber,
                           totalItems: totalItems
                         })
-                "
-              >
-                <td>{{ package.title }}</td>
-                <td>{{ package.url }}</td>                
+                ">
+                <td>{{ package.code }}</td>
+                <td>{{ package.name }}</td>
                 <td>{{ package.price }}</td>
+                <td>{{ package.profitValue }}</td>
                 <td>
                   <div class="nav-item dropdown nav-user-menu" dropdown>
                     <a href="javascript:;" class="nav-link" dropdownToggle>
                       Actions
                     </a>
                     <div class="dropdown-menu dropdown-menu-right" *dropdownMenu>
-                      <a class="dropdown-item" href="javascript:;"  (click)="editPackage(package)">
+                      <a class="dropdown-item" href="javascript:;" (click)="editUserReferalRequest(package)">
                         <i class="fas fa-pencil-alt"></i> Edit
                       </a>
                       <a class="dropdown-item" href="javascript:;" (click)="delete(package)">
@@ -80,19 +68,15 @@
                       </a>
                     </div>
                   </div>
-                  <!-- <button
-                    type="button"
-                    class="btn btn-sm bg-secondary"
-                    (click)="editPackage(package)"
-                  >
+                  <!-- <button type="button" class="btn btn-sm bg-secondary" [routerLink]="['/app/packageAd/',package.id]">
+                    <i class="fas fa-pencil-alt"></i>
+                    {{ "View Ads" | localize }}
+                  </button>
+                  <button type="button" class="btn btn-sm bg-secondary" (click)="editPackage(package)">
                     <i class="fas fa-pencil-alt"></i>
                     {{ "Edit" | localize }}
                   </button>
-                  <button
-                    type="button"
-                    class="btn btn-sm bg-danger mx-2"
-                    (click)="delete(package)"
-                  >
+                  <button type="button" class="btn btn-sm bg-danger mx-2" (click)="delete(package)">
                     <i class="fas fa-trash"></i>
                     {{ "Delete" | localize }}
                   </button> -->
@@ -115,9 +99,7 @@
             </div>
             <div class="col-sm-4 col-12">
               <div class="float-sm-right m-auto">
-                <abp-pagination-controls
-                  id="server"
-                >
+                <abp-pagination-controls id="server">
                 </abp-pagination-controls>
               </div>
             </div>

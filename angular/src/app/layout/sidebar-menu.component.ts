@@ -66,6 +66,9 @@ export class SidebarMenuComponent extends AppComponentBase implements OnInit {
       ),
       new MenuItem(this.l('Withdraw Request'), '/app/withdraw-request', 'fas fa-home'),
       new MenuItem(this.l('Withdraw History'), '/app/withdraw-history', 'fas fa-home'),
+      new MenuItem(this.l('User Request'), '/app/user-request', 'fas fa-home'),
+      new MenuItem(this.l('User Referal'), '/app/user-referal', 'fas fa-home'),
+      new MenuItem(this.l('User Referal Request'), '/app/user-referal-request', 'fas fa-home'),
       new MenuItem(this.l('Settings'), '/app/user-profile', 'fas fa-home'),
       new MenuItem(this.l('About'), '/app/about', 'fas fa-info-circle'),
     ];

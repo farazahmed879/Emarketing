@@ -3,13 +3,7 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-6">
-          <h1>{{package.name}}</h1>
-        </div>
-        <div class="col-6 text-right">
-          <a href="javascript:;" class="btn bg-blue" (click)="createPackageAds()">
-            <i class="fa fa-plus-square"></i>
-            {{ "Create" | localize }}
-          </a>
+          <h1>{{ "User Referal" | localize }}</h1>
         </div>
       </div>
     </div>
@@ -39,21 +33,19 @@
           </div>
         </div>
         <div class="card-body table-responsive p-0">
-          <table class="table table-hover text-nowrap">
+          <table class="table table-hover text-nowrap" [busy]="isTableLoading">
             <thead class="bg-light">
               <tr>
-                <th>{{ "Code"}}</th>
-                <th>{{ "Name"}}</th>
-                <th>{{ "Price"}}</th>
-                <th>{{ "Profit"}}</th>
-                
+                <th>{{ "User Name" | localize }}</th>
+                <th>{{ "Amount" | localize }}</th>
+                <th>{{ "Type" | localize }}</th>
                 <!-- <th style="width: 200px;">{{ "Actions" | localize }}</th> -->
               </tr>
             </thead>
             <tbody>
-              <tr 
+              <tr
                 *ngFor="
-                  let package of (packages.items
+                  let withdrawRequest of (userReferal.items
                     | paginate
                       : {
                           id: 'server',
@@ -63,27 +55,14 @@
                         })
                 "
               >
-                <td>{{ package.title }}</td>
-                <td>{{ package.url }}</td>                
-                <td>{{ package.price }}</td>
-                <td>
-                  <div class="nav-item dropdown nav-user-menu" dropdown>
-                    <a href="javascript:;" class="nav-link" dropdownToggle>
-                      Actions
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right" *dropdownMenu>
-                      <a class="dropdown-item" href="javascript:;"  (click)="editPackage(package)">
-                        <i class="fas fa-pencil-alt"></i> Edit
-                      </a>
-                      <a class="dropdown-item" href="javascript:;" (click)="delete(package)">
-                        <i class="fas fa-trash"></i> Delete
-                      </a>
-                    </div>
-                  </div>
-                  <!-- <button
+                <td>{{ withdrawRequest.userName }}</td>
+                <td>{{ withdrawRequest.amount }}</td>
+                <td>{{ withdrawRequest.withdrawType }}</td>
+                <!-- <td>
+                  <button
                     type="button"
                     class="btn btn-sm bg-secondary"
-                    (click)="editPackage(package)"
+                    (click)="editRole(role)"
                   >
                     <i class="fas fa-pencil-alt"></i>
                     {{ "Edit" | localize }}
@@ -91,12 +70,12 @@
                   <button
                     type="button"
                     class="btn btn-sm bg-danger mx-2"
-                    (click)="delete(package)"
+                    (click)="delete(role)"
                   >
                     <i class="fas fa-trash"></i>
                     {{ "Delete" | localize }}
-                  </button> -->
-                </td>
+                  </button>
+                </td> -->
               </tr>
             </tbody>
           </table>
@@ -117,6 +96,7 @@
               <div class="float-sm-right m-auto">
                 <abp-pagination-controls
                   id="server"
+                  (pageChange)="getDataPage($event)"
                 >
                 </abp-pagination-controls>
               </div>

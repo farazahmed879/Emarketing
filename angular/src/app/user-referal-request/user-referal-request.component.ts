@@ -1,11 +1,11 @@
 import { Component, Injector, ChangeDetectionStrategy } from '@angular/core';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
-import { PackageServiceProxy, PackageDtoPagedResultDto, PackageDto } from '@shared/service-proxies/service-proxies';
+import { PackageServiceProxy, PackageDtoPagedResultDto, PackageDto, UserReferralRequestServiceProxy, UserReferralRequestDtoPagedResultDto } from '@shared/service-proxies/service-proxies';
 import { finalize } from 'rxjs/operators';
 import { PagedRequestDto, PagedListingComponentBase } from '@shared/paged-listing-component-base';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { CreatePackageDialogComponent } from './create-package/create-package-dialog.component';
-import { EditPackageDialogComponent } from './edit-package/edit-package-dialog.component';
+import { CreateUserReferalRequestDialogComponent } from './create-user-referal-request/create-user-referal-request-dialog.component';
+import { EditUserReferalRequestDialogComponent } from './edit-user-referal-request/edit-user-referal-request-dialog.component';
 
 
 class PagedWithdrawHistoryDto extends PagedRequestDto {
@@ -13,13 +13,13 @@ class PagedWithdrawHistoryDto extends PagedRequestDto {
   isActive: boolean | null;
 }
 @Component({
-  templateUrl: './packages.component.html',
+  templateUrl: './user-referal-request.component.html',
   animations: [appModuleAnimation()],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PackagesComponent extends PagedListingComponentBase<PackageDto> {
+export class UserReferalRequestComponent extends PagedListingComponentBase<PackageDto> {
   constructor(injector: Injector,
-    private _packageService: PackageServiceProxy,
+    private _userReferalRequestService: UserReferralRequestServiceProxy,
     private _modalService: BsModalService
     ) {
     super(injector);
@@ -27,7 +27,7 @@ export class PackagesComponent extends PagedListingComponentBase<PackageDto> {
   }
  
   keyword: string;
-  packages: PackageDtoPagedResultDto;
+  userReferalRequest: UserReferralRequestDtoPagedResultDto;
   
   ngOnInit(): void {
     var pagedHistory = new PagedWithdrawHistoryDto();
@@ -41,22 +41,20 @@ export class PackagesComponent extends PagedListingComponentBase<PackageDto> {
   ): void {
     request.keyword = this.keyword;
     request.isActive = false;
-    this._packageService
+    this._userReferalRequestService
       .getPaginatedAll(
         undefined,
-        this.keyword,
-         
-        request.isActive,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
         request.skipCount,
         request.maxResultCount
       )
-      .pipe(
-        finalize(() => {
-          finishedCallback();
-        })
-      )
-      .subscribe((result: PackageDtoPagedResultDto) => {
-        this.packages = result;
+      .subscribe((result: UserReferralRequestDtoPagedResultDto) => {
+        this.userReferalRequest = result;
         console.log("packages",result);
         this.showPaging(result, pageNumber);
       });
@@ -67,7 +65,7 @@ export class PackagesComponent extends PagedListingComponentBase<PackageDto> {
       undefined,
       (result: boolean) => {
         if (result) {
-          this._packageService.delete(event.id).subscribe(() => {
+          this._userReferalRequestService.delete(event.id).subscribe(() => {
             abp.notify.success(this.l('SuccessfullyDeleted'));
             this.refresh();
           });
@@ -77,27 +75,28 @@ export class PackagesComponent extends PagedListingComponentBase<PackageDto> {
   }
 
 
-  createPackage(): void {
-    this.showCreateOrEditPackageDialog();
+  createUserReferalRequest(): void {
+    this.showCreateOrEditUserReferalRequestDialog();
   }
 
-  editPackage(event: PackageDto): void {
-    this.showCreateOrEditPackageDialog(event.id);
+  editUserReferalRequest(event: PackageDto): void {
+    this.showCreateOrEditUserReferalRequestDialog(event.id);
   }
 
 
-  private showCreateOrEditPackageDialog(id?: number): void {
-    let createOrEditPackageDialog: BsModalRef;
+  private showCreateOrEditUserReferalRequestDialog(id?: number): void {
+    debugger;
+    let createOrEditUserReferalRequestDialog: BsModalRef;
     if (!id) {
-      createOrEditPackageDialog = this._modalService.show(
-        CreatePackageDialogComponent,
+      createOrEditUserReferalRequestDialog = this._modalService.show(
+        CreateUserReferalRequestDialogComponent,
         {
           class: 'modal-lg',
         }
       );
     } else {
-      createOrEditPackageDialog = this._modalService.show(
-        EditPackageDialogComponent,
+      createOrEditUserReferalRequestDialog = this._modalService.show(
+        EditUserReferalRequestDialogComponent,
         {
           class: 'modal-lg',
           initialState: {
@@ -107,7 +106,7 @@ export class PackagesComponent extends PagedListingComponentBase<PackageDto> {
       );
     }
 
-    createOrEditPackageDialog.content.onSave.subscribe(() => {
+    createOrEditUserReferalRequestDialog.content.onSave.subscribe(() => {
      // this.refresh();
       var pagedHistory = new PagedWithdrawHistoryDto();
       this.list(pagedHistory,1,undefined);

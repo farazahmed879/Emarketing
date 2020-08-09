@@ -38,7 +38,6 @@ export class UserPackageComponent extends AppComponentBase
   getAllPackages() {
     this._packageService.getAllPackage()
       .subscribe((result) => {
-        debugger;
         if (result && result.length > 0) {
 
         }

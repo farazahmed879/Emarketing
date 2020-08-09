@@ -21,6 +21,7 @@ class PagedPackageAdDto extends PagedRequestDto {
 export class PackagesAdvertisementComponent extends PagedListingComponentBase<PackageAdDto> {
   constructor(injector: Injector,
     private _packageAdsService: PackageAdServiceProxy,
+    public _packageService: PackageServiceProxy,
     private _modalService: BsModalService,
     private activatedRoute: ActivatedRoute
     ) {
@@ -31,12 +32,15 @@ export class PackagesAdvertisementComponent extends PagedListingComponentBase<Pa
   packageId: number;
   keyword: string;
   packages: PackageDtoPagedResultDto;
+  package = new PackageDto();
   
   ngOnInit(): void {
     this.packageId = parseInt(this.activatedRoute.snapshot.paramMap.get('packageId'));    
     var pagedHistory = new PagedPackageAdDto(); 
     this.list(pagedHistory,1,undefined);
+    this.getPackageById(this.packageId);
   }
+  
   protected list(
     request: PagedPackageAdDto,
     pageNumber: number,
@@ -64,6 +68,14 @@ export class PackagesAdvertisementComponent extends PagedListingComponentBase<Pa
         console.log("packages",result);
         this.showPaging(result, pageNumber);
       });
+  }
+
+  getPackageById(packageId: number) {
+    this._packageService.getById(packageId).subscribe((result) => {
+      this.package = result;
+      console.log("Package",result);
+    }
+    )
   }
   delete(event: PackageAdDto){
     abp.message.confirm(
@@ -119,8 +131,8 @@ export class PackagesAdvertisementComponent extends PagedListingComponentBase<Pa
 
     createOrEditPackageDialog.content.onSave.subscribe(() => {
       this.refresh();
-      var pagedHistory = new PagedPackageAdDto();
-      this.list(pagedHistory,1,undefined);
+      // var pagedHistory = new PagedPackageAdDto();
+      // this.list(pagedHistory,1,undefined);
     });
   }
 

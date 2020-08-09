@@ -48,7 +48,9 @@ import {
   UserRequestServiceProxy,
   UserWithdrawDetailServiceProxy,
   UserPersonalDetailServiceProxy,
-  PackageAdServiceProxy
+  PackageAdServiceProxy,
+  UserReferralServiceProxy,
+  UserReferralRequestServiceProxy
 } from '@shared/service-proxies/service-proxies';
 // Package
 import { PackagesComponent } from './packages/packages.component';
@@ -61,6 +63,14 @@ import { UserPackageComponent } from './user-Packages/user-Packages.component';
 import { PackagesAdvertisementComponent } from './packages-advertisement/packages-advertisement.component';
 import { EditPackagesAdvertisementComponent } from './packages-advertisement/edit-packages-advertisement/edit-package-advertisement-dialog.component';
 import { CreatePackagesAdvertisementComponent } from './packages-advertisement/create-packages-advertisement/create-package-advertisement-dialog.component';
+// User Request
+import { UserRequestComponent } from './user-request/user-request.component';
+//User Referal
+import { UserReferalComponent } from './user-referal/user-referal.component';
+//User Referal Request
+import { UserReferalRequestComponent } from './user-referal-request/user-referal-request.component';
+import { CreateUserReferalRequestDialogComponent } from './user-referal-request/create-user-referal-request/create-user-referal-request-dialog.component';
+import { EditUserReferalRequestDialogComponent } from './user-referal-request/edit-user-referal-request/edit-user-referal-request-dialog.component';
 
 @NgModule({
   declarations: [
@@ -104,7 +114,15 @@ import { CreatePackagesAdvertisementComponent } from './packages-advertisement/c
     //PAckages-Advertisement
     PackagesAdvertisementComponent,
     EditPackagesAdvertisementComponent,
-    CreatePackagesAdvertisementComponent
+    CreatePackagesAdvertisementComponent,
+    // User Request
+    UserRequestComponent,
+    //User Referal
+    UserReferalComponent,
+    // User Referal Request
+    UserReferalRequestComponent,
+    CreateUserReferalRequestDialogComponent,
+    EditUserReferalRequestDialogComponent
 
   ],
   imports: [
@@ -130,7 +148,10 @@ import { CreatePackagesAdvertisementComponent } from './packages-advertisement/c
     UserRequestServiceProxy,
     UserWithdrawDetailServiceProxy,
     UserPersonalDetailServiceProxy,
-    PackageAdServiceProxy
+    PackageAdServiceProxy,
+    UserReferralServiceProxy,
+    UserRequestComponent,
+    UserReferralRequestServiceProxy
   ],
   entryComponents: [
     // tenants
@@ -157,7 +178,15 @@ import { CreatePackagesAdvertisementComponent } from './packages-advertisement/c
     //PAckages-Advertisement
     PackagesAdvertisementComponent,
     EditPackagesAdvertisementComponent,
-    CreatePackagesAdvertisementComponent
+    CreatePackagesAdvertisementComponent,
+    // User Request
+    UserRequestComponent,
+    //User Referal
+    UserReferalComponent,
+    // User Referal Request
+    UserReferalRequestComponent,
+    CreateUserReferalRequestDialogComponent,
+    EditUserReferalRequestDialogComponent
 
   ],
 })

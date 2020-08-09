@@ -1,0 +1,95 @@
+<form class="form-horizontal" autocomplete="off" #editUserReferalRequestModal="ngForm" (ngSubmit)="save()">
+  <abp-modal-header [title]="'Edit User Referal Request' | localize" (onCloseClick)="bsModalRef.hide()"></abp-modal-header>
+  <div class="modal-body">
+    <div class="form-group row required">
+      <label class="col-md-3 col-form-label" for="name">
+        {{ "First Name" | localize }}
+      </label>
+      <div class="col-md-9">
+        <input
+          type="text"
+          class="form-control"
+          name="firsName"
+          id="firsName"
+          required
+          maxlength="32"
+          [(ngModel)]="userReferalRequest.firsName"
+          #firstNameModel="ngModel"
+          #firtNameEl
+        />
+        <abp-validation-summary
+          [control]="firstNameModel"
+          [controlEl]="firstNameEl"
+        ></abp-validation-summary>
+      </div>
+    </div>
+        <div class="form-group row required">
+          <label class="col-md-3 col-form-label" for="name">
+            {{ "Last Name" | localize }}
+          </label>
+          <div class="col-md-9">
+            <input
+              type="text"
+              class="form-control"
+              name="lastName"
+              id="lastName"
+              required
+              maxlength="32"
+              [(ngModel)]="userReferalRequest.lastName"
+              #lastNameModel="ngModel"
+              #lastNameEl
+            />
+            <abp-validation-summary
+              [control]="lastNameModel"
+              [controlEl]="lastNameEl"
+            ></abp-validation-summary>
+          </div>
+        </div>
+
+        <div class="form-group row required">
+          <label class="col-md-3 col-form-label" for="name">
+            {{ "Email" | localize }}
+          </label>
+          <div class="col-md-9">
+            <textarea
+              type="text"
+              class="form-control"
+              name="email"
+              id="email"
+              required
+              [(ngModel)]="userReferalRequest.email"
+              #emailModel="ngModel"
+              #emailEl
+            ></textarea>
+            <abp-validation-summary
+              [control]="emailModel"
+              [controlEl]="emailEl"
+            ></abp-validation-summary>
+          </div>
+        </div>
+        <div class="form-group row required">
+          <label class="col-md-3 col-form-label" for="name">
+            {{ "User Name" | localize }}
+          </label>
+          <div class="col-md-9">
+            <input
+              type="text"
+              class="form-control"
+              name="userName"
+              id="userName"
+              required
+              maxlength="32"
+              [(ngModel)]="userReferalRequest.userName"
+              #userNameModel="ngModel"
+              #userNameEl
+            />
+            <abp-validation-summary
+              [control]="userNameModel"
+              [controlEl]="userNameEl"
+            ></abp-validation-summary>
+          </div>
+        </div>
+  </div>
+  <abp-modal-footer [cancelDisabled]="saving" 
+    (onCancelClick)="bsModalRef.hide()"></abp-modal-footer>
+</form>
