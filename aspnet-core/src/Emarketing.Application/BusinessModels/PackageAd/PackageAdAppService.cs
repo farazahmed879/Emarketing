@@ -32,20 +32,20 @@ namespace Emarketing.BusinessModels.PackageAd
 
     public class PackageAdAppService : AbpServiceBase, IPackageAdAppService
     {
-        private readonly IRepository<BusinessObjects.PackageAd, long> _packageRepository;
+        private readonly IRepository<BusinessObjects.PackageAd, long> _packageAdRepository;
         private readonly ISessionAppService _sessionAppService;
         private readonly IAbpSession _abpSession;
         private readonly UserManager _userManager;
         private readonly RoleManager _roleManager;
 
         public PackageAdAppService(
-            IRepository<BusinessObjects.PackageAd, long> packageRepository,
+            IRepository<BusinessObjects.PackageAd, long> packageAdRepository,
             ISessionAppService sessionAppService,
             IAbpSession abpSession,
             UserManager userManager,
             RoleManager roleManager)
         {
-            _packageRepository = packageRepository;
+            _packageAdRepository = packageAdRepository;
             _sessionAppService = sessionAppService;
             _abpSession = abpSession;
             _userManager = userManager;
@@ -75,7 +75,7 @@ namespace Emarketing.BusinessModels.PackageAd
 
         private async Task<ResponseMessageDto> CreatePackageAdAsync(CreatePackageAdDto modelDto)
         {
-            var result = await _packageRepository.InsertAsync(new BusinessObjects.PackageAd()
+            var result = await _packageAdRepository.InsertAsync(new BusinessObjects.PackageAd()
             {
                 PackageId = modelDto.PackageId,
                 Title = modelDto.Title,
@@ -108,7 +108,7 @@ namespace Emarketing.BusinessModels.PackageAd
 
         private async Task<ResponseMessageDto> UpdatePackageAdAsync(CreatePackageAdDto modelDto)
         {
-            var result = await _packageRepository.UpdateAsync(new BusinessObjects.PackageAd()
+            var result = await _packageAdRepository.UpdateAsync(new BusinessObjects.PackageAd()
             {
                 Id = modelDto.Id,
                 PackageId = modelDto.PackageId,
@@ -146,7 +146,7 @@ namespace Emarketing.BusinessModels.PackageAd
                 throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
             }
 
-            var result = await _packageRepository.GetAll()
+            var result = await _packageAdRepository.GetAll()
                 .Where(i => i.Id == packageId)
                 .Select(i =>
                     new PackageAdDto()
@@ -174,12 +174,12 @@ namespace Emarketing.BusinessModels.PackageAd
                 throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
             }
 
-            var model = await _packageRepository.GetAll().Where(i => i.Id == packageId)
+            var model = await _packageAdRepository.GetAll().Where(i => i.Id == packageId)
                 .FirstOrDefaultAsync();
             if (model != null)
             {
                 model.IsDeleted = true;
-                var result = await _packageRepository.UpdateAsync(model);
+                var result = await _packageAdRepository.UpdateAsync(model);
             }
 
 
@@ -201,7 +201,7 @@ namespace Emarketing.BusinessModels.PackageAd
             //    throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
             //}
 
-            var result = _packageRepository.GetAll().Where(i => i.IsDeleted == false)
+            var result = _packageAdRepository.GetAll().Where(i => i.IsDeleted == false)
                 .Select(i => new PackageAdDto()
                 {
                     Id = i.Id,
@@ -230,7 +230,7 @@ namespace Emarketing.BusinessModels.PackageAd
                 throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
             }
 
-            var filteredPackageAds = _packageRepository.GetAll().Where(i=> i.PackageId == input.PackageId);
+            var filteredPackageAds = _packageAdRepository.GetAll().Where(i=> i.PackageId == input.PackageId);
 
             var pagedAndFilteredPackageAds = filteredPackageAds
                 .OrderBy(i => i.Id)

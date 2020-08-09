@@ -17,11 +17,15 @@ using Microsoft.EntityFrameworkCore;
 namespace Emarketing.BusinessModels.Package
 {
     public interface IAdminAppService : IApplicationService
-    {     
-
-        List<PackageDto> GetAll();        
+    {
+        List<PackageDto> GetAll();
 
         Task<bool> SeedPackages();
+        //Task<bool> SeedRole();
+        //Task<bool> AcceptUserRequest();
+        //Task<bool> AcceptUserRefferalRequest();
+        //Task<bool> UpdateWithdrawRequest();
+        //Task<bool> RenewPackgeAdForUsers();
     }
 
 
@@ -47,7 +51,7 @@ namespace Emarketing.BusinessModels.Package
             _roleManager = roleManager;
         }
 
-       
+
         public List<PackageDto> GetAll()
         {
             //var userId = _abpSession.UserId;
@@ -77,8 +81,8 @@ namespace Emarketing.BusinessModels.Package
                     LastModifierUserId = i.LastModifierUserId
                 }).ToList();
             return result;
-        }              
-         
+        }
+
         private async Task<bool> AuthenticateAdminUser()
         {
             if (_abpSession.UserId == null)
@@ -107,6 +111,120 @@ namespace Emarketing.BusinessModels.Package
             {
                 throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
             }
+
+
+            var packageList = new List<BusinessObjects.Package>()
+            {
+                new BusinessObjects.Package()
+                {
+                    Name = "Package 1",
+                    Code = "Package-1",
+                    Description = "",
+                    DurationInDays = 60,
+                    Price = 2000,
+                    TotalEarning = 3900,
+                    ProfitValue = 0,
+                    DailyAdCount = 5,
+                    PricePerAd = 13,
+                    ReferralAmount = 300,
+                    IsActive = false,
+                },
+                new BusinessObjects.Package()
+                {
+                    Name = "Package 2",
+                    Code = "Package-2",
+                    Description = "",
+                    DurationInDays = 60,
+                    Price = 3000,
+                    TotalEarning = 3900,
+                    ProfitValue = 0,
+                    DailyAdCount = 5,
+                    PricePerAd = 20,
+                    ReferralAmount = 300,
+
+
+                    IsActive = false,
+                },
+                new BusinessObjects.Package()
+                {
+                    Name = "Package 3",
+                    Code = "Package-3",
+                    Description = "",
+                    DurationInDays = 30,
+                    Price = 5000,
+                    TotalEarning = 11040,
+                    ProfitValue = 0,
+                    DailyAdCount = 5,
+                    PricePerAd = 73.6m,
+                    ReferralAmount = 300,
+                    IsActive = false,
+                },
+                new BusinessObjects.Package()
+                {
+                    Name = "Package 4",
+                    Code = "Package-4",
+                    Description = "",
+                    DurationInDays = 60,
+                    Price = 5000,
+                    TotalEarning = 11040,
+                    ProfitValue = 0,
+                    DailyAdCount = 5,
+                    PricePerAd = 36.8m,
+                    ReferralAmount = 700,
+                    IsActive = false,
+                },
+                new BusinessObjects.Package()
+                {
+                    Name = "Package 5",
+                    Code = "Package-5",
+                    Description = "",
+                    DurationInDays = 90,
+                    Price = 10000,
+                    TotalEarning = 26010,
+                    ProfitValue = 0,
+                    DailyAdCount = 5,
+                    PricePerAd = 57.8m,
+                    ReferralAmount = 1200,
+                    IsActive = false,
+                },
+                new BusinessObjects.Package()
+                {
+                    Name = "Package 6",
+                    Code = "Package-6",
+                    Description = "",
+                    DurationInDays = 90,
+                    Price = 20000,
+                    TotalEarning = 37980,
+                    ProfitValue = 0,
+                    DailyAdCount = 5,
+                    PricePerAd = 84.4m,
+                    ReferralAmount = 700,
+                    IsActive = false,
+                },
+                new BusinessObjects.Package()
+                {
+                    Name = "Package 7",
+                    Code = "Package-7",
+                    Description = "",
+                    DurationInDays = 90,
+                    Price = 25000,
+                    TotalEarning = 47700,
+                    ProfitValue = 0,
+                    DailyAdCount = 5,
+                    PricePerAd = 106,
+                    ReferralAmount = 2500,
+                    IsActive = false,
+                }
+            };
+
+            foreach (var item in packageList)
+            {
+                var package = _packageRepository.InsertOrUpdate(item);
+            }
+
+
+            UnitOfWorkManager.Current.SaveChanges();
+
             return true;
         }
     }

@@ -20,6 +20,11 @@ namespace Emarketing.BusinessObjects
         public int DurationInDays { get; set; }
         public decimal PricePerAd { get; set; }
         public decimal TotalEarning { get; set; }
+        public bool IsUnlimited { get; set; }
+        public int? Limit { get; set; }
+        public decimal? MaximumWithdraw { get; set; }
+        public decimal? MinimumWithdraw { get; set; }
+
         public bool IsActive { get; set; }
         
     }
