@@ -24,6 +24,8 @@ namespace Emarketing.BusinessModels.UserPackageAdDetail
         Task<UserPackageAdDetailDto> GetById(long userPackageAdDetailId);
 
         Task<List<UserPackageAdDetailDto>> GetAll();
+        Task<PagedResultDto<UserPackageAdDetailDto>> GetPaginatedAllAsync(
+            UserPackageAdDetailInputDto input);
     }
 
 

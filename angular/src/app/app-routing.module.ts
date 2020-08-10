@@ -17,6 +17,7 @@ import { PackagesAdvertisementComponent } from './packages-advertisement/package
 import { UserRequestComponent } from './user-request/user-request.component';
 import { UserReferalComponent } from './user-referal/user-referal.component';
 import { UserReferalRequestComponent } from './user-referal-request/user-referal-request.component';
+import { UserPackageDetailComponent } from './user-package-detail/user-package-detail.component';
 
 @NgModule({
     imports: [
@@ -41,6 +42,7 @@ import { UserReferalRequestComponent } from './user-referal-request/user-referal
                     { path: 'user-request', component: UserRequestComponent },
                     { path: 'user-referal', component: UserReferalComponent },
                     { path: 'user-referal-request', component: UserReferalRequestComponent },
+                    { path: 'user-package-detail', component: UserPackageDetailComponent },
                 ]
             }
         ])

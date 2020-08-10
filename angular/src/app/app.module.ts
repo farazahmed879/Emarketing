@@ -50,7 +50,8 @@ import {
   UserPersonalDetailServiceProxy,
   PackageAdServiceProxy,
   UserReferralServiceProxy,
-  UserReferralRequestServiceProxy
+  UserReferralRequestServiceProxy,
+  UserPackageAdDetailServiceProxy
 } from '@shared/service-proxies/service-proxies';
 // Package
 import { PackagesComponent } from './packages/packages.component';
@@ -71,7 +72,9 @@ import { UserReferalComponent } from './user-referal/user-referal.component';
 import { UserReferalRequestComponent } from './user-referal-request/user-referal-request.component';
 import { CreateUserReferalRequestDialogComponent } from './user-referal-request/create-user-referal-request/create-user-referal-request-dialog.component';
 import { EditUserReferalRequestDialogComponent } from './user-referal-request/edit-user-referal-request/edit-user-referal-request-dialog.component';
-
+//User Package Detail
+import {UserPackageDetailComponent} from './user-package-detail/user-package-detail.component';
+import {EditUserPackagesDetailComponent} from './user-package-detail/edit-user-packages-detail/edit-user-packages-detail-dialog.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -122,8 +125,10 @@ import { EditUserReferalRequestDialogComponent } from './user-referal-request/ed
     // User Referal Request
     UserReferalRequestComponent,
     CreateUserReferalRequestDialogComponent,
-    EditUserReferalRequestDialogComponent
-
+    EditUserReferalRequestDialogComponent,
+   //User Package Detail
+   UserPackageDetailComponent,
+   EditUserPackagesDetailComponent
   ],
   imports: [
     CommonModule,
@@ -151,7 +156,8 @@ import { EditUserReferalRequestDialogComponent } from './user-referal-request/ed
     PackageAdServiceProxy,
     UserReferralServiceProxy,
     UserRequestComponent,
-    UserReferralRequestServiceProxy
+    UserReferralRequestServiceProxy,
+    UserPackageAdDetailServiceProxy  
   ],
   entryComponents: [
     // tenants
@@ -186,7 +192,10 @@ import { EditUserReferalRequestDialogComponent } from './user-referal-request/ed
     // User Referal Request
     UserReferalRequestComponent,
     CreateUserReferalRequestDialogComponent,
-    EditUserReferalRequestDialogComponent
+    EditUserReferalRequestDialogComponent,
+    //User Package Detail
+    UserPackageDetailComponent,
+    EditUserPackagesDetailComponent
 
   ],
 })
