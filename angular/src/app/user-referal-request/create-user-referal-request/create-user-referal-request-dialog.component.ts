@@ -40,7 +40,8 @@ export class CreateUserReferalRequestDialogComponent extends AppComponentBase
 
   save(): void {
     this.saving = true;
-
+    this.userReferalRequest.userId = this.appSession.userId;
+    
     this._userReferalRequestService
       .createOrEdit(this.userReferalRequest)
       .pipe(

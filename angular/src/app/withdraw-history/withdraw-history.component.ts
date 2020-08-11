@@ -43,11 +43,6 @@ export class WithdrawHistoryComponent extends PagedListingComponentBase<Withdraw
         request.skipCount,
         request.maxResultCount
       )
-      .pipe(
-        finalize(() => {
-          finishedCallback();
-        })
-      )
       .subscribe((result: WithdrawRequestDtoPagedResultDto) => {
         this.withdrawRequestHistory = result;
         console.log(result)

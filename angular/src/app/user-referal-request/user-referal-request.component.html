@@ -41,7 +41,7 @@
             </thead>
             <tbody>
               <tr *ngFor="
-                  let package of (userReferalRequest.items
+                  let userReferalRequest of (userReferalRequest?.items
                     | paginate
                       : {
                           id: 'server',
@@ -50,10 +50,10 @@
                           totalItems: totalItems
                         })
                 ">
-                <td>{{ package.code }}</td>
-                <td>{{ package.name }}</td>
-                <td>{{ package.price }}</td>
-                <td>{{ package.profitValue }}</td>
+                <td>{{ userReferalRequest?.code }}</td>
+                <td>{{ userReferalRequest?.name }}</td>
+                <td>{{ userReferalRequest?.price }}</td>
+                <td>{{ userReferalRequest?.profitValue }}</td>
                 <td>
                   <div class="nav-item dropdown nav-user-menu" dropdown>
                     <a href="javascript:;" class="nav-link" dropdownToggle>

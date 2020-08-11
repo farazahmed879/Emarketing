@@ -29,8 +29,7 @@ export class UserReferalComponent extends PagedListingComponentBase<WithdrawRequ
   }
   protected list(
     request: PagedWithdrawHistoryDto,
-    pageNumber: number,
-    finishedCallback: Function
+    pageNumber: number
   ): void {
     request.keyword = this.keyword;
 
@@ -44,11 +43,6 @@ export class UserReferalComponent extends PagedListingComponentBase<WithdrawRequ
         undefined,
         request.skipCount,
         request.maxResultCount
-      )
-      .pipe(
-        finalize(() => {
-          finishedCallback();
-        })
       )
       .subscribe((result: UserReferralDtoPagedResultDto) => {
         this.userReferal = result;

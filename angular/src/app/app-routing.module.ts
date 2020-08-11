@@ -34,15 +34,15 @@ import { UserPackageDetailComponent } from './user-package-detail/user-package-d
                     { path: 'tenants', component: TenantsComponent, data: { permission: 'Pages.Tenants' }, canActivate: [AppRouteGuard] },
                     { path: 'home', component: HomeComponent },
                     { path: 'about', component: AboutComponent },
-                    { path: 'update-password', component: ChangePasswordComponent },
-                    { path: 'user-profile', component: UserProfileComponent },
-                    { path: 'user-packages', component: UserPackageComponent },
+                    { path: 'update-password', component: ChangePasswordComponent, canActivate: [AppRouteGuard]},
+                    { path: 'user-profile', component: UserProfileComponent, canActivate: [AppRouteGuard] },
+                    { path: 'user-packages', component: UserPackageComponent, canActivate: [AppRouteGuard] },
                     { path: '', component: HomeComponent },
-                    { path: 'packageAd/:packageId', component: PackagesAdvertisementComponent },
-                    { path: 'user-request', component: UserRequestComponent },
-                    { path: 'user-referal', component: UserReferalComponent },
-                    { path: 'user-referal-request', component: UserReferalRequestComponent },
-                    { path: 'user-package-detail', component: UserPackageDetailComponent },
+                    { path: 'packageAd/:packageId', component: PackagesAdvertisementComponent, canActivate: [AppRouteGuard] },
+                    { path: 'user-request', component: UserRequestComponent, canActivate: [AppRouteGuard] },
+                    { path: 'user-referal', component: UserReferalComponent, canActivate: [AppRouteGuard] },
+                    { path: 'user-referal-request', component: UserReferalRequestComponent, canActivate: [AppRouteGuard] },
+                    { path: 'user-package-detail', component: UserPackageDetailComponent, canActivate: [AppRouteGuard] },
                 ]
             }
         ])

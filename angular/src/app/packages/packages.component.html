@@ -41,7 +41,7 @@
             </thead>
             <tbody>
               <tr *ngFor="
-                  let package of (packages.items
+                  let package of (packages?.items
                     | paginate
                       : {
                           id: 'server',

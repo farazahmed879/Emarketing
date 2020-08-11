@@ -18,8 +18,7 @@ class PagedWithdrawHistoryDto extends PagedRequestDto {
 export class UserPackageDetailComponent extends PagedListingComponentBase<UserPackageAdDetailDto> {
   constructor(injector: Injector,
     private _userPackageDetailService: UserPackageAdDetailServiceProxy,
-    public bsModalRef: BsModalRef,
-    private _modalService: BsModalService,
+    private _modalService: BsModalService
   ) {
     super(injector);
   }
@@ -30,8 +29,7 @@ export class UserPackageDetailComponent extends PagedListingComponentBase<UserPa
   }
   protected list(
     request: PagedWithdrawHistoryDto,
-    pageNumber: number,
-    finishedCallback: Function
+    pageNumber: number
   ): void {
     request.keyword = this.keyword;
 
@@ -42,12 +40,8 @@ export class UserPackageDetailComponent extends PagedListingComponentBase<UserPa
         request.skipCount,
         request.maxResultCount
       )
-      .pipe(
-        finalize(() => {
-          finishedCallback();
-        })
-      )
       .subscribe((result: UserPackageAdDetailDtoPagedResultDto) => {
+        this.isTableLoading = false;
         this.userPackageDetail = result;
         console.log("userPackageDetail", result);
         this.showPaging(result, pageNumber);
@@ -79,7 +73,7 @@ export class UserPackageDetailComponent extends PagedListingComponentBase<UserPa
     createOrEditUserPackageAdDetailDialog.content.onSave.subscribe(() => {
      // this.refresh();
       var pagedHistory = new PagedWithdrawHistoryDto();
-      this.list(pagedHistory,1,undefined);
+      this.list(pagedHistory,1);
     });
   }
 

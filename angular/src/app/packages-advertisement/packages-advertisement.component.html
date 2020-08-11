@@ -53,7 +53,7 @@
             <tbody>
               <tr 
                 *ngFor="
-                  let package of (packages.items
+                  let packagesAds of (packagesAds?.items
                     | paginate
                       : {
                           id: 'server',
@@ -63,9 +63,9 @@
                         })
                 "
               >
-                <td>{{ package.title }}</td>
-                <td>{{ package.url }}</td>                
-                <td>{{ package.price }}</td>
+                <td>{{ packagesAds.title }}</td>
+                <td>{{ packagesAds.url }}</td>                
+                <td>{{ packagesAds.price }}</td>
                 <td>
                   <div class="nav-item dropdown nav-user-menu" dropdown>
                     <a href="javascript:;" class="nav-link" dropdownToggle>

@@ -45,7 +45,7 @@
             <tbody>
               <tr
                 *ngFor="
-                  let withdrawRequest of (withdrawRequestHistory.items
+                  let withdrawHistory of (withdrawRequestHistory?.items
                     | paginate
                       : {
                           id: 'server',
@@ -55,9 +55,9 @@
                         })
                 "
               >
-                <td>{{ withdrawRequest.userName }}</td>
-                <td>{{ withdrawRequest.amount }}</td>
-                <td>{{ withdrawRequest.withdrawType }}</td>
+                <td>{{ withdrawHistory?.userName }}</td>
+                <td>{{ withdrawHistory?.amount }}</td>
+                <td>{{ withdrawHistory?.withdrawType }}</td>
                 <!-- <td>
                   <button
                     type="button"

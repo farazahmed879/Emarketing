@@ -30,8 +30,7 @@ export class UserRequestComponent extends PagedListingComponentBase<WithdrawRequ
   }
   protected list(
     request: PagedWithdrawHistoryDto,
-    pageNumber: number,
-    finishedCallback: Function
+    pageNumber: number
   ): void {
     request.keyword = this.keyword;
     request.isActive = false;
@@ -47,11 +46,6 @@ export class UserRequestComponent extends PagedListingComponentBase<WithdrawRequ
         undefined,
         request.skipCount,
         request.maxResultCount
-      )
-      .pipe(
-        finalize(() => {
-          finishedCallback();
-        })
       )
       .subscribe((result: UserRequestDtoPagedResultDto) => {
         this.userRequest = result;

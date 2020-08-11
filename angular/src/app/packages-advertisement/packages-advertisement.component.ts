@@ -1,6 +1,6 @@
 import { Component, Injector, ChangeDetectionStrategy } from '@angular/core';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
-import { PackageServiceProxy, PackageDtoPagedResultDto, PackageDto, PackageAdServiceProxy, PackageAdDto } from '@shared/service-proxies/service-proxies';
+import { PackageServiceProxy, PackageDtoPagedResultDto, PackageDto, PackageAdServiceProxy, PackageAdDto, PackageAdDtoPagedResultDto } from '@shared/service-proxies/service-proxies';
 import { finalize } from 'rxjs/operators';
 import { PagedRequestDto, PagedListingComponentBase } from '@shared/paged-listing-component-base';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
@@ -31,7 +31,7 @@ export class PackagesAdvertisementComponent extends PagedListingComponentBase<Pa
  
   packageId: number;
   keyword: string;
-  packages: PackageDtoPagedResultDto;
+  packagesAds: PackageAdDtoPagedResultDto;
   package = new PackageDto();
   
   ngOnInit(): void {
@@ -58,13 +58,8 @@ export class PackagesAdvertisementComponent extends PagedListingComponentBase<Pa
         request.skipCount,
         request.maxResultCount
       )
-      .pipe(
-        finalize(() => {
-          finishedCallback();
-        })
-      )
-      .subscribe((result: any) => {
-        this.packages = result;
+      .subscribe((result: PackageAdDtoPagedResultDto) => {
+        this.packagesAds = result;
         console.log("packages",result);
         this.showPaging(result, pageNumber);
       });

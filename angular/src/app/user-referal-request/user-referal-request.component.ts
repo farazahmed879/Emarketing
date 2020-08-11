@@ -31,13 +31,12 @@ export class UserReferalRequestComponent extends PagedListingComponentBase<Packa
   
   ngOnInit(): void {
     var pagedHistory = new PagedWithdrawHistoryDto();
-    this.list(pagedHistory,1,undefined);
+    this.list(pagedHistory,1);
   }
 
   protected list(
     request: PagedWithdrawHistoryDto,
-    pageNumber: number,
-    finishedCallback: Function
+    pageNumber: number
   ): void {
     request.keyword = this.keyword;
     request.isActive = false;
@@ -55,7 +54,7 @@ export class UserReferalRequestComponent extends PagedListingComponentBase<Packa
       )
       .subscribe((result: UserReferralRequestDtoPagedResultDto) => {
         this.userReferalRequest = result;
-        console.log("packages",result);
+        console.log("userReferalRequest",result);
         this.showPaging(result, pageNumber);
       });
   }
@@ -109,7 +108,7 @@ export class UserReferalRequestComponent extends PagedListingComponentBase<Packa
     createOrEditUserReferalRequestDialog.content.onSave.subscribe(() => {
      // this.refresh();
       var pagedHistory = new PagedWithdrawHistoryDto();
-      this.list(pagedHistory,1,undefined);
+      this.list(pagedHistory,1);
     });
   }
 
