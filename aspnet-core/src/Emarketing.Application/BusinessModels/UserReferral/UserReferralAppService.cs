@@ -6,7 +6,13 @@ using Abp.Application.Services;
 using Abp.Application.Services.Dto;
 using Abp.Domain.Repositories;
 using Abp.Linq.Extensions;
+using Abp.Runtime.Session;
+using Abp.UI;
+using Emarketing.Authorization.Roles;
+using Emarketing.Authorization.Users;
 using Emarketing.BusinessModels.UserReferral.Dto;
+using Emarketing.Helper;
+using Emarketing.Sessions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Emarketing.BusinessModels.UserReferral
@@ -28,13 +34,25 @@ namespace Emarketing.BusinessModels.UserReferral
     public class UserReferralAppService : AbpServiceBase, IUserReferralAppService
     {
         private readonly IRepository<BusinessObjects.UserReferral, long> _userReferralRepository;
+        private readonly ISessionAppService _sessionAppService;
+        private readonly IAbpSession _abpSession;
+        private readonly UserManager _userManager;
+        private readonly RoleManager _roleManager;
 
 
         public UserReferralAppService(
-            IRepository<BusinessObjects.UserReferral, long> userReferralRepository)
+            IRepository<BusinessObjects.UserReferral, long> userReferralRepository,
+            ISessionAppService sessionAppService,
+            IAbpSession abpSession,
+            UserManager userManager,
+            RoleManager roleManager)
 
         {
             _userReferralRepository = userReferralRepository;
+            _sessionAppService = sessionAppService;
+            _abpSession = abpSession;
+            _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         public async Task<ResponseMessageDto> CreateOrEditAsync(CreateUserReferralDto userReferralDto)
@@ -54,12 +72,20 @@ namespace Emarketing.BusinessModels.UserReferral
 
         private async Task<ResponseMessageDto> CreateUserReferralAsync(CreateUserReferralDto userReferralDto)
         {
+            if (_abpSession.UserId == null)
+            {
+                throw new UserFriendlyException(ErrorMessage.UserFriendly.InvalidLogin);
+            }
+
+            var userId = _abpSession.UserId;
             var result = await _userReferralRepository.InsertAsync(new BusinessObjects.UserReferral()
             {
-                UserId = userReferralDto.UserId,
+                UserId = userId.Value,
                 ReferralUserId = userReferralDto.ReferralUserId,
                 ReferralBonusStatusId = ReferralBonusStatus.Inactive,
                 ReferralAccountStatusId = userReferralDto.ReferralAccountStatusId,
+                PackageId = userReferralDto.PackageId,
+                
             });
 
             await UnitOfWorkManager.Current.SaveChangesAsync();
@@ -86,14 +112,20 @@ namespace Emarketing.BusinessModels.UserReferral
 
         private async Task<ResponseMessageDto> UpdateUserReferralAsync(CreateUserReferralDto userReferralDto)
         {
+            var isAdminUser = await AuthenticateAdminUser();
+            if (!isAdminUser)
+            {
+                throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
+            }
             var result = await _userReferralRepository.UpdateAsync(new BusinessObjects.UserReferral()
             {
                 Id = userReferralDto.Id,
-
                 ReferralUserId = userReferralDto.ReferralUserId,
                 ReferralBonusStatusId = userReferralDto.ReferralBonusStatusId,
                 ReferralAccountStatusId = userReferralDto.ReferralAccountStatusId,
                 UserId = userReferralDto.UserId,
+                PackageId = userReferralDto.PackageId,
+                
             });
 
             if (result != null)
@@ -124,8 +156,19 @@ namespace Emarketing.BusinessModels.UserReferral
                     new UserReferralDto()
                     {
                         Id = i.Id,
-                        //Name = i.Name,
-                        //Description = i.Description
+                        PackageId = i.PackageId,
+                        PackageName = i.Package.Name,
+                        UserName = i.User.FullName,
+                        UserId = i.UserId,
+                        ReferralUserName = i.ReferralUser.FullName,
+                        ReferralUserId = i.ReferralUserId,
+                        ReferralAccountStatusId = i.ReferralAccountStatusId,
+                        ReferralBonusStatusId = i.ReferralBonusStatusId,
+                        ReferralAccountStatusName = i.ReferralAccountStatusId.GetEnumFieldDescription(),
+                        ReferralBonusStatusName = i.ReferralBonusStatusId.GetEnumFieldDescription(),
+                        CreatorUserId = i.CreatorUserId,
+                        CreationTime = i.CreationTime,
+                        LastModificationTime = i.LastModificationTime,
                     })
                 .FirstOrDefaultAsync();
             return result;
@@ -133,6 +176,11 @@ namespace Emarketing.BusinessModels.UserReferral
 
         public async Task<ResponseMessageDto> DeleteAsync(long userReferralId)
         {
+            var isAdminUser = await AuthenticateAdminUser();
+            if (!isAdminUser)
+            {
+                throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
+            }
             var model = await _userReferralRepository.GetAll().Where(i => i.Id == userReferralId).FirstOrDefaultAsync();
             model.IsDeleted = true;
             var result = await _userReferralRepository.UpdateAsync(model);
@@ -152,11 +200,20 @@ namespace Emarketing.BusinessModels.UserReferral
                 .Select(i => new UserReferralDto()
                 {
                     Id = i.Id,
-                    //Name = i.Name,
-                    //Description = i.Description,
+                    PackageId = i.PackageId,
+                    PackageName = i.Package.Name,
+                    UserName = i.User.FullName,
+                    UserId = i.UserId,
+                    ReferralUserName = i.ReferralUser.FullName,
+                    ReferralUserId = i.ReferralUserId,
+                    ReferralAccountStatusId = i.ReferralAccountStatusId,
+                    ReferralBonusStatusId = i.ReferralBonusStatusId,
+                    ReferralAccountStatusName = i.ReferralAccountStatusId.GetEnumFieldDescription(),
+                    ReferralBonusStatusName = i.ReferralBonusStatusId.GetEnumFieldDescription(),
                     CreatorUserId = i.CreatorUserId,
                     CreationTime = i.CreationTime,
-                    LastModificationTime = i.LastModificationTime
+                    LastModificationTime = i.LastModificationTime,
+                   
                 }).ToListAsync();
             return result;
         }
@@ -166,8 +223,7 @@ namespace Emarketing.BusinessModels.UserReferral
         {
             var filteredUserReferrals = _userReferralRepository.GetAll()
                 .WhereIf(!string.IsNullOrWhiteSpace(input.UserName), x => x.UserId == input.UserId);
-            //.Where(i => i.IsDeleted == false && (input.TenantId == null || i.TenantId == input.TenantId))
-            //.WhereIf(!string.IsNullOrWhiteSpace(input.UserName), x => x.UserName.Contains(input.Name));
+             
 
             var pagedAndFilteredUserReferrals = filteredUserReferrals
                 .OrderBy(i => i.Id)
@@ -181,11 +237,42 @@ namespace Emarketing.BusinessModels.UserReferral
                         new UserReferralDto()
                         {
                             Id = i.Id,
-                            //Name = i.Name,
-                            //Description = i.Description,
-                            //TenantId = i.TenantId
+                            PackageId = i.PackageId,
+                            PackageName = i.Package.Name,
+                            UserName = i.User.FullName,
+                            UserId = i.UserId,
+                            ReferralUserName = i.ReferralUser.FullName,
+                            ReferralUserId = i.ReferralUserId,
+                            ReferralAccountStatusId = i.ReferralAccountStatusId,
+                            ReferralBonusStatusId = i.ReferralBonusStatusId,
+                            ReferralAccountStatusName = i.ReferralAccountStatusId.GetEnumFieldDescription(),
+                            ReferralBonusStatusName = i.ReferralBonusStatusId.GetEnumFieldDescription(),
+                            CreatorUserId = i.CreatorUserId,
+                            CreationTime = i.CreationTime,
+                            LastModificationTime = i.LastModificationTime,
                         })
                     .ToListAsync());
+        }
+
+
+        private async Task<bool> AuthenticateAdminUser()
+        {
+            if (_abpSession.UserId == null)
+            {
+                throw new UserFriendlyException(ErrorMessage.UserFriendly.InvalidLogin);
+            }
+
+            long userId = _abpSession.UserId.Value;
+            var user = await _userManager.GetUserByIdAsync(userId);
+
+            var userRoles = await _userManager.GetRolesAsync(user);
+
+            if (userRoles.Contains("Admin"))
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }

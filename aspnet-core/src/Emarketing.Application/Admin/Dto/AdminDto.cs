@@ -14,6 +14,18 @@ namespace Emarketing.BusinessModels.Package.Dto
         public int DurationInDays { get; set; }
         public decimal TotalEarning { get; set; }
         public bool IsActive { get; set; }
+    }
+
+    public class AcceptUserRequestDto
+    {
+        public long UserRequestId { get; set; }
+
+        
+    }
+
+    public class ActivateUserSubscriptionDto
+    {
+        public long UserId { get; set; }
 
 
     }

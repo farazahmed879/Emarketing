@@ -1,56 +1,81 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Abp;
 using Abp.Application.Services;
-using Abp.Application.Services.Dto;
 using Abp.Domain.Repositories;
-using Abp.Linq.Extensions;
 using Abp.Runtime.Session;
 using Abp.UI;
 using Emarketing.Authorization.Roles;
 using Emarketing.Authorization.Users;
 using Emarketing.BusinessModels.Package.Dto;
 using Emarketing.Sessions;
-using Microsoft.EntityFrameworkCore;
 
-namespace Emarketing.BusinessModels.Package
+namespace Emarketing.Admin
 {
     public interface IAdminAppService : IApplicationService
     {
         List<PackageDto> GetAll();
 
         Task<bool> SeedPackages();
+
         //Task<bool> SeedRole();
-        //Task<bool> AcceptUserRequest();
+        Task<bool> AcceptUserRequest(AcceptUserRequestDto requestDto);
+        Task<bool> ActivateUserSubscription(ActivateUserSubscriptionDto requestDto);
+        Task<bool> RenewPackageAdForUsers();
+
         //Task<bool> AcceptUserRefferalRequest();
         //Task<bool> UpdateWithdrawRequest();
-        //Task<bool> RenewPackgeAdForUsers();
+
     }
 
 
     public class AdminAppService : AbpServiceBase, IAdminAppService
     {
+        private readonly IRepository<User, long> _userRepository;
         private readonly IRepository<BusinessObjects.Package, long> _packageRepository;
+        private readonly IRepository<BusinessObjects.PackageAd, long> _packageAdRepository;
+
+        private readonly IRepository<BusinessObjects.UserPackageSubscriptionDetail, long>
+            _userPackageSubscriptionDetailRepository;
+
+        private readonly IRepository<BusinessObjects.UserPersonalDetail, long> _userPersonalDetailRepository;
+        private readonly IRepository<BusinessObjects.UserRequest, long> _userRequestRepository;
+        private readonly IRepository<BusinessObjects.UserWithdrawDetail, long> _userWithdrawDetailRepository;
+        private readonly IRepository<BusinessObjects.UserPackageAdDetail, long> _userPackageAdDetailRepository;
         private readonly ISessionAppService _sessionAppService;
         private readonly IAbpSession _abpSession;
         private readonly UserManager _userManager;
         private readonly RoleManager _roleManager;
 
         public AdminAppService(
+            IRepository<User, long> userRepository,
             IRepository<BusinessObjects.Package, long> packageRepository,
+            IRepository<BusinessObjects.PackageAd, long> packageAdRepository,
+            IRepository<BusinessObjects.UserPackageSubscriptionDetail, long> userPackageSubscriptionDetailRepository,
+            IRepository<BusinessObjects.UserPersonalDetail, long> userPersonalDetailRepository,
+            IRepository<BusinessObjects.UserRequest, long> userRequestRepository,
+            IRepository<BusinessObjects.UserWithdrawDetail, long> userWithdrawDetailRepository,
+            IRepository<BusinessObjects.UserPackageAdDetail, long> userPackageAdDetailRepository,
             ISessionAppService sessionAppService,
             IAbpSession abpSession,
             UserManager userManager,
             RoleManager roleManager)
         {
+            _userRepository = userRepository;
             _packageRepository = packageRepository;
+            _packageAdRepository = packageAdRepository;
+            _userPackageSubscriptionDetailRepository = userPackageSubscriptionDetailRepository;
+            _userPersonalDetailRepository = userPersonalDetailRepository;
+            _userRequestRepository = userRequestRepository;
+            _userWithdrawDetailRepository = userWithdrawDetailRepository;
+            _userPackageAdDetailRepository = userPackageAdDetailRepository;
             _sessionAppService = sessionAppService;
             _abpSession = abpSession;
             _userManager = userManager;
             _roleManager = roleManager;
         }
-
 
         public List<PackageDto> GetAll()
         {
@@ -224,6 +249,217 @@ namespace Emarketing.BusinessModels.Package
 
 
             UnitOfWorkManager.Current.SaveChanges();
+
+            return true;
+        }
+
+        public async Task<bool> AcceptUserRequest(AcceptUserRequestDto requestDto)
+        {
+            var userId = _abpSession.UserId;
+            var isAdminUser = await AuthenticateAdminUser();
+            if (!isAdminUser)
+            {
+                throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
+            }
+
+            //create new user from user request
+            var userRequest = _userRequestRepository
+                .GetAll()
+                .FirstOrDefault(i => i.Id == requestDto.UserRequestId);
+            if (userRequest == null)
+            {
+                return false;
+            }
+
+            var userPassword = userRequest.Password;
+
+            var package = _packageRepository
+                .GetAll()
+                .FirstOrDefault(i => i.Id == userRequest.PackageId);
+
+            if (package == null)
+            {
+                return false;
+            }
+
+            var newUser = _userManager.CreateAsync(new User()
+            {
+                UserName = userRequest.UserName,
+                Name = userRequest.FirstName,
+                EmailAddress = userRequest.Email,
+                Surname = userRequest.LastName,
+                IsActive = false,
+                IsEmailConfirmed = true,
+                PhoneNumber = userRequest.PhoneNumber,
+                CreatorUserId = userId,
+                CreationTime = DateTime.Now,
+                LastModificationTime = DateTime.Now,
+                LastModifierUserId = userId,
+            }, userPassword);
+            await UnitOfWorkManager.Current.SaveChangesAsync();
+
+            //save personal details
+
+            var userPersonalDetail = _userPersonalDetailRepository.InsertAsync(
+                new BusinessObjects.UserPersonalDetail()
+                {
+                    Gender = Gender.Male,
+                    Birthday = DateTime.Now,
+                    PhoneNumber = userRequest.PhoneNumber,
+                    UserId = newUser.Id,
+                    CreatorUserId = userId,
+                    CreationTime = DateTime.Now,
+                    LastModificationTime = DateTime.Now,
+                    LastModifierUserId = userId,
+                });
+
+            await UnitOfWorkManager.Current.SaveChangesAsync();
+
+            //save withdraw details
+
+            var userWithdrawDetail = _userWithdrawDetailRepository.InsertAsync(
+                new BusinessObjects.UserWithdrawDetail()
+                {
+                    WithdrawTypeId = WithdrawType.BankTransfer,
+                    UserId = newUser.Id,
+                    CreatorUserId = userId,
+                    CreationTime = DateTime.Now,
+                    LastModificationTime = DateTime.Now,
+                    LastModifierUserId = userId,
+                });
+
+            await UnitOfWorkManager.Current.SaveChangesAsync();
+
+            //save user package subscription details
+
+            var userPackageSubscriptionDetail = _userPackageSubscriptionDetailRepository.InsertAsync(
+                new BusinessObjects.UserPackageSubscriptionDetail()
+                {
+                    PackageId = package.Id,
+                    //ExpiryDate = DateTime.Now.AddDays(package.DurationInDays),
+                    //StartDate = DateTime.Now,
+                    StatusId = UserPackageSubscriptionStatus.Pending,
+                    UserId = newUser.Id,
+                    CreatorUserId = userId,
+                    CreationTime = DateTime.Now,
+                    LastModificationTime = DateTime.Now,
+                    LastModifierUserId = userId,
+                });
+
+            await UnitOfWorkManager.Current.SaveChangesAsync();
+
+            //assign user role
+            //save permission
+
+            //update user request detail
+            var updatedUserRequest = _userRequestRepository.UpdateAsync(new BusinessObjects.UserRequest()
+            {
+                Id = userRequest.Id,
+                FirstName = userRequest.FirstName,
+                LastName = userRequest.FirstName,
+                UserName = userRequest.FirstName,
+                Email = userRequest.FirstName,
+                Password = userRequest.Password,
+                PhoneNumber = userRequest.PhoneNumber,
+                PackageId = userRequest.PackageId,
+                UserId = newUser.Id,
+            });
+            await UnitOfWorkManager.Current.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> ActivateUserSubscription(ActivateUserSubscriptionDto requestDto)
+        {
+            var userId = _abpSession.UserId;
+            var isAdminUser = await AuthenticateAdminUser();
+            if (!isAdminUser)
+            {
+                throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
+            }
+
+            var userPackageSubscriptionDetail = _userPackageSubscriptionDetailRepository
+                .GetAll()
+                .FirstOrDefault(i => i.Id == requestDto.UserId);
+
+            if (userPackageSubscriptionDetail == null)
+            {
+                return false;
+            }
+
+            var package = _packageRepository
+                .GetAll()
+                .FirstOrDefault(i => i.Id == userPackageSubscriptionDetail.PackageId);
+
+            if (package == null)
+            {
+                return false;
+            }
+
+            var updatedUserRequest = _userPackageSubscriptionDetailRepository.UpdateAsync(
+                new BusinessObjects.UserPackageSubscriptionDetail()
+                {
+                    Id = userPackageSubscriptionDetail.Id,
+                    PackageId = userPackageSubscriptionDetail.PackageId,
+                    ExpiryDate = DateTime.Now.AddDays(package.DurationInDays),
+                    StartDate = DateTime.Now,
+                    StatusId = UserPackageSubscriptionStatus.Active,
+                    UserId = userPackageSubscriptionDetail.Id,
+                    CreatorUserId = userId,
+                    CreationTime = DateTime.Now,
+                    LastModificationTime = DateTime.Now,
+                    LastModifierUserId = userId,
+                });
+
+            UnitOfWorkManager.Current.SaveChanges();
+            return true;
+        }
+
+        public async Task<bool> RenewPackageAdForUsers()
+        {
+            var userId = _abpSession.UserId;
+            var isAdminUser = await AuthenticateAdminUser();
+            if (!isAdminUser)
+            {
+                throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
+            }
+
+            var allUsers = _userRepository.GetAll().Where(x => x.IsActive == true).ToList();
+            foreach (var user in allUsers)
+            {
+                var activeSubscription = _userPackageSubscriptionDetailRepository
+                    .GetAll().FirstOrDefault(x => x.UserId == user.Id &&
+                                                  x.StatusId == UserPackageSubscriptionStatus.Active &&
+                                                  x.ExpiryDate.Value != DateTime.Now);
+                if (activeSubscription == null)
+                {
+                    continue;
+                }
+
+                var packageAds
+                    = _packageAdRepository
+                        .GetAll().Where(x => x.PackageId == activeSubscription.PackageId &&
+                                                      x.IsActive == true).ToList();
+                foreach (var packageAd in packageAds)
+                {
+                    var newUserPackageAdDetail = new BusinessObjects.UserPackageAdDetail()
+                    {
+                        PackageId = packageAd.PackageId,
+                        AdDate = DateTime.Now.Date,
+                        AdPrice = packageAd.Price,
+                        UserId = user.Id,
+                        IsViewed = false,
+                        UserPackageSubscriptionDetailId = activeSubscription.Id,
+                        CreatorUserId = userId,
+                        CreationTime = DateTime.Now,
+                        LastModificationTime = DateTime.Now,
+                        LastModifierUserId = userId,
+                    };
+                    newUserPackageAdDetail = _userPackageAdDetailRepository.InsertOrUpdate(newUserPackageAdDetail);
+
+                    UnitOfWorkManager.Current.SaveChanges();
+                }
+            }
+
 
             return true;
         }

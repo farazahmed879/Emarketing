@@ -4,11 +4,15 @@ namespace Emarketing.BusinessModels.UserReferral.Dto
 {
     public class UserReferralDto : FullAuditedEntity<long>
     {
-        public int UserId { get; set; }
-        public int PackageId { get; set; }
+        public long UserId { get; set; }
+        public string UserName { get; set; }
+        public long PackageId { get; set; }
+        public string PackageName { get; set; }
         public long ReferralUserId { get; set; }
-
+        public string ReferralUserName { get; set; }
         public ReferralAccountStatus ReferralAccountStatusId { get; set; }
+        public string ReferralAccountStatusName { get; set; }
         public ReferralBonusStatus ReferralBonusStatusId { get; set; }
+        public string ReferralBonusStatusName { get; set; }
     }
 }

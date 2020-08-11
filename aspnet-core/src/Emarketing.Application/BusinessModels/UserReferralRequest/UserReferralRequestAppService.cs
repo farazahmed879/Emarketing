@@ -20,7 +20,7 @@ namespace Emarketing.BusinessModels.UserReferralRequest
 {
     public interface IUserReferralRequestAppService : IApplicationService
     {
-        Task<ResponseMessageDto> CreateOrEditAsync(CreateUserReferralRequestDto userReferralRequestDto);
+        Task<ResponseMessageDto> CreateOrEditAsync(CreateUserReferralRequestDto requestDto);
 
         Task<UserReferralRequestDto> GetById(long userReferralRequestId);
 
@@ -59,17 +59,16 @@ namespace Emarketing.BusinessModels.UserReferralRequest
             _roleManager = roleManager;
         }
 
-        public async Task<ResponseMessageDto> CreateOrEditAsync(CreateUserReferralRequestDto userReferralRequestDto)
+        public async Task<ResponseMessageDto> CreateOrEditAsync(CreateUserReferralRequestDto requestDto)
         {
             ResponseMessageDto result;
-            if (userReferralRequestDto.Id == 0)
+            if (requestDto.Id == 0)
             {
-                result = await CreateUserReferralRequestAsync(userReferralRequestDto);
+                result = await CreateUserReferralRequestAsync(requestDto);
             }
             else
             {
-                
-                result = await UpdateUserReferralRequestAsync(userReferralRequestDto);
+                result = await UpdateUserReferralRequestAsync(requestDto);
             }
 
             return result;
@@ -86,6 +85,7 @@ namespace Emarketing.BusinessModels.UserReferralRequest
                 Email = userReferralRequestDto.Email,
                 UserName = userReferralRequestDto.UserName,
                 ReferralRequestStatusId = ReferralRequestStatus.Pending,
+                PackageId = userReferralRequestDto.PackageId,
             });
 
             await UnitOfWorkManager.Current.SaveChangesAsync();
@@ -121,6 +121,7 @@ namespace Emarketing.BusinessModels.UserReferralRequest
                 LastName = userReferralRequestDto.LastName,
                 Email = userReferralRequestDto.Email,
                 UserName = userReferralRequestDto.UserName,
+                PackageId = userReferralRequestDto.PackageId,
                 ReferralRequestStatusId = userReferralRequestDto.ReferralRequestStatusId,
             });
 
@@ -152,8 +153,17 @@ namespace Emarketing.BusinessModels.UserReferralRequest
                     new UserReferralRequestDto()
                     {
                         Id = i.Id,
-                        //Name = i.Name,
-                        //Description = i.Description
+                        FirstName = i.FirstName,
+                        LastName = i.LastName,
+                        PackageId = i.PackageId,
+                        Email = i.Email,
+                        UserName = i.UserName,
+                        UserId = i.UserId,
+                        ReferralRequestStatusId = i.ReferralRequestStatusId,
+                        ReferralRequestStatus = i.ReferralRequestStatusId.GetEnumFieldDescription(),
+                        CreatorUserId = i.CreatorUserId,
+                        CreationTime = i.CreationTime,
+                        LastModificationTime = i.LastModificationTime
                     })
                 .FirstOrDefaultAsync();
             return result;
@@ -166,6 +176,7 @@ namespace Emarketing.BusinessModels.UserReferralRequest
             {
                 throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
             }
+
             var model = await _userReferralRequestRepository.GetAll().Where(i => i.Id == userReferralRequestId)
                 .FirstOrDefaultAsync();
             model.IsDeleted = true;
@@ -187,16 +198,20 @@ namespace Emarketing.BusinessModels.UserReferralRequest
             {
                 throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
             }
+
             var result = await _userReferralRequestRepository.GetAll()
                 .Where(i => i.IsDeleted == false && i.UserId == userId)
-                .Select(i => new UserReferralRequestDto() 
+                .Select(i => new UserReferralRequestDto()
                 {
                     Id = i.Id,
-                    Email = i.Email,
-                    ReferralRequestStatusId = i.ReferralRequestStatusId,
                     FirstName = i.FirstName,
                     LastName = i.LastName,
+                    PackageId = i.PackageId,
+                    Email = i.Email,
                     UserName = i.UserName,
+                    UserId = i.UserId,
+                    ReferralRequestStatusId = i.ReferralRequestStatusId,
+                    ReferralRequestStatus = i.ReferralRequestStatusId.GetEnumFieldDescription(),
                     CreatorUserId = i.CreatorUserId,
                     CreationTime = i.CreationTime,
                     LastModificationTime = i.LastModificationTime
@@ -212,6 +227,7 @@ namespace Emarketing.BusinessModels.UserReferralRequest
             {
                 throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
             }
+
             var filteredUserReferrals = _userReferralRequestRepository.GetAll()
                 .WhereIf(!string.IsNullOrWhiteSpace(input.UserName), x => x.UserId == input.UserId);
             //.Where(i => i.IsDeleted == false && (input.TenantId == null || i.TenantId == input.TenantId))
@@ -229,11 +245,14 @@ namespace Emarketing.BusinessModels.UserReferralRequest
                         new UserReferralRequestDto()
                         {
                             Id = i.Id,
-                            Email = i.Email,
-                            ReferralRequestStatusId = i.ReferralRequestStatusId,
                             FirstName = i.FirstName,
                             LastName = i.LastName,
+                            PackageId = i.PackageId,
+                            Email = i.Email,
                             UserName = i.UserName,
+                            UserId = i.UserId,
+                            ReferralRequestStatusId = i.ReferralRequestStatusId,
+                            ReferralRequestStatus = i.ReferralRequestStatusId.GetEnumFieldDescription(),
                             CreatorUserId = i.CreatorUserId,
                             CreationTime = i.CreationTime,
                             LastModificationTime = i.LastModificationTime
@@ -241,7 +260,7 @@ namespace Emarketing.BusinessModels.UserReferralRequest
                     .ToListAsync());
         }
 
-        
+
         public async Task<List<object>> GetReferralRequestStatuses()
         {
             var list = EnumHelper.GetListObjects<ReferralRequestStatus>("ReferralRequestStatusId");
@@ -254,6 +273,7 @@ namespace Emarketing.BusinessModels.UserReferralRequest
             {
                 throw new UserFriendlyException(ErrorMessage.UserFriendly.InvalidLogin);
             }
+
             long userId = _abpSession.UserId.Value;
             var user = await _userManager.GetUserByIdAsync(userId);
 
@@ -263,10 +283,8 @@ namespace Emarketing.BusinessModels.UserReferralRequest
             {
                 return true;
             }
+
             return false;
-
         }
-
-
     }
 }

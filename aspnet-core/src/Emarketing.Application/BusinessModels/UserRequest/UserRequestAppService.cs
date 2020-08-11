@@ -119,10 +119,13 @@ namespace Emarketing.BusinessModels.UserRequest
             {
                 Id = userRequestDto.Id,
                 FirstName = userRequestDto.FirstName,
-                LastName = userRequestDto.FirstName,
-                UserName = userRequestDto.FirstName,
-                Email = userRequestDto.FirstName,
-                Password = userRequestDto.Password
+                LastName = userRequestDto.LastName,
+                UserName = userRequestDto.UserName,
+                Email = userRequestDto.Email,
+                Password = userRequestDto.Password,
+                PhoneNumber = userRequestDto.PhoneNumber,
+                PackageId = userRequestDto.PackageId,
+                
             });
 
             if (result != null)
