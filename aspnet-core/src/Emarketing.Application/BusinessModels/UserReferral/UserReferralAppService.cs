@@ -4,10 +4,12 @@ using System.Threading.Tasks;
 using Abp;
 using Abp.Application.Services;
 using Abp.Application.Services.Dto;
+using Abp.Authorization;
 using Abp.Domain.Repositories;
 using Abp.Linq.Extensions;
 using Abp.Runtime.Session;
 using Abp.UI;
+using Emarketing.Authorization;
 using Emarketing.Authorization.Roles;
 using Emarketing.Authorization.Users;
 using Emarketing.BusinessModels.UserReferral.Dto;
@@ -30,7 +32,7 @@ namespace Emarketing.BusinessModels.UserReferral
         Task<PagedResultDto<UserReferralDto>> GetPaginatedAllAsync(UserRefferalInputDto input);
     }
 
-
+    [AbpAuthorize(PermissionNames.Pages_UserReferrals)]
     public class UserReferralAppService : AbpServiceBase, IUserReferralAppService
     {
         private readonly IRepository<BusinessObjects.UserReferral, long> _userReferralRepository;

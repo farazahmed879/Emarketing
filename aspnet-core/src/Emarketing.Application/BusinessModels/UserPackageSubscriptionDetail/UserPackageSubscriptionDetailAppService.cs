@@ -4,10 +4,12 @@ using System.Threading.Tasks;
 using Abp;
 using Abp.Application.Services;
 using Abp.Application.Services.Dto;
+using Abp.Authorization;
 using Abp.Domain.Repositories;
 using Abp.Linq.Extensions;
 using Abp.Runtime.Session;
 using Abp.UI;
+using Emarketing.Authorization;
 using Emarketing.Authorization.Roles;
 using Emarketing.Authorization.Users;
 using Emarketing.BusinessModels.UserPackageSubscriptionDetail.Dto;
@@ -28,7 +30,7 @@ namespace Emarketing.BusinessModels.UserPackageSubscriptionDetail
         Task<List<object>> GetUserPackageSubscriptionStatuses();
     }
 
-
+    [AbpAuthorize(PermissionNames.Pages_UserPackageSubscriptionDetails)]
     public class UserPackageSubscriptionDetailAppService : AbpServiceBase, IUserPackageSubscriptionDetailAppService
     {
         private readonly IRepository<BusinessObjects.UserPackageSubscriptionDetail, long>

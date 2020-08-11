@@ -4,10 +4,12 @@ using System.Threading.Tasks;
 using Abp;
 using Abp.Application.Services;
 using Abp.Application.Services.Dto;
+using Abp.Authorization;
 using Abp.Domain.Repositories;
 using Abp.Linq.Extensions;
 using Abp.Runtime.Session;
 using Abp.UI;
+using Emarketing.Authorization;
 using Emarketing.Authorization.Roles;
 using Emarketing.Authorization.Users;
 using Emarketing.BusinessModels.PackageAd.Dto;
@@ -29,7 +31,7 @@ namespace Emarketing.BusinessModels.PackageAd
         Task<PagedResultDto<PackageAdDto>> GetPaginatedAllAsync(PackageAdInputDto input);
     }
 
-
+    [AbpAuthorize(PermissionNames.Pages_PackageAds)]
     public class PackageAdAppService : AbpServiceBase, IPackageAdAppService
     {
         private readonly IRepository<BusinessObjects.PackageAd, long> _packageAdRepository;

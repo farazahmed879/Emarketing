@@ -5,10 +5,12 @@ using System.Threading.Tasks;
 using Abp;
 using Abp.Application.Services;
 using Abp.Application.Services.Dto;
+using Abp.Authorization;
 using Abp.Domain.Repositories;
 using Abp.Linq.Extensions;
 using Abp.Runtime.Session;
 using Abp.UI;
+using Emarketing.Authorization;
 using Emarketing.Authorization.Roles;
 using Emarketing.Authorization.Users;
 using Emarketing.BusinessModels.UserReferralRequest.Dto;
@@ -34,7 +36,7 @@ namespace Emarketing.BusinessModels.UserReferralRequest
         Task<List<Object>> GetReferralRequestStatuses();
     }
 
-
+    [AbpAuthorize(PermissionNames.Pages_UserReferralRequests)]
     public class UserReferralRequestAppService : AbpServiceBase, IUserReferralRequestAppService
     {
         private readonly IRepository<BusinessObjects.UserReferralRequest, long> _userReferralRequestRepository;

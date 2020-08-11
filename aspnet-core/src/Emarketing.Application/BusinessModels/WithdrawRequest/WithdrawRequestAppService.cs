@@ -1,20 +1,21 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Abp;
 using Abp.Application.Services;
 using Abp.Application.Services.Dto;
+using Abp.Authorization;
 using Abp.Domain.Repositories;
 using Abp.Linq.Extensions;
 using Abp.Runtime.Session;
 using Abp.UI;
+using Emarketing.Authorization;
 using Emarketing.Authorization.Roles;
 using Emarketing.Authorization.Users;
-using Emarketing.BusinessModels.UserWithdrawDetail.Dto;
 using Emarketing.BusinessModels.WithdrawRequest.Dto;
 using Emarketing.Helper;
 using Emarketing.Sessions;
-using Emarketing.Sessions.Dto;
 using Microsoft.EntityFrameworkCore;
 using WithdrawRequestDto = Emarketing.BusinessModels.WithdrawRequest.Dto.WithdrawRequestDto;
 using WithdrawRequestInputDto = Emarketing.BusinessModels.WithdrawRequest.Dto.WithdrawRequestInputDto;
@@ -34,7 +35,7 @@ namespace Emarketing.BusinessModels.WithdrawRequest
         Task<PagedResultDto<WithdrawRequestDto>> GetPaginatedAllAsync(WithdrawRequestInputDto input);
     }
 
-
+    [AbpAuthorize(PermissionNames.Pages_WithdrawRequests)]
     public class WithdrawRequestAppService : AbpServiceBase, IWithdrawRequestAppService
     {
         private readonly IRepository<BusinessObjects.WithdrawRequest, long> _withdrawRequestRepository;
@@ -76,12 +77,17 @@ namespace Emarketing.BusinessModels.WithdrawRequest
 
         private async Task<ResponseMessageDto> CreateWithdrawRequestAsync(CreateWithdrawRequestDto withdrawRequestDto)
         {
+            long userId = _abpSession.UserId.Value;
             var result = await _withdrawRequestRepository.InsertAsync(new BusinessObjects.WithdrawRequest()
             {
                 Amount = withdrawRequestDto.Amount,
                 Status = false,
                 WithdrawTypeId = withdrawRequestDto.WithdrawTypeId,
                 UserId = withdrawRequestDto.UserId,
+                CreatorUserId = userId,
+                CreationTime = DateTime.Now,
+                LastModifierUserId = userId,
+                LastModificationTime = DateTime.Now,
             });
 
             await UnitOfWorkManager.Current.SaveChangesAsync();
@@ -106,8 +112,9 @@ namespace Emarketing.BusinessModels.WithdrawRequest
             };
         }
 
-        private async Task<ResponseMessageDto> UpdateWithdrawRequestAsync(CreateWithdrawRequestDto withdrawRequestDto)
+        private async Task<ResponseMessageDto> UpdateWithdrawRequestAsync(CreateWithdrawRequestDto requestDto)
         {
+            long userId = _abpSession.UserId.Value;
             var isAdminUser = await AuthenticateAdminUser();
             if (!isAdminUser)
             {
@@ -115,11 +122,16 @@ namespace Emarketing.BusinessModels.WithdrawRequest
             }
             var result = await _withdrawRequestRepository.UpdateAsync(new BusinessObjects.WithdrawRequest()
             {
-                Id = withdrawRequestDto.Id,
-                Amount = withdrawRequestDto.Amount,
-                //Status = withdrawRequestDto.Status,
-                WithdrawTypeId = withdrawRequestDto.WithdrawTypeId,
-                UserId = withdrawRequestDto.UserId,
+                Id = requestDto.Id,
+                Amount = requestDto.Amount,
+               
+                //Status = requestDto.Status,
+                WithdrawTypeId = requestDto.WithdrawTypeId,
+                UserId = requestDto.UserId,
+                CreatorUserId = userId,
+                CreationTime = DateTime.Now,
+                LastModifierUserId = userId,
+                LastModificationTime = DateTime.Now,
             });
 
             if (result != null)
@@ -154,6 +166,7 @@ namespace Emarketing.BusinessModels.WithdrawRequest
                         WithdrawTypeId = i.WithdrawTypeId,
                         UserId = i.UserId,
                         UserName = $"{i.User.FullName}",
+                        WithdrawType = i.WithdrawTypeId.GetEnumFieldDescription(),
                         CreatorUserId = i.CreatorUserId,
                         CreationTime = i.CreationTime,
                         LastModificationTime = i.LastModificationTime,
@@ -201,6 +214,7 @@ namespace Emarketing.BusinessModels.WithdrawRequest
                     WithdrawTypeId = i.WithdrawTypeId,
                     UserId = i.UserId,
                     UserName = $"{i.User.FullName}",
+                    WithdrawType = i.WithdrawTypeId.GetEnumFieldDescription(),
                     CreatorUserId = i.CreatorUserId,
                     CreationTime = i.CreationTime,
                     LastModificationTime = i.LastModificationTime,
@@ -217,8 +231,6 @@ namespace Emarketing.BusinessModels.WithdrawRequest
             var filteredWithdrawRequests = _withdrawRequestRepository.GetAll()
                 .Where(x => x.UserId == userId)
                 .WhereIf(input.Status.HasValue, x => x.Status == input.Status);
-            //.Where(i => i.IsDeleted == false && (input.TenantId == null || i.TenantId == input.TenantId))
-            //.WhereIf(!string.IsNullOrWhiteSpace(input.UserName), x => x.UserName.Contains(input.Name));
 
             var pagedAndFilteredWithdrawRequests = filteredWithdrawRequests
                 .OrderBy(i => i.Id)
@@ -234,9 +246,9 @@ namespace Emarketing.BusinessModels.WithdrawRequest
                             Id = i.Id,
                             Amount = i.Amount,
                             WithdrawTypeId = i.WithdrawTypeId,
-                            WithdrawType = i.WithdrawTypeId.GetEnumFieldDescription(),
                             UserId = i.UserId,
                             UserName = $"{i.User.FullName}",
+                            WithdrawType = i.WithdrawTypeId.GetEnumFieldDescription(),
                             CreatorUserId = i.CreatorUserId,
                             CreationTime = i.CreationTime,
                             LastModificationTime = i.LastModificationTime,
