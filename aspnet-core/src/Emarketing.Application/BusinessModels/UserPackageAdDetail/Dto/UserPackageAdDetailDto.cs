@@ -10,7 +10,8 @@ namespace Emarketing.BusinessModels.UserPackageAdDetail.Dto
         public long UserPackageSubscriptionDetailId { get; set; }
        
         public long PackageId { get; set; }
-       // public string PackageName { get; set; }
+        // public string PackageName { get; set; }
+        public string Url { get; set; }
         public decimal AdPrice { get; set; }
         public DateTime AdDate { get; set; }
         public bool IsViewed { get; set; }
