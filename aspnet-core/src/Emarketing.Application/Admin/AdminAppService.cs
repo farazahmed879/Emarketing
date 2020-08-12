@@ -10,6 +10,7 @@ using Abp.UI;
 using Emarketing.Authorization.Roles;
 using Emarketing.Authorization.Users;
 using Emarketing.BusinessModels.Package.Dto;
+using Emarketing.BusinessObjects;
 using Emarketing.Sessions;
 
 namespace Emarketing.Admin
@@ -25,9 +26,8 @@ namespace Emarketing.Admin
         Task<bool> ActivateUserSubscription(ActivateUserSubscriptionDto requestDto);
         Task<bool> RenewPackageAdForUsers();
 
-        //Task<bool> AcceptUserRefferalRequest();
-        //Task<bool> UpdateWithdrawRequest();
-
+        Task<bool> AcceptUserReferralRequest(AcceptUserReferralRequestDto requestDto);
+        Task<bool> UpdateWithdrawRequest(UpdateWithDrawRequestDto requestDto);
     }
 
 
@@ -44,6 +44,9 @@ namespace Emarketing.Admin
         private readonly IRepository<BusinessObjects.UserRequest, long> _userRequestRepository;
         private readonly IRepository<BusinessObjects.UserWithdrawDetail, long> _userWithdrawDetailRepository;
         private readonly IRepository<BusinessObjects.UserPackageAdDetail, long> _userPackageAdDetailRepository;
+        private readonly IRepository<WithdrawRequest, long> _withdrawRequestRepository;
+        private readonly IRepository<UserReferralRequest, long> _userReferralRequestRepository;
+        private readonly IRepository<UserReferral, long> _userReferralRepository;
         private readonly ISessionAppService _sessionAppService;
         private readonly IAbpSession _abpSession;
         private readonly UserManager _userManager;
@@ -58,6 +61,9 @@ namespace Emarketing.Admin
             IRepository<BusinessObjects.UserRequest, long> userRequestRepository,
             IRepository<BusinessObjects.UserWithdrawDetail, long> userWithdrawDetailRepository,
             IRepository<BusinessObjects.UserPackageAdDetail, long> userPackageAdDetailRepository,
+            IRepository<BusinessObjects.WithdrawRequest, long> withdrawRequestRepository,
+            IRepository<BusinessObjects.UserReferralRequest, long> userReferralRequestRepository,
+            IRepository<BusinessObjects.UserReferral, long> userReferralRepository,
             ISessionAppService sessionAppService,
             IAbpSession abpSession,
             UserManager userManager,
@@ -71,6 +77,9 @@ namespace Emarketing.Admin
             _userRequestRepository = userRequestRepository;
             _userWithdrawDetailRepository = userWithdrawDetailRepository;
             _userPackageAdDetailRepository = userPackageAdDetailRepository;
+            _withdrawRequestRepository = withdrawRequestRepository;
+            _userReferralRequestRepository = userReferralRequestRepository;
+            _userReferralRepository = userReferralRepository;
             _sessionAppService = sessionAppService;
             _abpSession = abpSession;
             _userManager = userManager;
@@ -363,6 +372,9 @@ namespace Emarketing.Admin
                 PhoneNumber = userRequest.PhoneNumber,
                 PackageId = userRequest.PackageId,
                 UserId = newUser.Id,
+
+                LastModificationTime = DateTime.Now,
+                LastModifierUserId = userId,
             });
             await UnitOfWorkManager.Current.SaveChangesAsync();
             return true;
@@ -438,7 +450,7 @@ namespace Emarketing.Admin
                 var packageAds
                     = _packageAdRepository
                         .GetAll().Where(x => x.PackageId == activeSubscription.PackageId &&
-                                                      x.IsActive == true).ToList();
+                                             x.IsActive == true).ToList();
                 foreach (var packageAd in packageAds)
                 {
                     var newUserPackageAdDetail = new BusinessObjects.UserPackageAdDetail()
@@ -460,6 +472,158 @@ namespace Emarketing.Admin
                 }
             }
 
+
+            return true;
+        }
+
+        public async Task<bool> AcceptUserReferralRequest(AcceptUserReferralRequestDto requestDto)
+        {
+            var userId = _abpSession.UserId;
+            var isAdminUser = await AuthenticateAdminUser();
+            if (!isAdminUser)
+            {
+                throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
+            }
+
+            //create new user from user request
+            var userReferralRequest = _userReferralRequestRepository
+                .GetAll()
+                .FirstOrDefault(i => i.Id == requestDto.UserReferralRequestId);
+            if (userReferralRequest == null)
+            {
+                return false;
+            }
+
+            var userPassword = EmarketingConsts.SamplePassword;
+
+            var package = _packageRepository
+                .GetAll()
+                .FirstOrDefault(i => i.Id == userReferralRequest.PackageId);
+
+            if (package == null)
+            {
+                return false;
+            }
+
+            var newUser = _userManager.CreateAsync(new User()
+            {
+                UserName = userReferralRequest.UserName,
+                Name = userReferralRequest.FirstName,
+                EmailAddress = userReferralRequest.Email,
+                Surname = userReferralRequest.LastName,
+                IsActive = false,
+                IsEmailConfirmed = true,
+                PhoneNumber = userReferralRequest.PhoneNumber,
+                CreatorUserId = userId,
+                CreationTime = DateTime.Now,
+                LastModificationTime = DateTime.Now,
+                LastModifierUserId = userId,
+            }, userPassword);
+            await UnitOfWorkManager.Current.SaveChangesAsync();
+
+            //save personal details
+
+            var userPersonalDetail = _userPersonalDetailRepository.InsertAsync(
+                new BusinessObjects.UserPersonalDetail()
+                {
+                    Gender = Gender.Male,
+                    Birthday = DateTime.Now,
+                    PhoneNumber = userReferralRequest.PhoneNumber,
+                    UserId = newUser.Id,
+                    CreatorUserId = userId,
+                    CreationTime = DateTime.Now,
+                    LastModificationTime = DateTime.Now,
+                    LastModifierUserId = userId,
+                });
+
+            await UnitOfWorkManager.Current.SaveChangesAsync();
+
+            //save withdraw details
+
+            var userWithdrawDetail = _userWithdrawDetailRepository.InsertAsync(
+                new BusinessObjects.UserWithdrawDetail()
+                {
+                    WithdrawTypeId = WithdrawType.BankTransfer,
+                    UserId = newUser.Id,
+                    CreatorUserId = userId,
+                    CreationTime = DateTime.Now,
+                    LastModificationTime = DateTime.Now,
+                    LastModifierUserId = userId,
+                });
+
+            await UnitOfWorkManager.Current.SaveChangesAsync();
+
+            //save user package subscription details
+
+            var userPackageSubscriptionDetail = _userPackageSubscriptionDetailRepository.InsertAsync(
+                new BusinessObjects.UserPackageSubscriptionDetail()
+                {
+                    PackageId = package.Id,
+                    //ExpiryDate = DateTime.Now.AddDays(package.DurationInDays),
+                    //StartDate = DateTime.Now,
+                    StatusId = UserPackageSubscriptionStatus.Pending,
+                    UserId = newUser.Id,
+                    CreatorUserId = userId,
+                    CreationTime = DateTime.Now,
+                    LastModificationTime = DateTime.Now,
+                    LastModifierUserId = userId,
+                });
+
+            await UnitOfWorkManager.Current.SaveChangesAsync();
+
+            //assign user role
+            //save permission
+
+            //update user request detail
+            var updatedUserRequest = _userReferralRequestRepository.UpdateAsync(new BusinessObjects.UserReferralRequest()
+            {
+                Id = userReferralRequest.Id,
+                FirstName = userReferralRequest.FirstName,
+                LastName = userReferralRequest.FirstName,
+                UserName = userReferralRequest.FirstName,
+                Email = userReferralRequest.FirstName, 
+                PhoneNumber = userReferralRequest.PhoneNumber,
+                PackageId = userReferralRequest.PackageId,
+                UserId = newUser.Id,
+                ReferralRequestStatusId = ReferralRequestStatus.Active,
+                LastModificationTime = DateTime.Now,
+                LastModifierUserId = userId,
+            });
+            await UnitOfWorkManager.Current.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> UpdateWithdrawRequest(UpdateWithDrawRequestDto requestDto)
+        {
+            var userId = _abpSession.UserId;
+            var isAdminUser = await AuthenticateAdminUser();
+            if (!isAdminUser)
+            {
+                throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
+            }
+
+            var withdrawRequest = _withdrawRequestRepository
+                .GetAll()
+                .FirstOrDefault(i => i.Id == requestDto.WithdrawRequestId);
+            if (withdrawRequest == null)
+            {
+                return false;
+            }
+
+            withdrawRequest.Status = true;
+
+            var updatedUserRequest = _withdrawRequestRepository.UpdateAsync(new BusinessObjects.WithdrawRequest()
+            {
+                Id = withdrawRequest.Id,
+                UserId = withdrawRequest.UserId,
+                Amount = withdrawRequest.Amount,
+                WithdrawTypeId = withdrawRequest.WithdrawTypeId,
+                Status = true,
+
+                LastModificationTime = DateTime.Now,
+                LastModifierUserId = userId,
+            });
+            await UnitOfWorkManager.Current.SaveChangesAsync();
 
             return true;
         }

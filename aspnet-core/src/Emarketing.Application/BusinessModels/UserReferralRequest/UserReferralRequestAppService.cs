@@ -28,7 +28,7 @@ namespace Emarketing.BusinessModels.UserReferralRequest
 
         Task<ResponseMessageDto> DeleteAsync(long userReferralRequestId);
 
-        Task<List<UserReferralRequestDto>> GetAll(long? userId);
+        Task<List<UserReferralRequestDto>> GetAll();
 
         Task<PagedResultDto<UserReferralRequestDto>> GetPaginatedAllAsync(
             UserReferralRequestInputDto input);
@@ -77,17 +77,18 @@ namespace Emarketing.BusinessModels.UserReferralRequest
         }
 
         private async Task<ResponseMessageDto> CreateUserReferralRequestAsync(
-            CreateUserReferralRequestDto userReferralRequestDto)
+            CreateUserReferralRequestDto requestDto)
         {
             var result = await _userReferralRequestRepository.InsertAsync(new BusinessObjects.UserReferralRequest()
             {
-                UserId = userReferralRequestDto.UserId,
-                FirstName = userReferralRequestDto.FirstName,
-                LastName = userReferralRequestDto.LastName,
-                Email = userReferralRequestDto.Email,
-                UserName = userReferralRequestDto.UserName,
+                UserId = requestDto.UserId,
+                FirstName = requestDto.FirstName,
+                LastName = requestDto.LastName,
+                Email = requestDto.Email,
+                UserName = requestDto.UserName,
                 ReferralRequestStatusId = ReferralRequestStatus.Pending,
-                PackageId = userReferralRequestDto.PackageId,
+                PackageId = requestDto.PackageId,
+                PhoneNumber = requestDto.PhoneNumber,
             });
 
             await UnitOfWorkManager.Current.SaveChangesAsync();
@@ -113,18 +114,19 @@ namespace Emarketing.BusinessModels.UserReferralRequest
         }
 
         private async Task<ResponseMessageDto> UpdateUserReferralRequestAsync(
-            CreateUserReferralRequestDto userReferralRequestDto)
+            CreateUserReferralRequestDto requestDto)
         {
             var result = await _userReferralRequestRepository.UpdateAsync(new BusinessObjects.UserReferralRequest()
             {
-                Id = userReferralRequestDto.Id,
-                UserId = userReferralRequestDto.UserId,
-                FirstName = userReferralRequestDto.FirstName,
-                LastName = userReferralRequestDto.LastName,
-                Email = userReferralRequestDto.Email,
-                UserName = userReferralRequestDto.UserName,
-                PackageId = userReferralRequestDto.PackageId,
-                ReferralRequestStatusId = userReferralRequestDto.ReferralRequestStatusId,
+                Id = requestDto.Id,
+                UserId = requestDto.UserId,
+                FirstName = requestDto.FirstName,
+                LastName = requestDto.LastName,
+                Email = requestDto.Email,
+                UserName = requestDto.UserName,
+                PackageId = requestDto.PackageId,
+                ReferralRequestStatusId = requestDto.ReferralRequestStatusId,
+                PhoneNumber = requestDto.PhoneNumber,
             });
 
             if (result != null)
@@ -193,8 +195,10 @@ namespace Emarketing.BusinessModels.UserReferralRequest
             };
         }
 
-        public async Task<List<UserReferralRequestDto>> GetAll(long? userId)
+
+        public async Task<List<UserReferralRequestDto>> GetAll()
         {
+            long userId = _abpSession.UserId.Value;
             var isAdminUser = await AuthenticateAdminUser();
             if (!isAdminUser)
             {
@@ -210,6 +214,7 @@ namespace Emarketing.BusinessModels.UserReferralRequest
                     LastName = i.LastName,
                     PackageId = i.PackageId,
                     Email = i.Email,
+                    PhoneNumber = i.PhoneNumber,
                     UserName = i.UserName,
                     UserId = i.UserId,
                     ReferralRequestStatusId = i.ReferralRequestStatusId,
@@ -232,8 +237,7 @@ namespace Emarketing.BusinessModels.UserReferralRequest
 
             var filteredUserReferrals = _userReferralRequestRepository.GetAll()
                 .WhereIf(!string.IsNullOrWhiteSpace(input.UserName), x => x.UserId == input.UserId);
-            //.Where(i => i.IsDeleted == false && (input.TenantId == null || i.TenantId == input.TenantId))
-            //.WhereIf(!string.IsNullOrWhiteSpace(input.UserName), x => x.UserName.Contains(input.Name));
+
 
             var pagedAndFilteredUserReferrals = filteredUserReferrals
                 .OrderBy(i => i.Id)
@@ -251,6 +255,7 @@ namespace Emarketing.BusinessModels.UserReferralRequest
                             LastName = i.LastName,
                             PackageId = i.PackageId,
                             Email = i.Email,
+                            PhoneNumber = i.PhoneNumber,
                             UserName = i.UserName,
                             UserId = i.UserId,
                             ReferralRequestStatusId = i.ReferralRequestStatusId,

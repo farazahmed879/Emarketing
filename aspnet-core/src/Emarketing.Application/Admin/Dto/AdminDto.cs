@@ -19,14 +19,20 @@ namespace Emarketing.BusinessModels.Package.Dto
     public class AcceptUserRequestDto
     {
         public long UserRequestId { get; set; }
-
-        
     }
 
     public class ActivateUserSubscriptionDto
     {
         public long UserId { get; set; }
+    }
 
+    public class UpdateWithDrawRequestDto
+    {
+        public long WithdrawRequestId { get; set; }
+    }
 
+    public class AcceptUserReferralRequestDto
+    {
+        public long UserReferralRequestId { get; set; }
     }
 }

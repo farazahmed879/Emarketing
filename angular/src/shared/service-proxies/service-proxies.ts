@@ -256,6 +256,169 @@ export class AdminServiceProxy {
         }
         return _observableOf<boolean>(<any>null);
     }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    acceptUserRequest(body: AcceptUserRequestDto | undefined): Observable<boolean> {
+        let url_ = this.baseUrl + "/api/services/app/Admin/AcceptUserRequest";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processAcceptUserRequest(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processAcceptUserRequest(<any>response_);
+                } catch (e) {
+                    return <Observable<boolean>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<boolean>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processAcceptUserRequest(response: HttpResponseBase): Observable<boolean> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<boolean>(<any>null);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    activateUserSubscription(body: ActivateUserSubscriptionDto | undefined): Observable<boolean> {
+        let url_ = this.baseUrl + "/api/services/app/Admin/ActivateUserSubscription";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processActivateUserSubscription(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processActivateUserSubscription(<any>response_);
+                } catch (e) {
+                    return <Observable<boolean>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<boolean>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processActivateUserSubscription(response: HttpResponseBase): Observable<boolean> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<boolean>(<any>null);
+    }
+
+    /**
+     * @return Success
+     */
+    renewPackageAdForUsers(): Observable<boolean> {
+        let url_ = this.baseUrl + "/api/services/app/Admin/RenewPackageAdForUsers";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processRenewPackageAdForUsers(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processRenewPackageAdForUsers(<any>response_);
+                } catch (e) {
+                    return <Observable<boolean>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<boolean>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processRenewPackageAdForUsers(response: HttpResponseBase): Observable<boolean> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<boolean>(<any>null);
+    }
 }
 
 @Injectable()
@@ -5576,6 +5739,92 @@ export interface IPackageDto {
     id: number;
 }
 
+export class AcceptUserRequestDto implements IAcceptUserRequestDto {
+    userRequestId: number;
+
+    constructor(data?: IAcceptUserRequestDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.userRequestId = _data["userRequestId"];
+        }
+    }
+
+    static fromJS(data: any): AcceptUserRequestDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new AcceptUserRequestDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userRequestId"] = this.userRequestId;
+        return data; 
+    }
+
+    clone(): AcceptUserRequestDto {
+        const json = this.toJSON();
+        let result = new AcceptUserRequestDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IAcceptUserRequestDto {
+    userRequestId: number;
+}
+
+export class ActivateUserSubscriptionDto implements IActivateUserSubscriptionDto {
+    userId: number;
+
+    constructor(data?: IActivateUserSubscriptionDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.userId = _data["userId"];
+        }
+    }
+
+    static fromJS(data: any): ActivateUserSubscriptionDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ActivateUserSubscriptionDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userId"] = this.userId;
+        return data; 
+    }
+
+    clone(): ActivateUserSubscriptionDto {
+        const json = this.toJSON();
+        let result = new ActivateUserSubscriptionDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IActivateUserSubscriptionDto {
+    userId: number;
+}
+
 export class ChangeUiThemeInput implements IChangeUiThemeInput {
     theme: string;
 
@@ -8307,10 +8556,15 @@ export interface ICreateUserReferralDto {
 
 export class UserReferralDto implements IUserReferralDto {
     userId: number;
+    userName: string | undefined;
     packageId: number;
+    packageName: string | undefined;
     referralUserId: number;
+    referralUserName: string | undefined;
     referralAccountStatusId: ReferralAccountStatus;
+    referralAccountStatusName: string | undefined;
     referralBonusStatusId: ReferralBonusStatus;
+    referralBonusStatusName: string | undefined;
     isDeleted: boolean;
     deleterUserId: number | undefined;
     deletionTime: moment.Moment | undefined;
@@ -8332,10 +8586,15 @@ export class UserReferralDto implements IUserReferralDto {
     init(_data?: any) {
         if (_data) {
             this.userId = _data["userId"];
+            this.userName = _data["userName"];
             this.packageId = _data["packageId"];
+            this.packageName = _data["packageName"];
             this.referralUserId = _data["referralUserId"];
+            this.referralUserName = _data["referralUserName"];
             this.referralAccountStatusId = _data["referralAccountStatusId"];
+            this.referralAccountStatusName = _data["referralAccountStatusName"];
             this.referralBonusStatusId = _data["referralBonusStatusId"];
+            this.referralBonusStatusName = _data["referralBonusStatusName"];
             this.isDeleted = _data["isDeleted"];
             this.deleterUserId = _data["deleterUserId"];
             this.deletionTime = _data["deletionTime"] ? moment(_data["deletionTime"].toString()) : <any>undefined;
@@ -8357,10 +8616,15 @@ export class UserReferralDto implements IUserReferralDto {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["userId"] = this.userId;
+        data["userName"] = this.userName;
         data["packageId"] = this.packageId;
+        data["packageName"] = this.packageName;
         data["referralUserId"] = this.referralUserId;
+        data["referralUserName"] = this.referralUserName;
         data["referralAccountStatusId"] = this.referralAccountStatusId;
+        data["referralAccountStatusName"] = this.referralAccountStatusName;
         data["referralBonusStatusId"] = this.referralBonusStatusId;
+        data["referralBonusStatusName"] = this.referralBonusStatusName;
         data["isDeleted"] = this.isDeleted;
         data["deleterUserId"] = this.deleterUserId;
         data["deletionTime"] = this.deletionTime ? this.deletionTime.toISOString() : <any>undefined;
@@ -8382,10 +8646,15 @@ export class UserReferralDto implements IUserReferralDto {
 
 export interface IUserReferralDto {
     userId: number;
+    userName: string | undefined;
     packageId: number;
+    packageName: string | undefined;
     referralUserId: number;
+    referralUserName: string | undefined;
     referralAccountStatusId: ReferralAccountStatus;
+    referralAccountStatusName: string | undefined;
     referralBonusStatusId: ReferralBonusStatus;
+    referralBonusStatusName: string | undefined;
     isDeleted: boolean;
     deleterUserId: number | undefined;
     deletionTime: moment.Moment | undefined;
@@ -8536,6 +8805,7 @@ export class UserReferralRequestDto implements IUserReferralRequestDto {
     email: string | undefined;
     userName: string | undefined;
     referralRequestStatusId: ReferralRequestStatus;
+    referralRequestStatus: string | undefined;
     isDeleted: boolean;
     deleterUserId: number | undefined;
     deletionTime: moment.Moment | undefined;
@@ -8563,6 +8833,7 @@ export class UserReferralRequestDto implements IUserReferralRequestDto {
             this.email = _data["email"];
             this.userName = _data["userName"];
             this.referralRequestStatusId = _data["referralRequestStatusId"];
+            this.referralRequestStatus = _data["referralRequestStatus"];
             this.isDeleted = _data["isDeleted"];
             this.deleterUserId = _data["deleterUserId"];
             this.deletionTime = _data["deletionTime"] ? moment(_data["deletionTime"].toString()) : <any>undefined;
@@ -8590,6 +8861,7 @@ export class UserReferralRequestDto implements IUserReferralRequestDto {
         data["email"] = this.email;
         data["userName"] = this.userName;
         data["referralRequestStatusId"] = this.referralRequestStatusId;
+        data["referralRequestStatus"] = this.referralRequestStatus;
         data["isDeleted"] = this.isDeleted;
         data["deleterUserId"] = this.deleterUserId;
         data["deletionTime"] = this.deletionTime ? this.deletionTime.toISOString() : <any>undefined;
@@ -8617,6 +8889,7 @@ export interface IUserReferralRequestDto {
     email: string | undefined;
     userName: string | undefined;
     referralRequestStatusId: ReferralRequestStatus;
+    referralRequestStatus: string | undefined;
     isDeleted: boolean;
     deleterUserId: number | undefined;
     deletionTime: moment.Moment | undefined;
