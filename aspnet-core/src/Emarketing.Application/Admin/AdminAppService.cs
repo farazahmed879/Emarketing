@@ -12,12 +12,14 @@ using Emarketing.Authorization.Users;
 using Emarketing.BusinessModels.Package.Dto;
 using Emarketing.BusinessObjects;
 using Emarketing.Sessions;
+using Microsoft.EntityFrameworkCore;
 
 namespace Emarketing.Admin
 {
     public interface IAdminAppService : IApplicationService
     {
         List<PackageDto> GetAll();
+
         Task<bool> SeedPackages();
         //Task<bool> SeedRole();
 
@@ -27,7 +29,6 @@ namespace Emarketing.Admin
         Task<bool> AcceptUserReferralRequest(AcceptUserReferralRequestDto requestDto);
         Task<bool> UpdateWithdrawRequest(UpdateWithDrawRequestDto requestDto);
         Task<bool> ActivateUserReferralRequestSubscription(ActivateUserReferralSubscriptionDto requestDto);
-
     }
 
 
@@ -265,7 +266,7 @@ namespace Emarketing.Admin
 
             foreach (var item in packageList)
             {
-                var package = _packageRepository.InsertOrUpdate(item);
+                var package = await _packageRepository.InsertOrUpdateAsync(item);
             }
 
 
@@ -289,9 +290,9 @@ namespace Emarketing.Admin
             }
 
             //create new user from user request
-            var userRequest = _userRequestRepository
+            var userRequest = await _userRequestRepository
                 .GetAll()
-                .FirstOrDefault(i => i.Id == requestDto.UserRequestId);
+                .FirstOrDefaultAsync(i => i.Id == requestDto.UserRequestId);
             if (userRequest == null)
             {
                 return false;
@@ -299,16 +300,16 @@ namespace Emarketing.Admin
 
             var userPassword = userRequest.Password;
 
-            var package = _packageRepository
+            var package = await _packageRepository
                 .GetAll()
-                .FirstOrDefault(i => i.Id == userRequest.PackageId);
+                .FirstOrDefaultAsync(i => i.Id == userRequest.PackageId);
 
             if (package == null)
             {
                 return false;
             }
 
-            var newUser = _userManager.CreateAsync(new User()
+            var newUser = new User()
             {
                 UserName = userRequest.UserName,
                 Name = userRequest.FirstName,
@@ -321,80 +322,88 @@ namespace Emarketing.Admin
                 CreationTime = DateTime.Now,
                 LastModificationTime = DateTime.Now,
                 LastModifierUserId = userId,
-            }, userPassword);
+            };
+
+            var result = await _userManager.CreateAsync(newUser, userPassword);
             await UnitOfWorkManager.Current.SaveChangesAsync();
 
-            //save personal details
-
-            var userPersonalDetail = _userPersonalDetailRepository.InsertAsync(
-                new UserPersonalDetail()
-                {
-                    Gender = Gender.Male,
-                    Birthday = DateTime.Now,
-                    PhoneNumber = userRequest.PhoneNumber,
-                    UserId = newUser.Id,
-                    CreatorUserId = userId,
-                    CreationTime = DateTime.Now,
-                    LastModificationTime = DateTime.Now,
-                    LastModifierUserId = userId,
-                });
-
-            await UnitOfWorkManager.Current.SaveChangesAsync();
-
-            //save withdraw details
-
-            var userWithdrawDetail = _userWithdrawDetailRepository.InsertAsync(
-                new UserWithdrawDetail()
-                {
-                    WithdrawTypeId = WithdrawType.BankTransfer,
-                    UserId = newUser.Id,
-                    CreatorUserId = userId,
-                    CreationTime = DateTime.Now,
-                    LastModificationTime = DateTime.Now,
-                    LastModifierUserId = userId,
-                });
-
-            await UnitOfWorkManager.Current.SaveChangesAsync();
-
-            //save user package subscription details
-
-            var userPackageSubscriptionDetail = _userPackageSubscriptionDetailRepository.InsertAsync(
-                new UserPackageSubscriptionDetail()
-                {
-                    PackageId = package.Id,
-                    //ExpiryDate = DateTime.Now.AddDays(package.DurationInDays),
-                    //StartDate = DateTime.Now,
-                    StatusId = UserPackageSubscriptionStatus.Pending,
-                    UserId = newUser.Id,
-                    CreatorUserId = userId,
-                    CreationTime = DateTime.Now,
-                    LastModificationTime = DateTime.Now,
-                    LastModifierUserId = userId,
-                });
-
-            await UnitOfWorkManager.Current.SaveChangesAsync();
-
-            //assign user role
-            //save permission
-
-            //update user request detail
-            var updatedUserRequest = _userRequestRepository.UpdateAsync(new UserRequest()
+            if (result.Succeeded)
             {
-                Id = userRequest.Id,
-                FirstName = userRequest.FirstName,
-                LastName = userRequest.FirstName,
-                UserName = userRequest.FirstName,
-                Email = userRequest.FirstName,
-                Password = userRequest.Password,
-                PhoneNumber = userRequest.PhoneNumber,
-                PackageId = userRequest.PackageId,
-                UserId = newUser.Id,
+                //save personal details
 
-                LastModificationTime = DateTime.Now,
-                LastModifierUserId = userId,
-            });
-            await UnitOfWorkManager.Current.SaveChangesAsync();
-            return true;
+                var userPersonalDetail = await _userPersonalDetailRepository.InsertAsync(
+                    new UserPersonalDetail()
+                    {
+                        Gender = Gender.Male,
+                        Birthday = DateTime.Now,
+                        PhoneNumber = userRequest.PhoneNumber,
+                        UserId = newUser.Id,
+                        CreatorUserId = userId,
+                        CreationTime = DateTime.Now,
+                        LastModificationTime = DateTime.Now,
+                        LastModifierUserId = userId,
+                    });
+
+                await UnitOfWorkManager.Current.SaveChangesAsync();
+
+                //save withdraw details
+
+                var userWithdrawDetail = await _userWithdrawDetailRepository.InsertAsync(
+                    new UserWithdrawDetail()
+                    {
+                        WithdrawTypeId = WithdrawType.BankTransfer,
+                        UserId = newUser.Id,
+                        CreatorUserId = userId,
+                        CreationTime = DateTime.Now,
+                        LastModificationTime = DateTime.Now,
+                        LastModifierUserId = userId,
+                    });
+
+                await UnitOfWorkManager.Current.SaveChangesAsync();
+
+                //save user package subscription details
+
+                var userPackageSubscriptionDetail = await _userPackageSubscriptionDetailRepository.InsertAsync(
+                    new UserPackageSubscriptionDetail()
+                    {
+                        PackageId = package.Id,
+                        //ExpiryDate = DateTime.Now.AddDays(package.DurationInDays),
+                        //StartDate = DateTime.Now,
+                        StatusId = UserPackageSubscriptionStatus.Pending,
+                        UserId = newUser.Id,
+                        CreatorUserId = userId,
+                        CreationTime = DateTime.Now,
+                        LastModificationTime = DateTime.Now,
+                        LastModifierUserId = userId,
+                    });
+
+                await UnitOfWorkManager.Current.SaveChangesAsync();
+
+                //assign user role
+                //save permission
+
+                //update user request detail
+                var updatedUserRequest = await _userRequestRepository.UpdateAsync(new UserRequest()
+                {
+                    Id = userRequest.Id,
+                    FirstName = userRequest.FirstName,
+                    LastName = userRequest.FirstName,
+                    UserName = userRequest.FirstName,
+                    Email = userRequest.FirstName,
+                    Password = userRequest.Password,
+                    PhoneNumber = userRequest.PhoneNumber,
+                    PackageId = userRequest.PackageId,
+                    UserId = newUser.Id,
+                    LastModificationTime = DateTime.Now,
+                    LastModifierUserId = userId,
+                });
+                await UnitOfWorkManager.Current.SaveChangesAsync();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         /// <summary>
@@ -411,25 +420,25 @@ namespace Emarketing.Admin
                 throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
             }
 
-            var userPackageSubscriptionDetail = _userPackageSubscriptionDetailRepository
+            var userPackageSubscriptionDetail = await _userPackageSubscriptionDetailRepository
                 .GetAll()
-                .FirstOrDefault(i => i.Id == requestDto.UserId);
+                .FirstOrDefaultAsync(i => i.Id == requestDto.UserId);
 
             if (userPackageSubscriptionDetail == null)
             {
                 return false;
             }
 
-            var package = _packageRepository
+            var package = await _packageRepository
                 .GetAll()
-                .FirstOrDefault(i => i.Id == userPackageSubscriptionDetail.PackageId);
+                .FirstOrDefaultAsync(i => i.Id == userPackageSubscriptionDetail.PackageId);
 
             if (package == null)
             {
                 return false;
             }
 
-            var updatedUserRequest = _userPackageSubscriptionDetailRepository.UpdateAsync(
+            var updatedUserRequest = await _userPackageSubscriptionDetailRepository.UpdateAsync(
                 new UserPackageSubscriptionDetail()
                 {
                     Id = userPackageSubscriptionDetail.Id,
@@ -445,6 +454,7 @@ namespace Emarketing.Admin
                 });
 
             UnitOfWorkManager.Current.SaveChanges();
+
             return true;
         }
 
@@ -461,22 +471,22 @@ namespace Emarketing.Admin
                 throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
             }
 
-            var allUsers = _userRepository.GetAll().Where(x => x.IsActive == true).ToList();
+            var allUsers = await _userRepository.GetAll().Where(x => x.IsActive == true).ToListAsync();
             foreach (var user in allUsers)
             {
-                var activeSubscription = _userPackageSubscriptionDetailRepository
-                    .GetAll().FirstOrDefault(x => x.UserId == user.Id &&
-                                                  x.StatusId == UserPackageSubscriptionStatus.Active &&
-                                                  x.ExpiryDate.Value != DateTime.Now);
+                var activeSubscription = await _userPackageSubscriptionDetailRepository
+                    .GetAll().FirstOrDefaultAsync(x => x.UserId == user.Id &&
+                                                       x.StatusId == UserPackageSubscriptionStatus.Active &&
+                                                       x.ExpiryDate.Value != DateTime.Now);
                 if (activeSubscription == null)
                 {
                     continue;
                 }
 
                 var packageAds
-                    = _packageAdRepository
+                    = await _packageAdRepository
                         .GetAll().Where(x => x.PackageId == activeSubscription.PackageId &&
-                                             x.IsActive == true).ToList();
+                                             x.IsActive == true).ToListAsync();
                 foreach (var packageAd in packageAds)
                 {
                     var newUserPackageAdDetail = new UserPackageAdDetail()
@@ -492,7 +502,7 @@ namespace Emarketing.Admin
                         LastModificationTime = DateTime.Now,
                         LastModifierUserId = userId,
                     };
-                    newUserPackageAdDetail = _userPackageAdDetailRepository.InsertOrUpdate(newUserPackageAdDetail);
+                    newUserPackageAdDetail = await _userPackageAdDetailRepository.InsertOrUpdateAsync(newUserPackageAdDetail);
 
                     UnitOfWorkManager.Current.SaveChanges();
                 }
@@ -517,9 +527,8 @@ namespace Emarketing.Admin
             }
 
             //create new user from user request
-            var userReferralRequest = _userReferralRequestRepository
-                .GetAll()
-                .FirstOrDefault(i => i.Id == requestDto.UserReferralRequestId);
+            var userReferralRequest = await _userReferralRequestRepository
+                .FirstOrDefaultAsync(i => i.Id == requestDto.UserReferralRequestId);
             if (userReferralRequest == null)
             {
                 return false;
@@ -527,16 +536,17 @@ namespace Emarketing.Admin
 
             var userPassword = EmarketingConsts.SamplePassword;
 
-            var package = _packageRepository
+            var package = await _packageRepository
                 .GetAll()
-                .FirstOrDefault(i => i.Id == userReferralRequest.PackageId);
+                .FirstOrDefaultAsync(i => i.Id == userReferralRequest.PackageId);
 
             if (package == null)
             {
                 return false;
             }
 
-            var newUser = _userManager.CreateAsync(new User()
+
+            var newUser = new User()
             {
                 UserName = userReferralRequest.UserName,
                 Name = userReferralRequest.FirstName,
@@ -549,80 +559,88 @@ namespace Emarketing.Admin
                 CreationTime = DateTime.Now,
                 LastModificationTime = DateTime.Now,
                 LastModifierUserId = userId,
-            }, userPassword);
+            };
+            var result = await _userManager.CreateAsync(newUser, userPassword);
             await UnitOfWorkManager.Current.SaveChangesAsync();
 
-            //save personal details
-
-            var userPersonalDetail = _userPersonalDetailRepository.InsertAsync(
-                new UserPersonalDetail()
-                {
-                    Gender = Gender.Male,
-                    Birthday = DateTime.Now,
-                    PhoneNumber = userReferralRequest.PhoneNumber,
-                    UserId = newUser.Id,
-                    CreatorUserId = userId,
-                    CreationTime = DateTime.Now,
-                    LastModificationTime = DateTime.Now,
-                    LastModifierUserId = userId,
-                });
-
-            await UnitOfWorkManager.Current.SaveChangesAsync();
-
-            //save withdraw details
-
-            var userWithdrawDetail = _userWithdrawDetailRepository.InsertAsync(
-                new UserWithdrawDetail()
-                {
-                    WithdrawTypeId = WithdrawType.BankTransfer,
-                    UserId = newUser.Id,
-                    CreatorUserId = userId,
-                    CreationTime = DateTime.Now,
-                    LastModificationTime = DateTime.Now,
-                    LastModifierUserId = userId,
-                });
-
-            await UnitOfWorkManager.Current.SaveChangesAsync();
-
-            //save user package subscription details
-
-            var userPackageSubscriptionDetail = _userPackageSubscriptionDetailRepository.InsertAsync(
-                new UserPackageSubscriptionDetail()
-                {
-                    PackageId = package.Id,
-                    //ExpiryDate = DateTime.Now.AddDays(package.DurationInDays),
-                    //StartDate = DateTime.Now,
-                    StatusId = UserPackageSubscriptionStatus.Pending,
-                    UserId = newUser.Id,
-                    CreatorUserId = userId,
-                    CreationTime = DateTime.Now,
-                    LastModificationTime = DateTime.Now,
-                    LastModifierUserId = userId,
-                });
-
-            await UnitOfWorkManager.Current.SaveChangesAsync();
-
-            //assign user role
-            //save permission
-
-            //update user request detail
-            var updatedUserReferralRequest = _userReferralRequestRepository.UpdateAsync(new UserReferralRequest()
+            if (result.Succeeded)
             {
-                Id = userReferralRequest.Id,
-                FirstName = userReferralRequest.FirstName,
-                LastName = userReferralRequest.LastName,
-                UserName = userReferralRequest.UserName,
-                Email = userReferralRequest.Email, 
-                PhoneNumber = userReferralRequest.PhoneNumber,
-                UserId = userReferralRequest.UserId,
-                PackageId = userReferralRequest.PackageId,
-                UserReferralId = newUser.Id,
-                ReferralRequestStatusId = ReferralRequestStatus.Active,
-                LastModificationTime = DateTime.Now,
-                LastModifierUserId = userId,
-            });
-            await UnitOfWorkManager.Current.SaveChangesAsync();
-            return true;
+                //save personal details
+
+                var userPersonalDetail = await _userPersonalDetailRepository.InsertAsync(
+                    new UserPersonalDetail()
+                    {
+                        Gender = Gender.Male,
+                        Birthday = DateTime.Now,
+                        PhoneNumber = userReferralRequest.PhoneNumber,
+                        UserId = newUser.Id,
+                        CreatorUserId = userId,
+                        CreationTime = DateTime.Now,
+                        LastModificationTime = DateTime.Now,
+                        LastModifierUserId = userId,
+                    });
+
+                await UnitOfWorkManager.Current.SaveChangesAsync();
+
+                //save withdraw details
+
+                var userWithdrawDetail = await _userWithdrawDetailRepository.InsertAsync(
+                    new UserWithdrawDetail()
+                    {
+                        WithdrawTypeId = WithdrawType.BankTransfer,
+                        UserId = newUser.Id,
+                        CreatorUserId = userId,
+                        CreationTime = DateTime.Now,
+                        LastModificationTime = DateTime.Now,
+                        LastModifierUserId = userId,
+                    });
+
+                await UnitOfWorkManager.Current.SaveChangesAsync();
+
+                //save user package subscription details
+
+                var userPackageSubscriptionDetail = _userPackageSubscriptionDetailRepository.InsertAsync(
+                    new UserPackageSubscriptionDetail()
+                    {
+                        PackageId = package.Id,
+                        //ExpiryDate = DateTime.Now.AddDays(package.DurationInDays),
+                        //StartDate = DateTime.Now,
+                        StatusId = UserPackageSubscriptionStatus.Pending,
+                        UserId = newUser.Id,
+                        CreatorUserId = userId,
+                        CreationTime = DateTime.Now,
+                        LastModificationTime = DateTime.Now,
+                        LastModifierUserId = userId,
+                    });
+
+                await UnitOfWorkManager.Current.SaveChangesAsync();
+
+                //assign user role
+                //save permission
+
+                //update user request detail
+                var updatedUserReferralRequest = _userReferralRequestRepository.UpdateAsync(new UserReferralRequest()
+                {
+                    Id = userReferralRequest.Id,
+                    FirstName = userReferralRequest.FirstName,
+                    LastName = userReferralRequest.LastName,
+                    UserName = userReferralRequest.UserName,
+                    Email = userReferralRequest.Email,
+                    PhoneNumber = userReferralRequest.PhoneNumber,
+                    UserId = userReferralRequest.UserId,
+                    PackageId = userReferralRequest.PackageId,
+                    UserReferralId = newUser.Id,
+                    ReferralRequestStatusId = ReferralRequestStatus.Active,
+                    LastModificationTime = DateTime.Now,
+                    LastModifierUserId = userId,
+                });
+                await UnitOfWorkManager.Current.SaveChangesAsync();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         /// <summary>
@@ -639,9 +657,9 @@ namespace Emarketing.Admin
                 throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
             }
 
-            var withdrawRequest = _withdrawRequestRepository
+            var withdrawRequest = await _withdrawRequestRepository
                 .GetAll()
-                .FirstOrDefault(i => i.Id == requestDto.WithdrawRequestId);
+                .FirstOrDefaultAsync(i => i.Id == requestDto.WithdrawRequestId);
             if (withdrawRequest == null)
             {
                 return false;
@@ -649,7 +667,7 @@ namespace Emarketing.Admin
 
             withdrawRequest.Status = true;
 
-            var updatedUserRequest = _withdrawRequestRepository.UpdateAsync(new WithdrawRequest()
+            var updatedUserRequest = await _withdrawRequestRepository.UpdateAsync(new WithdrawRequest()
             {
                 Id = withdrawRequest.Id,
                 UserId = withdrawRequest.UserId,
@@ -679,9 +697,9 @@ namespace Emarketing.Admin
             }
 
             //create new user from user request
-            var userReferralRequest = _userReferralRequestRepository
+            var userReferralRequest = await _userReferralRequestRepository
                 .GetAll()
-                .FirstOrDefault(i => i.Id == requestDto.UserReferralRequestId);
+                .FirstOrDefaultAsync(i => i.Id == requestDto.UserReferralRequestId);
             if (userReferralRequest == null)
             {
                 return false;
