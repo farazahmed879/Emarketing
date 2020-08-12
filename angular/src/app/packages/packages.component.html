@@ -6,7 +6,11 @@
           <h1>{{ "Packages"}}</h1>
         </div>
         <div class="col-6 text-right">
-          <a href="javascript:;" class="btn bg-blue" (click)="createPackage()">
+          <a href="javascript:;" class="btn bg-blue" (click)="renewPackage()">
+            <!-- <i class="fa fa-plus-square"></i> -->
+            {{ "Renew Package" | localize }}
+          </a>
+          <a href="javascript:;" class="btn bg-blue" (click)="createPackage()" style="margin-left: 20px;">
             <i class="fa fa-plus-square"></i>
             {{ "Create" | localize }}
           </a>

@@ -167,8 +167,10 @@ export class AdminServiceProxy {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            debugger;
             return this.processGetAll(response_);
         })).pipe(_observableCatch((response_: any) => {
+           
             if (response_ instanceof HttpResponseBase) {
                 try {
                     return this.processGetAll(<any>response_);

@@ -3,10 +3,14 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-6">
-          <h1>{{ "User Package Detail" | localize }}</h1>
+          <h1>{{ "Ads" | localize }}</h1>
         </div>
       </div>
     </div>
+    <a href="javascript:;" class="btn bg-blue" (click)="viewUserPackageAdDetail(2)">
+      <!-- <i class="fa fa-plus-square"></i> -->
+      {{ "Detail" | localize }}
+    </a>
   </section>
   <section class="content ">
     <div class="container-fluid">
@@ -46,10 +50,12 @@
                 <td>{{ userPackageDetail.url }}</td>
                 <td>{{ userPackageDetail.adDate }}</td>
                 <td>{{ userPackageDetail.adPrice }}</td>
-                <td> <a href="javascript:;" class="btn bg-blue" (click)="viewUserPackageAdDetail(userPackageDetail.id)">
+                <td>
+                  <a href="javascript:;" class="btn bg-blue" (click)="viewUserPackageAdDetail(userPackageDetail.id)">
                     <i class="fa fa-plus-square"></i>
                     {{ "Detail" | localize }}
-                  </a></td>
+                  </a>
+                </td>
               </tr>
             </tbody>
           </table>

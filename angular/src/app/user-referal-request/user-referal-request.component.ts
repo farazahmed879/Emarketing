@@ -1,6 +1,6 @@
 import { Component, Injector, ChangeDetectionStrategy } from '@angular/core';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
-import { PackageServiceProxy, PackageDtoPagedResultDto, PackageDto, UserReferralRequestServiceProxy, UserReferralRequestDtoPagedResultDto } from '@shared/service-proxies/service-proxies';
+import { PackageServiceProxy, PackageDtoPagedResultDto, PackageDto, UserReferralRequestServiceProxy, UserReferralRequestDtoPagedResultDto, AdminServiceProxy, ActivateUserReferralSubscriptionDto, AcceptUserRequestDto, AcceptUserReferralRequestDto } from '@shared/service-proxies/service-proxies';
 import { finalize } from 'rxjs/operators';
 import { PagedRequestDto, PagedListingComponentBase } from '@shared/paged-listing-component-base';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
@@ -20,18 +20,19 @@ class PagedWithdrawHistoryDto extends PagedRequestDto {
 export class UserReferalRequestComponent extends PagedListingComponentBase<PackageDto> {
   constructor(injector: Injector,
     private _userReferalRequestService: UserReferralRequestServiceProxy,
+    private _adminService: AdminServiceProxy,
     private _modalService: BsModalService
-    ) {
+  ) {
     super(injector);
-    
+
   }
- 
+
   keyword: string;
   userReferalRequest: UserReferralRequestDtoPagedResultDto;
-  
+
   ngOnInit(): void {
     var pagedHistory = new PagedWithdrawHistoryDto();
-    this.list(pagedHistory,1);
+    this.list(pagedHistory, 1);
   }
 
   protected list(
@@ -45,18 +46,18 @@ export class UserReferalRequestComponent extends PagedListingComponentBase<Packa
         undefined,
         undefined,
         undefined,
-        
-         
+
+
         request.skipCount,
         request.maxResultCount
       )
       .subscribe((result: UserReferralRequestDtoPagedResultDto) => {
         this.userReferalRequest = result;
-        console.log("userReferalRequest",result);
+        console.log("userReferalRequest", result);
         this.showPaging(result, pageNumber);
       });
   }
-  delete(event: PackageDto){
+  delete(event: PackageDto) {
     abp.message.confirm(
       this.l('UserDeleteWarningMessage', event.name),
       undefined,
@@ -69,6 +70,27 @@ export class UserReferalRequestComponent extends PagedListingComponentBase<Packa
         }
       }
     );
+  }
+
+  acceptReferalRequest(userRequestDto) {
+    debugger;
+    var acceptUserRequestDto = new AcceptUserReferralRequestDto();
+    acceptUserRequestDto.userReferralRequestId = userRequestDto.id;
+    this._adminService.acceptUserReferralRequest(acceptUserRequestDto).subscribe((result) => {
+      if (result) {
+        abp.notify.success(this.l('Activated Successfullly'));
+      }
+    })
+  }
+
+  activateReferalRequest(userReferalRequest) {
+    var activateUserReferralSubscriptionDto = new ActivateUserReferralSubscriptionDto();
+    activateUserReferralSubscriptionDto.userReferralRequestId = userReferalRequest.id;
+    this._adminService.activateUserReferralRequestSubscription(activateUserReferralSubscriptionDto).subscribe((result) => {
+      if (result) {
+        abp.notify.success(this.l('Activated Successfullly'));
+      }
+    })
   }
 
 
@@ -104,9 +126,9 @@ export class UserReferalRequestComponent extends PagedListingComponentBase<Packa
     }
 
     createOrEditUserReferalRequestDialog.content.onSave.subscribe(() => {
-     // this.refresh();
+      // this.refresh();
       var pagedHistory = new PagedWithdrawHistoryDto();
-      this.list(pagedHistory,1);
+      this.list(pagedHistory, 1);
     });
   }
 

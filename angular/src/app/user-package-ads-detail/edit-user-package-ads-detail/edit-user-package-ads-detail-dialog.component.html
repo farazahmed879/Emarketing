@@ -1,0 +1,16 @@
+<form class="form-horizontal" autocomplete="off" #editUserPackageDetailModal="ngForm" (ngSubmit)="save()">
+  <!-- <abp-modal-header (onCloseClick)="bsModalRef.hide()" (click)="getDurrection()"></abp-modal-header> -->
+  <!-- <div (onCloseClick)="bsModalRef.hide()"></div> -->
+  <div class="modal-body">
+    <iframe [src]="videoUrl"
+          id="video_player"
+          width="640" height="360" frameborder="0" 
+          allow="autoplay; fullscreen" allowfullscreen
+     ></iframe>
+     <!-- <video id="video_player" width="760" height="360" controls>
+      <source src="https://player.vimeo.com/video/70591644?autoplay=true&showinfo=0&controls=0" type="video/">
+    </video> -->
+  </div>
+  <!-- <abp-modal-footer [cancelDisabled]="saving"
+    (onCancelClick)="bsModalRef.hide()"></abp-modal-footer> -->
+</form>

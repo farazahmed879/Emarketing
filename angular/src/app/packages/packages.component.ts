@@ -1,6 +1,6 @@
 import { Component, Injector, ChangeDetectionStrategy } from '@angular/core';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
-import { PackageServiceProxy, PackageDtoPagedResultDto, PackageDto } from '@shared/service-proxies/service-proxies';
+import { PackageServiceProxy, PackageDtoPagedResultDto, PackageDto, AdminServiceProxy } from '@shared/service-proxies/service-proxies';
 import { finalize } from 'rxjs/operators';
 import { PagedRequestDto, PagedListingComponentBase } from '@shared/paged-listing-component-base';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
@@ -20,24 +20,24 @@ class PagedWithdrawHistoryDto extends PagedRequestDto {
 export class PackagesComponent extends PagedListingComponentBase<PackageDto> {
   constructor(injector: Injector,
     private _packageService: PackageServiceProxy,
+    private _adminService: AdminServiceProxy,
     private _modalService: BsModalService
-    ) {
+  ) {
     super(injector);
-    
+
   }
- 
+
   keyword: string;
   packages: PackageDtoPagedResultDto;
-  
+
   ngOnInit(): void {
     var pagedHistory = new PagedWithdrawHistoryDto();
-    this.list(pagedHistory,1,undefined);
+    this.list(pagedHistory, 1);
   }
 
   protected list(
     request: PagedWithdrawHistoryDto,
-    pageNumber: number,
-    finishedCallback: Function
+    pageNumber: number
   ): void {
     request.keyword = this.keyword;
     request.isActive = false;
@@ -45,23 +45,18 @@ export class PackagesComponent extends PagedListingComponentBase<PackageDto> {
       .getPaginatedAll(
         undefined,
         this.keyword,
-         
+
         request.isActive,
         request.skipCount,
         request.maxResultCount
       )
-      .pipe(
-        finalize(() => {
-          finishedCallback();
-        })
-      )
       .subscribe((result: PackageDtoPagedResultDto) => {
         this.packages = result;
-        console.log("packages",result);
+        console.log("packages", result);
         this.showPaging(result, pageNumber);
       });
   }
-  delete(event: PackageDto){
+  delete(event: PackageDto) {
     abp.message.confirm(
       this.l('UserDeleteWarningMessage', event.name),
       undefined,
@@ -83,6 +78,14 @@ export class PackagesComponent extends PagedListingComponentBase<PackageDto> {
 
   editPackage(event: PackageDto): void {
     this.showCreateOrEditPackageDialog(event.id);
+  }
+
+  renewPackage() {
+    this._adminService.renewPackageAdForUsers().subscribe(result => {
+      if (result) {
+        abp.notify.success(this.l('SuccessfullyRenewPackage'));
+      }
+    })
   }
 
 
@@ -108,9 +111,9 @@ export class PackagesComponent extends PagedListingComponentBase<PackageDto> {
     }
 
     createOrEditPackageDialog.content.onSave.subscribe(() => {
-     // this.refresh();
+      // this.refresh();
       var pagedHistory = new PagedWithdrawHistoryDto();
-      this.list(pagedHistory,1,undefined);
+      this.list(pagedHistory, 1);
     });
   }
 

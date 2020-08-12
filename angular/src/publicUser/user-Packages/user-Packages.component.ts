@@ -1,7 +1,7 @@
 import { Component, Injector, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { AppComponentBase } from '@shared/app-component-base';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
-import { PackageServiceProxy, PackageDto } from '@shared/service-proxies/service-proxies';
+import { PackageServiceProxy, PackageDto, AdminServiceProxy, UserPersonalDetailServiceProxy } from '@shared/service-proxies/service-proxies';
 import { Router } from '@angular/router';
 
 @Component({
@@ -12,7 +12,8 @@ import { Router } from '@angular/router';
 export class UserPackageComponent extends AppComponentBase
   implements OnInit {
   constructor(injector: Injector,
-    private _packageService: PackageServiceProxy,
+    private _adminService: AdminServiceProxy,
+    private _UserPersonalDetailServiceProxy: UserPersonalDetailServiceProxy,
     private router: Router) {
     super(injector);
   }
@@ -32,18 +33,19 @@ export class UserPackageComponent extends AppComponentBase
   ];
 
   ngOnInit() {
-    this.getAllPackages();
+    this.getPackageList();
+
   }
-
-  getAllPackages() {
-    this._packageService.getAllPackage()
-      .subscribe((result) => {
-        if (result && result.length > 0) {
-
-        }
+  getPackageList() {
+    this._UserPersonalDetailServiceProxy.getAll().subscribe((result: any) => {
+      console.log("result",result);
+      debugger;
+      if (result) {
         this.packages = result;
-        console.log("packages", result);
-        // console.log("packages", this.HEROES);
-      })
+        
+      }
+    });
   }
+
+
 }

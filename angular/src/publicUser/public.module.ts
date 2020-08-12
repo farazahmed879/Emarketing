@@ -10,7 +10,7 @@ import { PublicRoutingModule } from './public-routing.module';
 import { PublicComponent } from './public.component';
 import { DropdownModule } from 'primeng/dropdown';
 import { UserPackageComponent } from './user-Packages/user-Packages.component';
-import { PackageServiceProxy } from '@shared/service-proxies/service-proxies';
+import { PackageServiceProxy, AdminServiceProxy, UserPersonalDetailServiceProxy } from '@shared/service-proxies/service-proxies';
 
 @NgModule({
     imports: [
@@ -25,7 +25,9 @@ import { PackageServiceProxy } from '@shared/service-proxies/service-proxies';
         ModalModule.forChild()
     ],
     providers: [
-        PackageServiceProxy
+        PackageServiceProxy,
+        AdminServiceProxy,
+        UserPersonalDetailServiceProxy
     ],
     declarations: [
         PublicComponent,

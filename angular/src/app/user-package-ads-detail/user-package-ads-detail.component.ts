@@ -3,7 +3,7 @@ import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { UserPackageAdDetailDto, UserPackageAdDetailServiceProxy, UserPackageAdDetailDtoPagedResultDto } from '@shared/service-proxies/service-proxies';
 import { finalize } from 'rxjs/operators';
 import { PagedRequestDto, PagedListingComponentBase } from '@shared/paged-listing-component-base';
-import { EditUserPackagesDetailComponent } from './edit-user-packages-detail/edit-user-packages-detail-dialog.component';
+import { EditUserPackageAdsDetailComponent } from './edit-user-package-ads-detail/edit-user-package-ads-detail-dialog.component';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 
 
@@ -11,11 +11,11 @@ class PagedWithdrawHistoryDto extends PagedRequestDto {
   keyword: string;
 }
 @Component({
-  templateUrl: './user-package-detail.component.html',
+  templateUrl: './user-package-ads-detail.component.html',
   animations: [appModuleAnimation()],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class UserPackageDetailComponent extends PagedListingComponentBase<UserPackageAdDetailDto> {
+export class UserPackageAdsDetailComponent extends PagedListingComponentBase<UserPackageAdDetailDto> {
   constructor(injector: Injector,
     private _userPackageDetailService: UserPackageAdDetailServiceProxy,
     private _modalService: BsModalService
@@ -59,7 +59,7 @@ export class UserPackageDetailComponent extends PagedListingComponentBase<UserPa
   private showCreateOrEditUserPackageAdDetailDialog(id?: number): void {
     let createOrEditUserPackageAdDetailDialog: BsModalRef;
       createOrEditUserPackageAdDetailDialog = this._modalService.show(
-        EditUserPackagesDetailComponent,
+        EditUserPackageAdsDetailComponent,
         {
           class: 'modal-lg',
           initialState: {

@@ -51,7 +51,9 @@ import {
   PackageAdServiceProxy,
   UserReferralServiceProxy,
   UserReferralRequestServiceProxy,
-  UserPackageAdDetailServiceProxy
+  UserPackageAdDetailServiceProxy,
+  AdminServiceProxy,
+  UserPackageAdDetailDto
 } from '@shared/service-proxies/service-proxies';
 // Package
 import { PackagesComponent } from './packages/packages.component';
@@ -59,7 +61,6 @@ import { CreatePackageDialogComponent } from './packages/create-package/create-p
 import { EditPackageDialogComponent } from './packages/edit-package/edit-package-dialog.component';
 //User Profile
 import { UserProfileComponent } from './user-Profile/user-Profile.component';
-import { UserPackageComponent } from './user-Packages/user-Packages.component';
 //Packages-Advertisement
 import { PackagesAdvertisementComponent } from './packages-advertisement/packages-advertisement.component';
 import { EditPackagesAdvertisementComponent } from './packages-advertisement/edit-packages-advertisement/edit-package-advertisement-dialog.component';
@@ -73,8 +74,8 @@ import { UserReferalRequestComponent } from './user-referal-request/user-referal
 import { CreateUserReferalRequestDialogComponent } from './user-referal-request/create-user-referal-request/create-user-referal-request-dialog.component';
 import { EditUserReferalRequestDialogComponent } from './user-referal-request/edit-user-referal-request/edit-user-referal-request-dialog.component';
 //User Package Detail
-import {UserPackageDetailComponent} from './user-package-detail/user-package-detail.component';
-import {EditUserPackagesDetailComponent} from './user-package-detail/edit-user-packages-detail/edit-user-packages-detail-dialog.component';
+import {UserPackageAdsDetailComponent} from './user-package-ads-detail/user-package-ads-detail.component';
+import {EditUserPackageAdsDetailComponent} from './user-package-ads-detail/edit-user-package-ads-detail/edit-user-package-ads-detail-dialog.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -110,8 +111,6 @@ import {EditUserPackagesDetailComponent} from './user-package-detail/edit-user-p
     PackagesComponent,
     CreatePackageDialogComponent,
     EditPackageDialogComponent,
-    //User Package
-    UserPackageComponent,
     //User Profile
     UserProfileComponent,
     //PAckages-Advertisement
@@ -127,8 +126,8 @@ import {EditUserPackagesDetailComponent} from './user-package-detail/edit-user-p
     CreateUserReferalRequestDialogComponent,
     EditUserReferalRequestDialogComponent,
    //User Package Detail
-   UserPackageDetailComponent,
-   EditUserPackagesDetailComponent
+   EditUserPackageAdsDetailComponent,
+   UserPackageAdsDetailComponent
   ],
   imports: [
     CommonModule,
@@ -157,7 +156,8 @@ import {EditUserPackagesDetailComponent} from './user-package-detail/edit-user-p
     UserReferralServiceProxy,
     UserRequestComponent,
     UserReferralRequestServiceProxy,
-    UserPackageAdDetailServiceProxy  
+    UserPackageAdDetailServiceProxy,
+    AdminServiceProxy
   ],
   entryComponents: [
     // tenants
@@ -177,8 +177,6 @@ import {EditUserPackagesDetailComponent} from './user-package-detail/edit-user-p
     PackagesComponent,
     CreatePackageDialogComponent,
     EditPackageDialogComponent,
-    //User Package
-    UserPackageComponent,
     //User Profile
     UserProfileComponent,
     //PAckages-Advertisement
@@ -194,8 +192,8 @@ import {EditUserPackagesDetailComponent} from './user-package-detail/edit-user-p
     CreateUserReferalRequestDialogComponent,
     EditUserReferalRequestDialogComponent,
     //User Package Detail
-    UserPackageDetailComponent,
-    EditUserPackagesDetailComponent
+    UserPackageAdDetailDto,
+    EditUserPackageAdsDetailComponent
 
   ],
 })

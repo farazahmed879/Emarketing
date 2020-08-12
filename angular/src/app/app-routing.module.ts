@@ -12,12 +12,11 @@ import { WithdrawRequestComponent } from './withdraw-request/withdraw-request.co
 import { WithdrawHistoryComponent } from './withdraw-history/withdraw-history.component';
 import { PackagesComponent } from './packages/packages.component';
 import { UserProfileComponent } from './user-Profile/user-Profile.component';
-import { UserPackageComponent } from './user-Packages/user-Packages.component';
 import { PackagesAdvertisementComponent } from './packages-advertisement/packages-advertisement.component';
 import { UserRequestComponent } from './user-request/user-request.component';
 import { UserReferalComponent } from './user-referal/user-referal.component';
 import { UserReferalRequestComponent } from './user-referal-request/user-referal-request.component';
-import { UserPackageDetailComponent } from './user-package-detail/user-package-detail.component';
+import { UserPackageAdsDetailComponent } from './user-package-ads-detail/user-package-ads-detail.component';
 
 @NgModule({
     imports: [
@@ -36,13 +35,12 @@ import { UserPackageDetailComponent } from './user-package-detail/user-package-d
                     { path: 'about', component: AboutComponent },
                     { path: 'update-password', component: ChangePasswordComponent, canActivate: [AppRouteGuard]},
                     { path: 'user-profile', component: UserProfileComponent, canActivate: [AppRouteGuard] },
-                    { path: 'user-packages', component: UserPackageComponent, canActivate: [AppRouteGuard] },
                     { path: '', component: HomeComponent },
                     { path: 'packageAd/:packageId', component: PackagesAdvertisementComponent, canActivate: [AppRouteGuard] },
                     { path: 'user-request', component: UserRequestComponent, canActivate: [AppRouteGuard] },
                     { path: 'user-referal', component: UserReferalComponent, canActivate: [AppRouteGuard] },
                     { path: 'user-referal-request', component: UserReferalRequestComponent, canActivate: [AppRouteGuard] },
-                    { path: 'ads', component: UserPackageDetailComponent, canActivate: [AppRouteGuard] },
+                    { path: 'ads', component: UserPackageAdsDetailComponent, canActivate: [AppRouteGuard] },
                 ]
             }
         ])

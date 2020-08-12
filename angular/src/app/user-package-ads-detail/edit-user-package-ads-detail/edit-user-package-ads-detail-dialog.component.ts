@@ -11,21 +11,27 @@ import { finalize } from 'rxjs/operators';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import * as _ from 'lodash';
 import { AppComponentBase } from '@shared/app-component-base';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import {
   UserPackageAdDetailServiceProxy,
   UserPackageAdDetailDto
 } from '@shared/service-proxies/service-proxies';
+//const { getVideoDurationInSeconds } = require('get-video-duration')
 
 @Component({
-  templateUrl: './edit-user-packages-detail-dialog.component.html'
+  templateUrl: './edit-user-package-ads-detail-dialog.component.html',
+  styleUrls: [
+    './edit-user-package-ads-detail-dialog.component.css'
+],
 })
-export class EditUserPackagesDetailComponent extends AppComponentBase
+export class EditUserPackageAdsDetailComponent extends AppComponentBase
   implements OnInit {
   saving = false;
   userPackageAdDetail = new UserPackageAdDetailDto();
   id: number;
   packageId: number;
-
+  url: string = "https://player.vimeo.com/video/70591644?autoplay=true&showinfo=0&controls=0";
+  videoUrl: any;
   @Output() onSave = new EventEmitter<any>();
 
   constructor(
@@ -33,12 +39,17 @@ export class EditUserPackagesDetailComponent extends AppComponentBase
     public _userPackageAdDetailService: UserPackageAdDetailServiceProxy,
     public bsModalRef: BsModalRef,
     private _modalService: BsModalService,
+    public sanitizer: DomSanitizer
   ) {
     super(injector);
   }
 
   ngOnInit(): void {
     this.show();
+    // getVideoDurationInSeconds('https://player.vimeo.com/video/70591644?autoplay=true&showinfo=0&controls=0').then((duration) => {
+    //   console.log("duration",duration);
+    // });
+    this.videoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.url);  
   }
 
   show() {
@@ -48,6 +59,8 @@ export class EditUserPackagesDetailComponent extends AppComponentBase
     }
     )
   }
+
+
 
 
   save(): void {
@@ -67,5 +80,10 @@ export class EditUserPackagesDetailComponent extends AppComponentBase
       });
   }
 
+  getDurrection(){
+    debugger;
+    // var myVideoPlayer = document.getElementById('https://www.w3schools./html/movie.mp4');
+    // var duration = myVideoPlayer.duration;
+  }
 
 }
