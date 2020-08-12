@@ -1,4 +1,4 @@
-import { Component, Injector, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Injector } from '@angular/core';
 import { AppComponentBase } from '@shared/app-component-base';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { WithdrawRequestServiceProxy, WithdrawRequestDto, WithdrawRequestDtoPagedResultDto } from '@shared/service-proxies/service-proxies';
@@ -12,8 +12,7 @@ class PagedWithdrawHistoryDto extends PagedRequestDto {
 }
 @Component({
   templateUrl: './withdraw-history.component.html',
-  animations: [appModuleAnimation()],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  animations: [appModuleAnimation()]
 })
 export class WithdrawHistoryComponent extends PagedListingComponentBase<WithdrawRequestDto> {
   constructor(injector: Injector,
@@ -28,7 +27,7 @@ export class WithdrawHistoryComponent extends PagedListingComponentBase<Withdraw
   ngOnInIt(){
 
   }
-  protected list(
+  list(
     request: PagedWithdrawHistoryDto,
     pageNumber: number,
     finishedCallback: Function
@@ -43,9 +42,15 @@ export class WithdrawHistoryComponent extends PagedListingComponentBase<Withdraw
         request.skipCount,
         request.maxResultCount
       )
+      .pipe(
+        finalize(() => {
+          finishedCallback();
+        })
+      )
       .subscribe((result: WithdrawRequestDtoPagedResultDto) => {
         this.withdrawRequestHistory = result;
         console.log(result)
+        this.isTableLoading = false;
         this.showPaging(result, pageNumber);
       });
   }

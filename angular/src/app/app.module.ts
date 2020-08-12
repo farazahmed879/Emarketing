@@ -53,7 +53,8 @@ import {
   UserReferralRequestServiceProxy,
   UserPackageAdDetailServiceProxy,
   AdminServiceProxy,
-  UserPackageAdDetailDto
+  UserPackageAdDetailDto,
+  DashboardServiceProxy
 } from '@shared/service-proxies/service-proxies';
 // Package
 import { PackagesComponent } from './packages/packages.component';
@@ -157,7 +158,8 @@ import {EditUserPackageAdsDetailComponent} from './user-package-ads-detail/edit-
     UserRequestComponent,
     UserReferralRequestServiceProxy,
     UserPackageAdDetailServiceProxy,
-    AdminServiceProxy
+    AdminServiceProxy,
+    DashboardServiceProxy
   ],
   entryComponents: [
     // tenants

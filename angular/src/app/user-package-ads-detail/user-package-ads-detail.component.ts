@@ -1,4 +1,4 @@
-import { Component, Injector, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Injector } from '@angular/core';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { UserPackageAdDetailDto, UserPackageAdDetailServiceProxy, UserPackageAdDetailDtoPagedResultDto } from '@shared/service-proxies/service-proxies';
 import { finalize } from 'rxjs/operators';
@@ -12,8 +12,7 @@ class PagedWithdrawHistoryDto extends PagedRequestDto {
 }
 @Component({
   templateUrl: './user-package-ads-detail.component.html',
-  animations: [appModuleAnimation()],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  animations: [appModuleAnimation()]
 })
 export class UserPackageAdsDetailComponent extends PagedListingComponentBase<UserPackageAdDetailDto> {
   constructor(injector: Injector,

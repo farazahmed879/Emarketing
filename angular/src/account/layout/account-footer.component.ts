@@ -4,7 +4,6 @@ import { AppComponentBase } from '@shared/app-component-base';
 @Component({
   selector: 'account-footer',
   templateUrl: './account-footer.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AccountFooterComponent extends AppComponentBase {
   currentYear: number;

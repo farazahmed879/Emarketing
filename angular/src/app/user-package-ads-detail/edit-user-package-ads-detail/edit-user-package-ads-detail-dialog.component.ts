@@ -81,7 +81,6 @@ export class EditUserPackageAdsDetailComponent extends AppComponentBase
   }
 
   getDurrection(){
-    debugger;
     // var myVideoPlayer = document.getElementById('https://www.w3schools./html/movie.mp4');
     // var duration = myVideoPlayer.duration;
   }

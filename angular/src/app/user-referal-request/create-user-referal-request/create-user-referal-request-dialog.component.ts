@@ -53,12 +53,12 @@ export class CreateUserReferalRequestDialogComponent extends AppComponentBase
             label: item.name,
             value: item.id
           }));
+          this.selectedPackageId = this.packages[0].value;
       }
     })
   }
 
   save(): void {
-    debugger;
     this.saving = true;
     this.userReferalRequest.userId = this.appSession.userId;
     this.userReferalRequest.packageId = this.selectedPackageId;

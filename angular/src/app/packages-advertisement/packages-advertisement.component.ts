@@ -1,4 +1,4 @@
-import { Component, Injector, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Injector } from '@angular/core';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { PackageServiceProxy, PackageDtoPagedResultDto, PackageDto, PackageAdServiceProxy, PackageAdDto, PackageAdDtoPagedResultDto } from '@shared/service-proxies/service-proxies';
 import { finalize } from 'rxjs/operators';
@@ -16,7 +16,6 @@ class PagedPackageAdDto extends PagedRequestDto {
 @Component({
   templateUrl: './packages-advertisement.component.html',
   animations: [appModuleAnimation()],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PackagesAdvertisementComponent extends PagedListingComponentBase<PackageAdDto> {
   constructor(injector: Injector,

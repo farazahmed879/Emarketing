@@ -1,4 +1,4 @@
-import { Component, Injector, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Injector } from '@angular/core';
 import { AppComponentBase } from '@shared/app-component-base';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { WithdrawRequestServiceProxy, WithdrawRequestDto, WithdrawRequestDtoPagedResultDto, UserRequestServiceProxy, UserRequestDtoPagedResultDto, UserReferralServiceProxy, UserReferralDtoPagedResultDto } from '@shared/service-proxies/service-proxies';
@@ -11,8 +11,7 @@ class PagedWithdrawHistoryDto extends PagedRequestDto {
 }
 @Component({
   templateUrl: './user-referal.component.html',
-  animations: [appModuleAnimation()],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  animations: [appModuleAnimation()]
 })
 export class UserReferalComponent extends PagedListingComponentBase<WithdrawRequestDto> {
   constructor(injector: Injector,
@@ -27,7 +26,7 @@ export class UserReferalComponent extends PagedListingComponentBase<WithdrawRequ
   ngOnInIt() {
 
   }
-  protected list(
+  list(
     request: PagedWithdrawHistoryDto,
     pageNumber: number
   ): void {
@@ -46,6 +45,7 @@ export class UserReferalComponent extends PagedListingComponentBase<WithdrawRequ
       )
       .subscribe((result: UserReferralDtoPagedResultDto) => {
         this.userReferal = result;
+        this.isTableLoading = false;
         console.log("userReferal", result);
         this.showPaging(result, pageNumber);
       });

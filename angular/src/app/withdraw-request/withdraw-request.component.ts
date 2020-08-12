@@ -1,4 +1,4 @@
-import { Component, Injector, ChangeDetectionStrategy, OnInit } from '@angular/core';
+import { Component, Injector, OnInit } from '@angular/core';
 import { AppComponentBase } from '@shared/app-component-base';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { WithdrawRequestDto, WithdrawRequestServiceProxy, CreateWithdrawRequestDto, UserWithdrawDetailServiceProxy } from '@shared/service-proxies/service-proxies';
@@ -48,8 +48,8 @@ export class WithdrawRequestComponent extends AppComponentBase implements OnInit
       if (result) {
         this.withdrawTypeArrayObj = result.map(item =>
           ({
-            label: item.name,
-            value: item.withdrawTypeId
+            label: item.Name,
+            value: item.WithdrawTypeId
           }));
         console.log("withdrawTypeArrayObj", this.withdrawTypeArrayObj);
       }

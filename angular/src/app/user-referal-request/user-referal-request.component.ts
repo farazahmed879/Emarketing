@@ -1,4 +1,4 @@
-import { Component, Injector, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Injector } from '@angular/core';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { PackageServiceProxy, PackageDtoPagedResultDto, PackageDto, UserReferralRequestServiceProxy, UserReferralRequestDtoPagedResultDto, AdminServiceProxy, ActivateUserReferralSubscriptionDto, AcceptUserRequestDto, AcceptUserReferralRequestDto } from '@shared/service-proxies/service-proxies';
 import { finalize } from 'rxjs/operators';
@@ -14,8 +14,7 @@ class PagedWithdrawHistoryDto extends PagedRequestDto {
 }
 @Component({
   templateUrl: './user-referal-request.component.html',
-  animations: [appModuleAnimation()],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  animations: [appModuleAnimation()]
 })
 export class UserReferalRequestComponent extends PagedListingComponentBase<PackageDto> {
   constructor(injector: Injector,
@@ -73,12 +72,11 @@ export class UserReferalRequestComponent extends PagedListingComponentBase<Packa
   }
 
   acceptReferalRequest(userRequestDto) {
-    debugger;
     var acceptUserRequestDto = new AcceptUserReferralRequestDto();
     acceptUserRequestDto.userReferralRequestId = userRequestDto.id;
     this._adminService.acceptUserReferralRequest(acceptUserRequestDto).subscribe((result) => {
       if (result) {
-        abp.notify.success(this.l('Activated Successfullly'));
+        this.notify.info(this.l('SavedSuccessfully'));
       }
     })
   }
@@ -88,7 +86,7 @@ export class UserReferalRequestComponent extends PagedListingComponentBase<Packa
     activateUserReferralSubscriptionDto.userReferralRequestId = userReferalRequest.id;
     this._adminService.activateUserReferralRequestSubscription(activateUserReferralSubscriptionDto).subscribe((result) => {
       if (result) {
-        abp.notify.success(this.l('Activated Successfullly'));
+        this.notify.info(this.l('SavedSuccessfully'));
       }
     })
   }
@@ -104,7 +102,6 @@ export class UserReferalRequestComponent extends PagedListingComponentBase<Packa
 
 
   private showCreateOrEditUserReferalRequestDialog(id?: number): void {
-    debugger;
     let createOrEditUserReferalRequestDialog: BsModalRef;
     if (!id) {
       createOrEditUserReferalRequestDialog = this._modalService.show(

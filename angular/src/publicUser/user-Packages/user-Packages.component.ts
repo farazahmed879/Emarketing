@@ -39,7 +39,6 @@ export class UserPackageComponent extends AppComponentBase
   getPackageList() {
     this._adminService.getAll().subscribe((result: any) => {
       console.log("result",result);
-      debugger;
       if (result) {
         this.packages = result;
         

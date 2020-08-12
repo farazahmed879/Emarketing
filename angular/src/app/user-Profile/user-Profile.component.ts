@@ -1,4 +1,4 @@
-import { Component, Injector, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Injector } from '@angular/core';
 import { AppComponentBase } from '@shared/app-component-base';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { UserServiceProxy, UserWithdrawDetailServiceProxy, UserDto, UserWithdrawDetailDto, UserPersonalDetailServiceProxy, UserPersonalDetailDto } from '@shared/service-proxies/service-proxies';
@@ -9,7 +9,6 @@ import * as moment from 'moment';
 @Component({
   templateUrl: './user-profile.component.html',
   animations: [appModuleAnimation()],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UserProfileComponent extends AppComponentBase {
   user = new UserDto();
