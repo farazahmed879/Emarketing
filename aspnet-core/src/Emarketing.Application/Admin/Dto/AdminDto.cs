@@ -26,6 +26,11 @@ namespace Emarketing.BusinessModels.Package.Dto
         public long UserId { get; set; }
     }
 
+    public class ActivateUserReferralSubscriptionDto
+    {
+        public long UserReferralRequestId { get; set; }
+    }
+
     public class UpdateWithDrawRequestDto
     {
         public long WithdrawRequestId { get; set; }

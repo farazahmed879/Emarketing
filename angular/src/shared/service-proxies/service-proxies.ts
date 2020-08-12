@@ -531,6 +531,62 @@ export class AdminServiceProxy {
         }
         return _observableOf<boolean>(<any>null);
     }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    activateUserReferralRequestSubscription(body: ActivateUserReferralSubscriptionDto | undefined): Observable<boolean> {
+        let url_ = this.baseUrl + "/api/services/app/Admin/ActivateUserReferralRequestSubscription";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processActivateUserReferralRequestSubscription(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processActivateUserReferralRequestSubscription(<any>response_);
+                } catch (e) {
+                    return <Observable<boolean>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<boolean>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processActivateUserReferralRequestSubscription(response: HttpResponseBase): Observable<boolean> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<boolean>(<any>null);
+    }
 }
 
 @Injectable()
@@ -594,6 +650,74 @@ export class ConfigurationServiceProxy {
             }));
         }
         return _observableOf<void>(<any>null);
+    }
+}
+
+@Injectable()
+export class DashboardServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * @param requestDto (optional) 
+     * @return Success
+     */
+    getUserCurrentSubscriptionStats(requestDto: GetUserCurrentSubscriptionStatsRequestDto | undefined): Observable<GetUserCurrentSubscriptionStatsDto> {
+        let url_ = this.baseUrl + "/api/services/app/Dashboard/GetUserCurrentSubscriptionStats?";
+        if (requestDto === null)
+            throw new Error("The parameter 'requestDto' cannot be null.");
+        else if (requestDto !== undefined)
+            url_ += "requestDto=" + encodeURIComponent("" + requestDto) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetUserCurrentSubscriptionStats(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetUserCurrentSubscriptionStats(<any>response_);
+                } catch (e) {
+                    return <Observable<GetUserCurrentSubscriptionStatsDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<GetUserCurrentSubscriptionStatsDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetUserCurrentSubscriptionStats(response: HttpResponseBase): Observable<GetUserCurrentSubscriptionStatsDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = GetUserCurrentSubscriptionStatsDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<GetUserCurrentSubscriptionStatsDto>(<any>null);
     }
 }
 
@@ -6008,6 +6132,49 @@ export interface IUpdateWithDrawRequestDto {
     withdrawRequestId: number;
 }
 
+export class ActivateUserReferralSubscriptionDto implements IActivateUserReferralSubscriptionDto {
+    userReferralRequestId: number;
+
+    constructor(data?: IActivateUserReferralSubscriptionDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.userReferralRequestId = _data["userReferralRequestId"];
+        }
+    }
+
+    static fromJS(data: any): ActivateUserReferralSubscriptionDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ActivateUserReferralSubscriptionDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userReferralRequestId"] = this.userReferralRequestId;
+        return data; 
+    }
+
+    clone(): ActivateUserReferralSubscriptionDto {
+        const json = this.toJSON();
+        let result = new ActivateUserReferralSubscriptionDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IActivateUserReferralSubscriptionDto {
+    userReferralRequestId: number;
+}
+
 export class ChangeUiThemeInput implements IChangeUiThemeInput {
     theme: string;
 
@@ -6049,6 +6216,110 @@ export class ChangeUiThemeInput implements IChangeUiThemeInput {
 
 export interface IChangeUiThemeInput {
     theme: string;
+}
+
+export class GetUserCurrentSubscriptionStatsRequestDto implements IGetUserCurrentSubscriptionStatsRequestDto {
+
+    constructor(data?: IGetUserCurrentSubscriptionStatsRequestDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+    }
+
+    static fromJS(data: any): GetUserCurrentSubscriptionStatsRequestDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetUserCurrentSubscriptionStatsRequestDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        return data; 
+    }
+
+    clone(): GetUserCurrentSubscriptionStatsRequestDto {
+        const json = this.toJSON();
+        let result = new GetUserCurrentSubscriptionStatsRequestDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IGetUserCurrentSubscriptionStatsRequestDto {
+}
+
+export class GetUserCurrentSubscriptionStatsDto implements IGetUserCurrentSubscriptionStatsDto {
+    code: string | undefined;
+    userName: string | undefined;
+    package: string | undefined;
+    startedOn: string | undefined;
+    expiredOn: string | undefined;
+    balance: number;
+    daysLeft: number | undefined;
+
+    constructor(data?: IGetUserCurrentSubscriptionStatsDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.code = _data["code"];
+            this.userName = _data["userName"];
+            this.package = _data["package"];
+            this.startedOn = _data["startedOn"];
+            this.expiredOn = _data["expiredOn"];
+            this.balance = _data["balance"];
+            this.daysLeft = _data["daysLeft"];
+        }
+    }
+
+    static fromJS(data: any): GetUserCurrentSubscriptionStatsDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetUserCurrentSubscriptionStatsDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["code"] = this.code;
+        data["userName"] = this.userName;
+        data["package"] = this.package;
+        data["startedOn"] = this.startedOn;
+        data["expiredOn"] = this.expiredOn;
+        data["balance"] = this.balance;
+        data["daysLeft"] = this.daysLeft;
+        return data; 
+    }
+
+    clone(): GetUserCurrentSubscriptionStatsDto {
+        const json = this.toJSON();
+        let result = new GetUserCurrentSubscriptionStatsDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IGetUserCurrentSubscriptionStatsDto {
+    code: string | undefined;
+    userName: string | undefined;
+    package: string | undefined;
+    startedOn: string | undefined;
+    expiredOn: string | undefined;
+    balance: number;
+    daysLeft: number | undefined;
 }
 
 export class CreatePackageDto implements ICreatePackageDto {

@@ -18,32 +18,32 @@ namespace Emarketing.Admin
     public interface IAdminAppService : IApplicationService
     {
         List<PackageDto> GetAll();
-
         Task<bool> SeedPackages();
-
         //Task<bool> SeedRole();
+
         Task<bool> AcceptUserRequest(AcceptUserRequestDto requestDto);
         Task<bool> ActivateUserSubscription(ActivateUserSubscriptionDto requestDto);
         Task<bool> RenewPackageAdForUsers();
-
         Task<bool> AcceptUserReferralRequest(AcceptUserReferralRequestDto requestDto);
         Task<bool> UpdateWithdrawRequest(UpdateWithDrawRequestDto requestDto);
+        Task<bool> ActivateUserReferralRequestSubscription(ActivateUserReferralSubscriptionDto requestDto);
+
     }
 
 
     public class AdminAppService : AbpServiceBase, IAdminAppService
     {
         private readonly IRepository<User, long> _userRepository;
-        private readonly IRepository<BusinessObjects.Package, long> _packageRepository;
-        private readonly IRepository<BusinessObjects.PackageAd, long> _packageAdRepository;
+        private readonly IRepository<Package, long> _packageRepository;
+        private readonly IRepository<PackageAd, long> _packageAdRepository;
 
-        private readonly IRepository<BusinessObjects.UserPackageSubscriptionDetail, long>
+        private readonly IRepository<UserPackageSubscriptionDetail, long>
             _userPackageSubscriptionDetailRepository;
 
-        private readonly IRepository<BusinessObjects.UserPersonalDetail, long> _userPersonalDetailRepository;
-        private readonly IRepository<BusinessObjects.UserRequest, long> _userRequestRepository;
-        private readonly IRepository<BusinessObjects.UserWithdrawDetail, long> _userWithdrawDetailRepository;
-        private readonly IRepository<BusinessObjects.UserPackageAdDetail, long> _userPackageAdDetailRepository;
+        private readonly IRepository<UserPersonalDetail, long> _userPersonalDetailRepository;
+        private readonly IRepository<UserRequest, long> _userRequestRepository;
+        private readonly IRepository<UserWithdrawDetail, long> _userWithdrawDetailRepository;
+        private readonly IRepository<UserPackageAdDetail, long> _userPackageAdDetailRepository;
         private readonly IRepository<WithdrawRequest, long> _withdrawRequestRepository;
         private readonly IRepository<UserReferralRequest, long> _userReferralRequestRepository;
         private readonly IRepository<UserReferral, long> _userReferralRepository;
@@ -54,16 +54,16 @@ namespace Emarketing.Admin
 
         public AdminAppService(
             IRepository<User, long> userRepository,
-            IRepository<BusinessObjects.Package, long> packageRepository,
-            IRepository<BusinessObjects.PackageAd, long> packageAdRepository,
-            IRepository<BusinessObjects.UserPackageSubscriptionDetail, long> userPackageSubscriptionDetailRepository,
-            IRepository<BusinessObjects.UserPersonalDetail, long> userPersonalDetailRepository,
-            IRepository<BusinessObjects.UserRequest, long> userRequestRepository,
-            IRepository<BusinessObjects.UserWithdrawDetail, long> userWithdrawDetailRepository,
-            IRepository<BusinessObjects.UserPackageAdDetail, long> userPackageAdDetailRepository,
-            IRepository<BusinessObjects.WithdrawRequest, long> withdrawRequestRepository,
-            IRepository<BusinessObjects.UserReferralRequest, long> userReferralRequestRepository,
-            IRepository<BusinessObjects.UserReferral, long> userReferralRepository,
+            IRepository<Package, long> packageRepository,
+            IRepository<PackageAd, long> packageAdRepository,
+            IRepository<UserPackageSubscriptionDetail, long> userPackageSubscriptionDetailRepository,
+            IRepository<UserPersonalDetail, long> userPersonalDetailRepository,
+            IRepository<UserRequest, long> userRequestRepository,
+            IRepository<UserWithdrawDetail, long> userWithdrawDetailRepository,
+            IRepository<UserPackageAdDetail, long> userPackageAdDetailRepository,
+            IRepository<WithdrawRequest, long> withdrawRequestRepository,
+            IRepository<UserReferralRequest, long> userReferralRequestRepository,
+            IRepository<UserReferral, long> userReferralRepository,
             ISessionAppService sessionAppService,
             IAbpSession abpSession,
             UserManager userManager,
@@ -86,6 +86,10 @@ namespace Emarketing.Admin
             _roleManager = roleManager;
         }
 
+        /// <summary>
+        /// get all
+        /// </summary>
+        /// <returns></returns>
         public List<PackageDto> GetAll()
         {
             //var userId = _abpSession.UserId;
@@ -117,6 +121,10 @@ namespace Emarketing.Admin
             return result;
         }
 
+        /// <summary>
+        /// authenticate admin
+        /// </summary>
+        /// <returns></returns>
         private async Task<bool> AuthenticateAdminUser()
         {
             if (_abpSession.UserId == null)
@@ -137,6 +145,10 @@ namespace Emarketing.Admin
             return false;
         }
 
+        /// <summary>
+        /// seed packages
+        /// </summary>
+        /// <returns></returns>
         public async Task<bool> SeedPackages()
         {
             var userId = _abpSession.UserId;
@@ -147,9 +159,9 @@ namespace Emarketing.Admin
             }
 
 
-            var packageList = new List<BusinessObjects.Package>()
+            var packageList = new List<Package>()
             {
-                new BusinessObjects.Package()
+                new Package()
                 {
                     Name = "Package 1",
                     Code = "Package-1",
@@ -163,7 +175,7 @@ namespace Emarketing.Admin
                     ReferralAmount = 300,
                     IsActive = false,
                 },
-                new BusinessObjects.Package()
+                new Package()
                 {
                     Name = "Package 2",
                     Code = "Package-2",
@@ -179,7 +191,7 @@ namespace Emarketing.Admin
 
                     IsActive = false,
                 },
-                new BusinessObjects.Package()
+                new Package()
                 {
                     Name = "Package 3",
                     Code = "Package-3",
@@ -193,7 +205,7 @@ namespace Emarketing.Admin
                     ReferralAmount = 300,
                     IsActive = false,
                 },
-                new BusinessObjects.Package()
+                new Package()
                 {
                     Name = "Package 4",
                     Code = "Package-4",
@@ -207,7 +219,7 @@ namespace Emarketing.Admin
                     ReferralAmount = 700,
                     IsActive = false,
                 },
-                new BusinessObjects.Package()
+                new Package()
                 {
                     Name = "Package 5",
                     Code = "Package-5",
@@ -221,7 +233,7 @@ namespace Emarketing.Admin
                     ReferralAmount = 1200,
                     IsActive = false,
                 },
-                new BusinessObjects.Package()
+                new Package()
                 {
                     Name = "Package 6",
                     Code = "Package-6",
@@ -235,7 +247,7 @@ namespace Emarketing.Admin
                     ReferralAmount = 700,
                     IsActive = false,
                 },
-                new BusinessObjects.Package()
+                new Package()
                 {
                     Name = "Package 7",
                     Code = "Package-7",
@@ -262,6 +274,11 @@ namespace Emarketing.Admin
             return true;
         }
 
+        /// <summary>
+        /// accept user request
+        /// </summary>
+        /// <param name="requestDto"></param>
+        /// <returns></returns>
         public async Task<bool> AcceptUserRequest(AcceptUserRequestDto requestDto)
         {
             var userId = _abpSession.UserId;
@@ -310,7 +327,7 @@ namespace Emarketing.Admin
             //save personal details
 
             var userPersonalDetail = _userPersonalDetailRepository.InsertAsync(
-                new BusinessObjects.UserPersonalDetail()
+                new UserPersonalDetail()
                 {
                     Gender = Gender.Male,
                     Birthday = DateTime.Now,
@@ -327,7 +344,7 @@ namespace Emarketing.Admin
             //save withdraw details
 
             var userWithdrawDetail = _userWithdrawDetailRepository.InsertAsync(
-                new BusinessObjects.UserWithdrawDetail()
+                new UserWithdrawDetail()
                 {
                     WithdrawTypeId = WithdrawType.BankTransfer,
                     UserId = newUser.Id,
@@ -342,7 +359,7 @@ namespace Emarketing.Admin
             //save user package subscription details
 
             var userPackageSubscriptionDetail = _userPackageSubscriptionDetailRepository.InsertAsync(
-                new BusinessObjects.UserPackageSubscriptionDetail()
+                new UserPackageSubscriptionDetail()
                 {
                     PackageId = package.Id,
                     //ExpiryDate = DateTime.Now.AddDays(package.DurationInDays),
@@ -361,7 +378,7 @@ namespace Emarketing.Admin
             //save permission
 
             //update user request detail
-            var updatedUserRequest = _userRequestRepository.UpdateAsync(new BusinessObjects.UserRequest()
+            var updatedUserRequest = _userRequestRepository.UpdateAsync(new UserRequest()
             {
                 Id = userRequest.Id,
                 FirstName = userRequest.FirstName,
@@ -380,6 +397,11 @@ namespace Emarketing.Admin
             return true;
         }
 
+        /// <summary>
+        /// ActivateUserSubscription
+        /// </summary>
+        /// <param name="requestDto"></param>
+        /// <returns></returns>
         public async Task<bool> ActivateUserSubscription(ActivateUserSubscriptionDto requestDto)
         {
             var userId = _abpSession.UserId;
@@ -408,7 +430,7 @@ namespace Emarketing.Admin
             }
 
             var updatedUserRequest = _userPackageSubscriptionDetailRepository.UpdateAsync(
-                new BusinessObjects.UserPackageSubscriptionDetail()
+                new UserPackageSubscriptionDetail()
                 {
                     Id = userPackageSubscriptionDetail.Id,
                     PackageId = userPackageSubscriptionDetail.PackageId,
@@ -426,6 +448,10 @@ namespace Emarketing.Admin
             return true;
         }
 
+        /// <summary>
+        /// RenewPackageAdForUsers
+        /// </summary>
+        /// <returns></returns>
         public async Task<bool> RenewPackageAdForUsers()
         {
             var userId = _abpSession.UserId;
@@ -453,7 +479,7 @@ namespace Emarketing.Admin
                                              x.IsActive == true).ToList();
                 foreach (var packageAd in packageAds)
                 {
-                    var newUserPackageAdDetail = new BusinessObjects.UserPackageAdDetail()
+                    var newUserPackageAdDetail = new UserPackageAdDetail()
                     {
                         PackageId = packageAd.PackageId,
                         AdDate = DateTime.Now.Date,
@@ -476,6 +502,11 @@ namespace Emarketing.Admin
             return true;
         }
 
+        /// <summary>
+        /// AcceptUserReferralRequest
+        /// </summary>
+        /// <param name="requestDto"></param>
+        /// <returns></returns>
         public async Task<bool> AcceptUserReferralRequest(AcceptUserReferralRequestDto requestDto)
         {
             var userId = _abpSession.UserId;
@@ -524,7 +555,7 @@ namespace Emarketing.Admin
             //save personal details
 
             var userPersonalDetail = _userPersonalDetailRepository.InsertAsync(
-                new BusinessObjects.UserPersonalDetail()
+                new UserPersonalDetail()
                 {
                     Gender = Gender.Male,
                     Birthday = DateTime.Now,
@@ -541,7 +572,7 @@ namespace Emarketing.Admin
             //save withdraw details
 
             var userWithdrawDetail = _userWithdrawDetailRepository.InsertAsync(
-                new BusinessObjects.UserWithdrawDetail()
+                new UserWithdrawDetail()
                 {
                     WithdrawTypeId = WithdrawType.BankTransfer,
                     UserId = newUser.Id,
@@ -556,7 +587,7 @@ namespace Emarketing.Admin
             //save user package subscription details
 
             var userPackageSubscriptionDetail = _userPackageSubscriptionDetailRepository.InsertAsync(
-                new BusinessObjects.UserPackageSubscriptionDetail()
+                new UserPackageSubscriptionDetail()
                 {
                     PackageId = package.Id,
                     //ExpiryDate = DateTime.Now.AddDays(package.DurationInDays),
@@ -575,16 +606,17 @@ namespace Emarketing.Admin
             //save permission
 
             //update user request detail
-            var updatedUserRequest = _userReferralRequestRepository.UpdateAsync(new BusinessObjects.UserReferralRequest()
+            var updatedUserReferralRequest = _userReferralRequestRepository.UpdateAsync(new UserReferralRequest()
             {
                 Id = userReferralRequest.Id,
                 FirstName = userReferralRequest.FirstName,
-                LastName = userReferralRequest.FirstName,
-                UserName = userReferralRequest.FirstName,
-                Email = userReferralRequest.FirstName, 
+                LastName = userReferralRequest.LastName,
+                UserName = userReferralRequest.UserName,
+                Email = userReferralRequest.Email, 
                 PhoneNumber = userReferralRequest.PhoneNumber,
+                UserId = userReferralRequest.UserId,
                 PackageId = userReferralRequest.PackageId,
-                UserId = newUser.Id,
+                UserReferralId = newUser.Id,
                 ReferralRequestStatusId = ReferralRequestStatus.Active,
                 LastModificationTime = DateTime.Now,
                 LastModifierUserId = userId,
@@ -593,6 +625,11 @@ namespace Emarketing.Admin
             return true;
         }
 
+        /// <summary>
+        /// UpdateWithdrawRequest
+        /// </summary>
+        /// <param name="requestDto"></param>
+        /// <returns></returns>
         public async Task<bool> UpdateWithdrawRequest(UpdateWithDrawRequestDto requestDto)
         {
             var userId = _abpSession.UserId;
@@ -612,18 +649,60 @@ namespace Emarketing.Admin
 
             withdrawRequest.Status = true;
 
-            var updatedUserRequest = _withdrawRequestRepository.UpdateAsync(new BusinessObjects.WithdrawRequest()
+            var updatedUserRequest = _withdrawRequestRepository.UpdateAsync(new WithdrawRequest()
             {
                 Id = withdrawRequest.Id,
                 UserId = withdrawRequest.UserId,
                 Amount = withdrawRequest.Amount,
                 WithdrawTypeId = withdrawRequest.WithdrawTypeId,
                 Status = true,
-
                 LastModificationTime = DateTime.Now,
                 LastModifierUserId = userId,
             });
             await UnitOfWorkManager.Current.SaveChangesAsync();
+
+            return true;
+        }
+
+        /// <summary>
+        /// ActivateUserReferralRequestSubscription
+        /// </summary>
+        /// <param name="requestDto"></param>
+        /// <returns></returns>
+        public async Task<bool> ActivateUserReferralRequestSubscription(ActivateUserReferralSubscriptionDto requestDto)
+        {
+            var userId = _abpSession.UserId;
+            var isAdminUser = await AuthenticateAdminUser();
+            if (!isAdminUser)
+            {
+                throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
+            }
+
+            //create new user from user request
+            var userReferralRequest = _userReferralRequestRepository
+                .GetAll()
+                .FirstOrDefault(i => i.Id == requestDto.UserReferralRequestId);
+            if (userReferralRequest == null)
+            {
+                return false;
+            }
+
+            //var userPassword = EmarketingConsts.SamplePassword;
+
+            //var package = _packageRepository
+            //    .GetAll()
+            //    .FirstOrDefault(i => i.Id == userReferralRequest.PackageId);
+
+            //if (package == null)
+            //{
+            //    return false;
+            //}
+
+            //var userPackageSubscriptionDetail = _userPackageSubscriptionDetailRepository.GetAll()
+            //    .FirstOrDefault(i => i.Id == userReferralRequest.u);
+
+            //await UnitOfWorkManager.Current.SaveChangesAsync();
+
 
             return true;
         }
