@@ -42,7 +42,7 @@ import { UserPackageDetailComponent } from './user-package-detail/user-package-d
                     { path: 'user-request', component: UserRequestComponent, canActivate: [AppRouteGuard] },
                     { path: 'user-referal', component: UserReferalComponent, canActivate: [AppRouteGuard] },
                     { path: 'user-referal-request', component: UserReferalRequestComponent, canActivate: [AppRouteGuard] },
-                    { path: 'user-package-detail', component: UserPackageDetailComponent, canActivate: [AppRouteGuard] },
+                    { path: 'ads', component: UserPackageDetailComponent, canActivate: [AppRouteGuard] },
                 ]
             }
         ])

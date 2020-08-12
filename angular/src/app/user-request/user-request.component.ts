@@ -58,5 +58,9 @@ export class UserRequestComponent extends PagedListingComponentBase<WithdrawRequ
 
   }
 
+  acceptRequest(event: UserRequestDtoPagedResultDto){
+
+  }
+
 
 }

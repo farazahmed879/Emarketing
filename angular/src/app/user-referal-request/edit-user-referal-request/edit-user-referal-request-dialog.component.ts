@@ -17,6 +17,7 @@ import {
   UserReferralRequestServiceProxy,
   UserReferralRequestDto
 } from '@shared/service-proxies/service-proxies';
+import { PrimefacesDropDownObject } from '@app/app.component';
 
 @Component({
   templateUrl: './edit-user-referal-request-dialog.component.html'
@@ -26,12 +27,16 @@ export class EditUserReferalRequestDialogComponent extends AppComponentBase
   saving = false;
   userReferalRequest = new UserReferralRequestDto();
   id: number;
+  packages: PrimefacesDropDownObject[];
+  selectedPackageId: number;
+
 
   @Output() onSave = new EventEmitter<any>();
 
   constructor(
     injector: Injector,
     public _userReferalRequestService: UserReferralRequestServiceProxy,
+    public _packageService: PackageServiceProxy,
     public bsModalRef: BsModalRef,
     private _modalService: BsModalService,
   ) {
@@ -40,6 +45,7 @@ export class EditUserReferalRequestDialogComponent extends AppComponentBase
 
   ngOnInit(): void {
     this.show();
+    this.getAllPackages();
   }
 
   show() {
@@ -49,10 +55,24 @@ export class EditUserReferalRequestDialogComponent extends AppComponentBase
     )
   }
 
+  getAllPackages() {
+    this._packageService.getAll().subscribe((result) => {
+      if (result) {
+        console.log("packages", result);
+        this.packages = result.map(item =>
+          ({
+            label: item.name,
+            value: item.id
+          }));
+      }
+    })
+  }
+
 
   save(): void {
     this.saving = true;
-
+    this.userReferalRequest.userId = this.appSession.userId;
+    this.userReferalRequest.packageId = this.selectedPackageId;
     this._userReferalRequestService
       .createOrEdit(this.userReferalRequest)
       .pipe(

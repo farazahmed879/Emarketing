@@ -1,106 +1,70 @@
-<form
-  class="form-horizontal"
-  autocomplete="off"
-  #createUserReferalRequestModal="ngForm"
-  (ngSubmit)="save()"
->
-  <abp-modal-header
-    [title]="'Create User Referal Request' | localize"
-    (onCloseClick)="bsModalRef.hide()"
-  ></abp-modal-header>
+<form class="form-horizontal" autocomplete="off" #createUserReferalRequestModal="ngForm" (ngSubmit)="save()">
+  <abp-modal-header [title]="'Create User Referal Request' | localize" (onCloseClick)="bsModalRef.hide()">
+  </abp-modal-header>
   <div class="modal-body">
     <div class="form-group row required">
       <label class="col-md-3 col-form-label" for="name">
         {{ "First Name" | localize }}
       </label>
       <div class="col-md-9">
-        <input
-          type="text"
-          class="form-control"
-          name="firstName"
-          id="firstName"
-          required
-          maxlength="32"
-          [(ngModel)]="userReferalRequest.firstName"
-          #firstNameModel="ngModel"
-          #firstNameEl
-        />
-        <abp-validation-summary
-          [control]="firstNameModel"
-          [controlEl]="firstNameEl"
-        ></abp-validation-summary>
+        <input type="text" class="form-control" name="firstName" id="firstName" required maxlength="32"
+          [(ngModel)]="userReferalRequest.firstName" #firstNameModel="ngModel" #firstNameEl />
+        <abp-validation-summary [control]="firstNameModel" [controlEl]="firstNameEl"></abp-validation-summary>
       </div>
     </div>
-        <div class="form-group row required">
-          <label class="col-md-3 col-form-label" for="name">
-            {{ "Last Name" | localize }}
-          </label>
-          <div class="col-md-9">
-            <input
-              type="text"
-              class="form-control"
-              name="lastName"
-              id="lastName"
-              required
-              maxlength="32"
-              [(ngModel)]="userReferalRequest.lastName"
-              #lastNameModel="ngModel"
-              #lastNameEl
-            />
-            <abp-validation-summary
-              [control]="lastNameModel"
-              [controlEl]="lastNameEl"
-            ></abp-validation-summary>
-          </div>
-        </div>
+    <div class="form-group row required">
+      <label class="col-md-3 col-form-label" for="name">
+        {{ "Last Name" | localize }}
+      </label>
+      <div class="col-md-9">
+        <input type="text" class="form-control" name="lastName" id="lastName" required maxlength="32"
+          [(ngModel)]="userReferalRequest.lastName" #lastNameModel="ngModel" #lastNameEl />
+        <abp-validation-summary [control]="lastNameModel" [controlEl]="lastNameEl"></abp-validation-summary>
+      </div>
+    </div>
 
-        <div class="form-group row required">
-          <label class="col-md-3 col-form-label" for="name">
-            {{ "Email" | localize }}
-          </label>
-          <div class="col-md-9">
-            <textarea
-              type="text"
-              class="form-control"
-              name="email"
-              id="email"
-              required
-              [(ngModel)]="userReferalRequest.email"
-              #emailModel="ngModel"
-              #emailEl
-            ></textarea>
-            <abp-validation-summary
-              [control]="emailModel"
-              [controlEl]="emailEl"
-            ></abp-validation-summary>
-          </div>
-        </div>
-        <div class="form-group row required">
-          <label class="col-md-3 col-form-label" for="name">
-            {{ "User Name" | localize }}
-          </label>
-          <div class="col-md-9">
-            <input
-              type="text"
-              class="form-control"
-              name="userName"
-              id="userName"
-              required
-              maxlength="32"
-              [(ngModel)]="userReferalRequest.userName"
-              #userNameModel="ngModel"
-              #userNameEl
-            />
-            <abp-validation-summary
-              [control]="userNameModel"
-              [controlEl]="userNameEl"
-            ></abp-validation-summary>
-          </div>
-        </div>
+    <div class="form-group row required">
+      <label class="col-md-3 col-form-label" for="name">
+        {{ "Email" | localize }}
+      </label>
+      <div class="col-md-9">
+        <input type="text" class="form-control" name="email" id="email" required [(ngModel)]="userReferalRequest.email"
+          #emailModel="ngModel" #emailEl />
+        <abp-validation-summary [control]="emailModel" [controlEl]="emailEl"></abp-validation-summary>
+      </div>
+    </div>
+    <div class="form-group row required">
+      <label class="col-md-3 col-form-label" for="name">
+        {{ "User Name" | localize }}
+      </label>
+      <div class="col-md-9">
+        <input type="text" class="form-control" name="userName" id="userName" required maxlength="32"
+          [(ngModel)]="userReferalRequest.userName" #userNameModel="ngModel" #userNameEl />
+        <abp-validation-summary [control]="userNameModel" [controlEl]="userNameEl"></abp-validation-summary>
+      </div>
+    </div>
+    <div class="form-group row required">
+      <label class="col-md-3 col-form-label" for="name">
+        {{ "Phone Number" | localize }}
+      </label>
+      <div class="col-md-9">
+        <input type="text" class="form-control" name="phoneNumber" id="phoneNumber" required maxlength="32"
+          [(ngModel)]="userReferalRequest.phoneNumber" #phoneNumberModel="ngModel" #phoneNumberEl />
+        <abp-validation-summary [control]="phoneNumberModel" [controlEl]="phoneNumberEl"></abp-validation-summary>
+      </div>
+    </div>
+    <div class="form-group row required">
+      <label class="col-md-3 col-form-label" for="name">
+        {{ "Package" | localize }}
+      </label>
+      <div class="col-md-9">
+        <p-dropdown [options]="packages" name="packageId" id="packageId"
+          [(ngModel)]="selectedPackageId" #packageIdModel="ngModel" #packageIdEl>
+        </p-dropdown>
+        <abp-validation-summary [control]="packageIdModel" [controlEl]="packageIdEl"></abp-validation-summary>
+      </div>
+    </div>
   </div>
-  <abp-modal-footer
-    [cancelDisabled]="saving"
-    [saveDisabled]="!createUserReferalRequestModal.form.valid || saving"
-    (onCancelClick)="bsModalRef.hide()"
-  ></abp-modal-footer>
+  <abp-modal-footer [cancelDisabled]="saving" [saveDisabled]="!createUserReferalRequestModal.form.valid || saving"
+    (onCancelClick)="bsModalRef.hide()"></abp-modal-footer>
 </form>

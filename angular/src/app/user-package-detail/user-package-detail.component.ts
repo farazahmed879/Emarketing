@@ -57,7 +57,6 @@ export class UserPackageDetailComponent extends PagedListingComponentBase<UserPa
   }
 
   private showCreateOrEditUserPackageAdDetailDialog(id?: number): void {
-    debugger;
     let createOrEditUserPackageAdDetailDialog: BsModalRef;
       createOrEditUserPackageAdDetailDialog = this._modalService.show(
         EditUserPackagesDetailComponent,

@@ -48,8 +48,8 @@ export class WithdrawRequestComponent extends AppComponentBase implements OnInit
       if (result) {
         this.withdrawTypeArrayObj = result.map(item =>
           ({
-            label: item.Name,
-            value: item.WithdrawTypeId
+            label: item.name,
+            value: item.withdrawTypeId
           }));
         console.log("withdrawTypeArrayObj", this.withdrawTypeArrayObj);
       }

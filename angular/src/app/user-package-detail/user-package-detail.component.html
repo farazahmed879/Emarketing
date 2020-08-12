@@ -26,9 +26,9 @@
           <table class="table table-hover text-nowrap" [busy]="isTableLoading">
             <thead class="bg-light">
               <tr>
-                <th>{{ "User Name" | localize }}</th>
-                <th>{{ "AdDate" | localize }}</th>
-                <th>{{ "AdPrice" | localize }}</th>
+                <th>Url</th>
+                <th>Date</th>
+                <th>Price</th>
                 <th style="width: 200px;">{{ "Actions" | localize }}</th>
               </tr>
             </thead>
@@ -43,7 +43,7 @@
                           totalItems: totalItems
                         })
                 ">
-                <td>{{ userPackageDetail.userName }}</td>
+                <td>{{ userPackageDetail.url }}</td>
                 <td>{{ userPackageDetail.adDate }}</td>
                 <td>{{ userPackageDetail.adPrice }}</td>
                 <td> <a href="javascript:;" class="btn bg-blue" (click)="viewUserPackageAdDetail(userPackageDetail.id)">

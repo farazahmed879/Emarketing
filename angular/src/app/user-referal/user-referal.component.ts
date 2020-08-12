@@ -55,5 +55,8 @@ export class UserReferalComponent extends PagedListingComponentBase<WithdrawRequ
 
   }
 
+  acceptRequest(event: UserReferralDtoPagedResultDto){
+
+  }
 
 }

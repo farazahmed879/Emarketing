@@ -51,7 +51,7 @@
             {{ "Email" | localize }}
           </label>
           <div class="col-md-9">
-            <textarea
+            <input
               type="text"
               class="form-control"
               name="email"
@@ -60,7 +60,7 @@
               [(ngModel)]="userReferalRequest.email"
               #emailModel="ngModel"
               #emailEl
-            ></textarea>
+            />
             <abp-validation-summary
               [control]="emailModel"
               [controlEl]="emailEl"
@@ -87,6 +87,17 @@
               [control]="userNameModel"
               [controlEl]="userNameEl"
             ></abp-validation-summary>
+          </div>
+        </div>
+        <div class="form-group row required">
+          <label class="col-md-3 col-form-label" for="name">
+            {{ "Package" | localize }}
+          </label>
+          <div class="col-md-9">
+            <p-dropdown [options]="packages" name="packageId" id="packageId"
+              [(ngModel)]="selectedPackageId" #packageIdModel="ngModel" #packageIdEl>
+            </p-dropdown>
+            <abp-validation-summary [control]="packageIdModel" [controlEl]="packageIdEl"></abp-validation-summary>
           </div>
         </div>
   </div>
