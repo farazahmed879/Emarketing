@@ -419,6 +419,118 @@ export class AdminServiceProxy {
         }
         return _observableOf<boolean>(<any>null);
     }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    acceptUserReferralRequest(body: AcceptUserReferralRequestDto | undefined): Observable<boolean> {
+        let url_ = this.baseUrl + "/api/services/app/Admin/AcceptUserReferralRequest";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processAcceptUserReferralRequest(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processAcceptUserReferralRequest(<any>response_);
+                } catch (e) {
+                    return <Observable<boolean>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<boolean>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processAcceptUserReferralRequest(response: HttpResponseBase): Observable<boolean> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<boolean>(<any>null);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    updateWithdrawRequest(body: UpdateWithDrawRequestDto | undefined): Observable<boolean> {
+        let url_ = this.baseUrl + "/api/services/app/Admin/UpdateWithdrawRequest";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdateWithdrawRequest(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdateWithdrawRequest(<any>response_);
+                } catch (e) {
+                    return <Observable<boolean>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<boolean>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processUpdateWithdrawRequest(response: HttpResponseBase): Observable<boolean> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<boolean>(<any>null);
+    }
 }
 
 @Injectable()
@@ -4165,13 +4277,10 @@ export class UserReferralRequestServiceProxy {
     }
 
     /**
-     * @param userId (optional) 
      * @return Success
      */
-    getAll(userId: number | null | undefined): Observable<UserReferralRequestDto[]> {
-        let url_ = this.baseUrl + "/api/services/app/UserReferralRequest/GetAll?";
-        if (userId !== undefined && userId !== null)
-            url_ += "userId=" + encodeURIComponent("" + userId) + "&";
+    getAll(): Observable<UserReferralRequestDto[]> {
+        let url_ = this.baseUrl + "/api/services/app/UserReferralRequest/GetAll";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -4224,32 +4333,20 @@ export class UserReferralRequestServiceProxy {
 
     /**
      * @param userId (optional) 
-     * @param userFullName (optional) 
      * @param userName (optional) 
-     * @param firstName (optional) 
-     * @param lastName (optional) 
-     * @param email (optional) 
      * @param referralRequestStatusId (optional) 
      * @param skipCount (optional) 
      * @param maxResultCount (optional) 
      * @return Success
      */
-    getPaginatedAll(userId: number | undefined, userFullName: string | null | undefined, userName: string | null | undefined, firstName: string | null | undefined, lastName: string | null | undefined, email: string | null | undefined, referralRequestStatusId: ReferralRequestStatus | undefined, skipCount: number | undefined, maxResultCount: number | undefined): Observable<UserReferralRequestDtoPagedResultDto> {
+    getPaginatedAll(userId: number | undefined, userName: string | null | undefined, referralRequestStatusId: ReferralRequestStatus | undefined, skipCount: number | undefined, maxResultCount: number | undefined): Observable<UserReferralRequestDtoPagedResultDto> {
         let url_ = this.baseUrl + "/api/services/app/UserReferralRequest/GetPaginatedAll?";
         if (userId === null)
             throw new Error("The parameter 'userId' cannot be null.");
         else if (userId !== undefined)
             url_ += "UserId=" + encodeURIComponent("" + userId) + "&";
-        if (userFullName !== undefined && userFullName !== null)
-            url_ += "UserFullName=" + encodeURIComponent("" + userFullName) + "&";
         if (userName !== undefined && userName !== null)
             url_ += "UserName=" + encodeURIComponent("" + userName) + "&";
-        if (firstName !== undefined && firstName !== null)
-            url_ += "FirstName=" + encodeURIComponent("" + firstName) + "&";
-        if (lastName !== undefined && lastName !== null)
-            url_ += "LastName=" + encodeURIComponent("" + lastName) + "&";
-        if (email !== undefined && email !== null)
-            url_ += "Email=" + encodeURIComponent("" + email) + "&";
         if (referralRequestStatusId === null)
             throw new Error("The parameter 'referralRequestStatusId' cannot be null.");
         else if (referralRequestStatusId !== undefined)
@@ -5823,6 +5920,92 @@ export class ActivateUserSubscriptionDto implements IActivateUserSubscriptionDto
 
 export interface IActivateUserSubscriptionDto {
     userId: number;
+}
+
+export class AcceptUserReferralRequestDto implements IAcceptUserReferralRequestDto {
+    userReferralRequestId: number;
+
+    constructor(data?: IAcceptUserReferralRequestDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.userReferralRequestId = _data["userReferralRequestId"];
+        }
+    }
+
+    static fromJS(data: any): AcceptUserReferralRequestDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new AcceptUserReferralRequestDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userReferralRequestId"] = this.userReferralRequestId;
+        return data; 
+    }
+
+    clone(): AcceptUserReferralRequestDto {
+        const json = this.toJSON();
+        let result = new AcceptUserReferralRequestDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IAcceptUserReferralRequestDto {
+    userReferralRequestId: number;
+}
+
+export class UpdateWithDrawRequestDto implements IUpdateWithDrawRequestDto {
+    withdrawRequestId: number;
+
+    constructor(data?: IUpdateWithDrawRequestDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.withdrawRequestId = _data["withdrawRequestId"];
+        }
+    }
+
+    static fromJS(data: any): UpdateWithDrawRequestDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateWithDrawRequestDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["withdrawRequestId"] = this.withdrawRequestId;
+        return data; 
+    }
+
+    clone(): UpdateWithDrawRequestDto {
+        const json = this.toJSON();
+        let result = new UpdateWithDrawRequestDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IUpdateWithDrawRequestDto {
+    withdrawRequestId: number;
 }
 
 export class ChangeUiThemeInput implements IChangeUiThemeInput {
@@ -8732,6 +8915,7 @@ export class CreateUserReferralRequestDto implements ICreateUserReferralRequestD
     firstName: string | undefined;
     lastName: string | undefined;
     email: string | undefined;
+    phoneNumber: string | undefined;
     userName: string | undefined;
     referralRequestStatusId: ReferralRequestStatus;
     id: number;
@@ -8752,6 +8936,7 @@ export class CreateUserReferralRequestDto implements ICreateUserReferralRequestD
             this.firstName = _data["firstName"];
             this.lastName = _data["lastName"];
             this.email = _data["email"];
+            this.phoneNumber = _data["phoneNumber"];
             this.userName = _data["userName"];
             this.referralRequestStatusId = _data["referralRequestStatusId"];
             this.id = _data["id"];
@@ -8772,6 +8957,7 @@ export class CreateUserReferralRequestDto implements ICreateUserReferralRequestD
         data["firstName"] = this.firstName;
         data["lastName"] = this.lastName;
         data["email"] = this.email;
+        data["phoneNumber"] = this.phoneNumber;
         data["userName"] = this.userName;
         data["referralRequestStatusId"] = this.referralRequestStatusId;
         data["id"] = this.id;
@@ -8792,6 +8978,7 @@ export interface ICreateUserReferralRequestDto {
     firstName: string | undefined;
     lastName: string | undefined;
     email: string | undefined;
+    phoneNumber: string | undefined;
     userName: string | undefined;
     referralRequestStatusId: ReferralRequestStatus;
     id: number;
@@ -8803,6 +8990,7 @@ export class UserReferralRequestDto implements IUserReferralRequestDto {
     firstName: string | undefined;
     lastName: string | undefined;
     email: string | undefined;
+    phoneNumber: string | undefined;
     userName: string | undefined;
     referralRequestStatusId: ReferralRequestStatus;
     referralRequestStatus: string | undefined;
@@ -8831,6 +9019,7 @@ export class UserReferralRequestDto implements IUserReferralRequestDto {
             this.firstName = _data["firstName"];
             this.lastName = _data["lastName"];
             this.email = _data["email"];
+            this.phoneNumber = _data["phoneNumber"];
             this.userName = _data["userName"];
             this.referralRequestStatusId = _data["referralRequestStatusId"];
             this.referralRequestStatus = _data["referralRequestStatus"];
@@ -8859,6 +9048,7 @@ export class UserReferralRequestDto implements IUserReferralRequestDto {
         data["firstName"] = this.firstName;
         data["lastName"] = this.lastName;
         data["email"] = this.email;
+        data["phoneNumber"] = this.phoneNumber;
         data["userName"] = this.userName;
         data["referralRequestStatusId"] = this.referralRequestStatusId;
         data["referralRequestStatus"] = this.referralRequestStatus;
@@ -8887,6 +9077,7 @@ export interface IUserReferralRequestDto {
     firstName: string | undefined;
     lastName: string | undefined;
     email: string | undefined;
+    phoneNumber: string | undefined;
     userName: string | undefined;
     referralRequestStatusId: ReferralRequestStatus;
     referralRequestStatus: string | undefined;

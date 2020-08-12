@@ -45,10 +45,8 @@ export class UserReferalRequestComponent extends PagedListingComponentBase<Packa
         undefined,
         undefined,
         undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
+        
+         
         request.skipCount,
         request.maxResultCount
       )
