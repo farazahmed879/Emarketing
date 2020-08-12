@@ -93,12 +93,7 @@ namespace Emarketing.Admin
         /// <returns></returns>
         public List<PackageDto> GetAll()
         {
-            //var userId = _abpSession.UserId;
-            //var isAdminUser = await AuthenticateAdminUser();
-            //if (!isAdminUser)
-            //{
-            //    throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
-            //}
+             
 
             var result = _packageRepository.GetAll().Where(i => i.IsDeleted == false)
                 .Select(i => new PackageDto()
@@ -705,6 +700,12 @@ namespace Emarketing.Admin
                 return false;
             }
 
+            var userReferral = await _userReferralRepository
+                .FirstOrDefaultAsync(i => i.Id == userReferralRequest.UserReferralId);
+            if (userReferralRequest == null)
+            {
+                return false;
+            }
             //var userPassword = EmarketingConsts.SamplePassword;
 
             //var package = _packageRepository
@@ -716,8 +717,9 @@ namespace Emarketing.Admin
             //    return false;
             //}
 
-            //var userPackageSubscriptionDetail = _userPackageSubscriptionDetailRepository.GetAll()
-            //    .FirstOrDefault(i => i.Id == userReferralRequest.u);
+
+            //var userPackageSubscriptionDetail = _userPackageSubscriptionDetailRepository
+            //    .FirstOrDefault(i => i.UserId == userReferralRequest.u);
 
             //await UnitOfWorkManager.Current.SaveChangesAsync();
 
