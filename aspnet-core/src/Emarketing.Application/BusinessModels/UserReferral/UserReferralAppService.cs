@@ -87,7 +87,7 @@ namespace Emarketing.BusinessModels.UserReferral
                 ReferralBonusStatusId = ReferralBonusStatus.Inactive,
                 ReferralAccountStatusId = userReferralDto.ReferralAccountStatusId,
                 PackageId = userReferralDto.PackageId,
-                
+
             });
 
             await UnitOfWorkManager.Current.SaveChangesAsync();
@@ -127,7 +127,7 @@ namespace Emarketing.BusinessModels.UserReferral
                 ReferralAccountStatusId = userReferralDto.ReferralAccountStatusId,
                 UserId = userReferralDto.UserId,
                 PackageId = userReferralDto.PackageId,
-                
+
             });
 
             if (result != null)
@@ -215,7 +215,7 @@ namespace Emarketing.BusinessModels.UserReferral
                     CreatorUserId = i.CreatorUserId,
                     CreationTime = i.CreationTime,
                     LastModificationTime = i.LastModificationTime,
-                   
+
                 }).ToListAsync();
             return result;
         }
@@ -223,9 +223,17 @@ namespace Emarketing.BusinessModels.UserReferral
         public async Task<PagedResultDto<UserReferralDto>> GetPaginatedAllAsync(
             UserRefferalInputDto input)
         {
-            var filteredUserReferrals = _userReferralRepository.GetAll()
-                .WhereIf(!string.IsNullOrWhiteSpace(input.UserName), x => x.UserId == input.UserId);
-             
+            long userId = _abpSession.UserId.Value;
+            var filteredUserReferrals = _userReferralRepository.GetAll();
+            var isAdmin = await AuthenticateAdminUser();
+            if (!isAdmin)
+            {
+                filteredUserReferrals = _userReferralRepository.GetAll().Where(x => x.UserId == userId);
+            }
+
+
+            //.WhereIf(!string.IsNullOrWhiteSpace(input.UserName), x => x.UserId == input.UserId);
+
 
             var pagedAndFilteredUserReferrals = filteredUserReferrals
                 .OrderBy(i => i.Id)

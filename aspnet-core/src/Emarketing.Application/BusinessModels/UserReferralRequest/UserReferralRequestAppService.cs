@@ -89,6 +89,7 @@ namespace Emarketing.BusinessModels.UserReferralRequest
                 ReferralRequestStatusId = ReferralRequestStatus.Pending,
                 PackageId = requestDto.PackageId,
                 PhoneNumber = requestDto.PhoneNumber,
+                UserReferralId = null,
             });
 
             await UnitOfWorkManager.Current.SaveChangesAsync();
@@ -229,14 +230,17 @@ namespace Emarketing.BusinessModels.UserReferralRequest
         public async Task<PagedResultDto<UserReferralRequestDto>> GetPaginatedAllAsync(
             UserReferralRequestInputDto input)
         {
-            var isAdminUser = await AuthenticateAdminUser();
-            if (!isAdminUser)
+            
+            long userId = _abpSession.UserId.Value;
+            var filteredUserReferrals = _userReferralRequestRepository.GetAll();
+            var isAdmin = await AuthenticateAdminUser();
+            if (!isAdmin)
             {
-                throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
+                filteredUserReferrals = _userReferralRequestRepository.GetAll().Where(x => x.UserId == userId);
             }
 
-            var filteredUserReferrals = _userReferralRequestRepository.GetAll()
-                .WhereIf(!string.IsNullOrWhiteSpace(input.UserName), x => x.UserId == input.UserId);
+            //var filteredUserReferrals = _userReferralRequestRepository.GetAll()
+            //    .WhereIf(!string.IsNullOrWhiteSpace(input.UserName), x => x.UserId == input.UserId);
 
 
             var pagedAndFilteredUserReferrals = filteredUserReferrals

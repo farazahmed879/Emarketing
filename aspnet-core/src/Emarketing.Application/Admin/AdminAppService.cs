@@ -170,6 +170,9 @@ namespace Emarketing.Admin
                     PricePerAd = 13,
                     ReferralAmount = 300,
                     IsActive = false,
+                    IsUnlimited = false,
+                    MinimumWithdraw = 500,
+                    MaximumWithdraw = 1000,
                 },
                 new Package()
                 {
@@ -183,9 +186,10 @@ namespace Emarketing.Admin
                     DailyAdCount = 5,
                     PricePerAd = 20,
                     ReferralAmount = 300,
-
-
+                    IsUnlimited = true,
                     IsActive = false,
+                    MinimumWithdraw = 1000,
+                    MaximumWithdraw = 1000,
                 },
                 new Package()
                 {
@@ -199,7 +203,10 @@ namespace Emarketing.Admin
                     DailyAdCount = 5,
                     PricePerAd = 73.6m,
                     ReferralAmount = 300,
+                    IsUnlimited = false,
                     IsActive = false,
+                    MinimumWithdraw = 3000,
+                    MaximumWithdraw = 3500,
                 },
                 new Package()
                 {
@@ -214,6 +221,9 @@ namespace Emarketing.Admin
                     PricePerAd = 36.8m,
                     ReferralAmount = 700,
                     IsActive = false,
+                    IsUnlimited = false,
+                    MinimumWithdraw = 1500,
+                    MaximumWithdraw = 2000,
                 },
                 new Package()
                 {
@@ -228,6 +238,9 @@ namespace Emarketing.Admin
                     PricePerAd = 57.8m,
                     ReferralAmount = 1200,
                     IsActive = false,
+                    IsUnlimited = false,
+                    MinimumWithdraw = 2500,
+                    MaximumWithdraw = 3500,
                 },
                 new Package()
                 {
@@ -242,6 +255,9 @@ namespace Emarketing.Admin
                     PricePerAd = 84.4m,
                     ReferralAmount = 700,
                     IsActive = false,
+                    IsUnlimited = false,
+                    MinimumWithdraw = 5000,
+                    MaximumWithdraw = 6000,
                 },
                 new Package()
                 {
@@ -256,6 +272,9 @@ namespace Emarketing.Admin
                     PricePerAd = 106,
                     ReferralAmount = 2500,
                     IsActive = false,
+                    IsUnlimited = false,
+                    MinimumWithdraw = 4500,
+                    MaximumWithdraw = 6000,
                 }
             };
 
