@@ -11,6 +11,9 @@ import { PublicComponent } from './public.component';
 import { DropdownModule } from 'primeng/dropdown';
 import { UserPackageComponent } from './user-Packages/user-Packages.component';
 import { PackageServiceProxy, AdminServiceProxy, UserPersonalDetailServiceProxy } from '@shared/service-proxies/service-proxies';
+import { PublicHeaderComponent } from '../publicUser/layout/public-header.component';
+import { PublicFooterComponent } from '../publicUser/layout/public-footer.component';
+import { HomeComponent } from './home/home.component';
 
 @NgModule({
     imports: [
@@ -31,7 +34,10 @@ import { PackageServiceProxy, AdminServiceProxy, UserPersonalDetailServiceProxy 
     ],
     declarations: [
         PublicComponent,
-        UserPackageComponent
+        UserPackageComponent,
+        PublicHeaderComponent,
+        PublicFooterComponent,
+        HomeComponent
     ],
     entryComponents: [
         UserPackageComponent

@@ -51,7 +51,7 @@ export class SidebarMenuComponent extends AppComponentBase implements OnInit {
       //   'fas fa-building',
       //   'Pages.Tenants'
       // ),   
-      new MenuItem(this.l('Packages'), '/app/package', 'fas fa-home'),
+      new MenuItem(this.l('Packages'), '/app/package', 'fas fa-star'),
       new MenuItem(
         this.l('Users'),
         '/app/users',
@@ -64,13 +64,13 @@ export class SidebarMenuComponent extends AppComponentBase implements OnInit {
         'fas fa-theater-masks',
         'Pages.Roles'
       ),
-      new MenuItem(this.l('Withdraw Request'), '/app/withdraw-request', 'fas fa-home'),
-      new MenuItem(this.l('Withdraw History'), '/app/withdraw-history', 'fas fa-home'),
-      new MenuItem(this.l('User Request'), '/app/user-request', 'fas fa-home'),
-      new MenuItem(this.l('User Referal'), '/app/user-referal', 'fas fa-home'),
-      new MenuItem(this.l('User Referal Request'), '/app/user-referal-request', 'fas fa-home'),
-      new MenuItem(this.l('Ads'), '/app/ads', 'fas fa-home'),
-      new MenuItem(this.l('Settings'), '/app/user-profile', 'fas fa-home'),
+      new MenuItem(this.l('Withdraw Request'), '/app/withdraw-request', 'fas fa-window-restore'),
+      new MenuItem(this.l('Withdraw History'), '/app/withdraw-history', 'far fa-window-restore'),
+      new MenuItem(this.l('User Request'), '/app/user-request', 'fas fa-user-cog'),
+      new MenuItem(this.l('User Referal'), '/app/user-referal', 'fas fa-asterisk'),
+      new MenuItem(this.l('User Referal Request'), '/app/user-referal-request', 'fas fa-people-arrows'),
+      new MenuItem(this.l('Ads'), '/app/ads', 'fab fa-buysellads'),
+      new MenuItem(this.l('Settings'), '/app/user-profile', 'fas fa-cogs'),
       // new MenuItem(this.l('About'), '/app/about', 'fas fa-info-circle'),
     ];
   }
