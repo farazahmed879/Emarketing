@@ -49,6 +49,10 @@ namespace Emarketing.Web.Host.Startup
                     NamingStrategy = new CamelCaseNamingStrategy()
                 };
             });
+            services.Configure<IISServerOptions>(options =>
+            {
+                options.AutomaticAuthentication = false;
+            });
 
 
 

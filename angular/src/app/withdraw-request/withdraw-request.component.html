@@ -18,10 +18,15 @@
     <div class="container-fluid">
       <div class="card">
         <div class="card-body">
-          <div class="required">
-            <p-dropdown [options]="withdrawTypeArrayObj" name="withdrawType" id="withdrawType" [(ngModel)]="selectedWithdrawTypeId"></p-dropdown>
+          <div class="form-group row required">
+            <label class="col-md-3 col-form-label" for="name">
+              {{ "Withdraw Type" | localize }}
+            </label>
+            <div class="col-md-9">
+              <p-dropdown [options]="withdrawTypeArrayObj" name="withdrawType" id="withdrawType" [(ngModel)]="selectedWithdrawTypeId"></p-dropdown>
+            </div>
           </div>
-          <div class="required">
+          <div class="form-group row required">
             <label class="col-md-3 col-form-label" for="name">
               {{ "Amount" | localize }}
             </label>
@@ -32,12 +37,9 @@
             </div>
           </div>
         </div>
+        <div *ngIf="!selectedWithdrawTypeId || !amount">Please type withdrawType and amount</div>
         <div class="card-footer">
           <div class="col-md-12">
-            <!-- <a href="javascript:;" class="btn bg-blue" (click)="back()">
-              <i class="fa fa-arrow-left"></i>
-              {{ "Back" | localize }}
-            </a> -->
             <a href="javascript:;" class="btn bg-primary" (click)="create()">
               <i class="fa fa-plus-square"></i>
               {{ "Create" | localize }}

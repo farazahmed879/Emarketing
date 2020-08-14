@@ -58,7 +58,11 @@ export class WithdrawRequestComponent extends AppComponentBase implements OnInit
 
   create() {
     var createWithdrawRequestDto = new CreateWithdrawRequestDto;
-    createWithdrawRequestDto.amount = this.amount;
+    if (!this.amount || !this.selectedWithdrawTypeId){
+      return;
+    }
+
+      createWithdrawRequestDto.amount = this.amount;
     createWithdrawRequestDto.withdrawTypeId = this.selectedWithdrawTypeId;
     //createWithdrawRequestDto.status = this.status;
     createWithdrawRequestDto.userId = this.appSession.userId;
