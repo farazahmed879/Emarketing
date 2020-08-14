@@ -10,6 +10,7 @@ using Abp.UI;
 using Emarketing.Authorization.Roles;
 using Emarketing.Authorization.Users;
 using Emarketing.BusinessModels.Package.Dto;
+using Emarketing.BusinessModels.UserRequest.Dto;
 using Emarketing.BusinessObjects;
 using Emarketing.Sessions;
 using Microsoft.EntityFrameworkCore;
@@ -22,7 +23,7 @@ namespace Emarketing.Admin
 
         Task<bool> SeedPackages();
         //Task<bool> SeedRole();
-
+        Task<ResponseMessageDto> CreateOrEditAsync(CreateUserRequestDto requestDto);
         Task<bool> AcceptUserRequest(AcceptUserRequestDto requestDto);
         Task<bool> ActivateUserSubscription(ActivateUserSubscriptionDto requestDto);
         Task<bool> RenewPackageAdForUsers();
@@ -30,7 +31,6 @@ namespace Emarketing.Admin
         Task<bool> UpdateWithdrawRequest(UpdateWithDrawRequestDto requestDto);
         Task<bool> ActivateUserReferralRequestSubscription(ActivateUserReferralSubscriptionDto requestDto);
     }
-
 
     public class AdminAppService : AbpServiceBase, IAdminAppService
     {
@@ -288,6 +288,100 @@ namespace Emarketing.Admin
 
             return true;
         }
+
+        public async Task<ResponseMessageDto> CreateOrEditAsync(CreateUserRequestDto requestDto)
+        {
+
+            ResponseMessageDto result;
+            if (requestDto.Id == 0)
+            {
+                result = await CreateUserRequestAsync(requestDto);
+            }
+            else
+            {
+                var userId = _abpSession.UserId;
+                var isAdminUser = await AuthenticateAdminUser();
+                if (!isAdminUser)
+                {
+                    throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
+                }
+                result = await UpdateUserRequestAsync(requestDto);
+            }
+
+            return result;
+        }
+
+        private async Task<ResponseMessageDto> CreateUserRequestAsync(CreateUserRequestDto userRequestDto)
+        {
+            var result = await _userRequestRepository.InsertAsync(new BusinessObjects.UserRequest()
+            {
+                FirstName = userRequestDto.FirstName,
+                LastName = userRequestDto.LastName,
+                UserName = userRequestDto.UserName,
+                Email = userRequestDto.Email,
+                PhoneNumber = userRequestDto.PhoneNumber,
+                Password = userRequestDto.Password,
+                PackageId = userRequestDto.PackageId
+
+            });
+
+            await UnitOfWorkManager.Current.SaveChangesAsync();
+
+            if (result.Id != 0)
+            {
+                return new ResponseMessageDto()
+                {
+                    Id = result.Id,
+                    SuccessMessage = AppConsts.SuccessfullyInserted,
+                    Success = true,
+                    Error = false,
+                };
+            }
+
+            return new ResponseMessageDto()
+            {
+                Id = 0,
+                ErrorMessage = AppConsts.InsertFailure,
+                Success = false,
+                Error = true,
+            };
+        }
+
+        private async Task<ResponseMessageDto> UpdateUserRequestAsync(CreateUserRequestDto userRequestDto)
+        {
+            var result = await _userRequestRepository.UpdateAsync(new BusinessObjects.UserRequest()
+            {
+                Id = userRequestDto.Id,
+                FirstName = userRequestDto.FirstName,
+                LastName = userRequestDto.LastName,
+                UserName = userRequestDto.UserName,
+                Email = userRequestDto.Email,
+                Password = userRequestDto.Password,
+                PhoneNumber = userRequestDto.PhoneNumber,
+                PackageId = userRequestDto.PackageId,
+
+            });
+
+            if (result != null)
+            {
+                return new ResponseMessageDto()
+                {
+                    Id = result.Id,
+                    SuccessMessage = AppConsts.SuccessfullyUpdated,
+                    Success = true,
+                    Error = false,
+                };
+            }
+
+            return new ResponseMessageDto()
+            {
+                Id = 0,
+                ErrorMessage = AppConsts.UpdateFailure,
+                Success = false,
+                Error = true,
+            };
+        }
+
 
         /// <summary>
         /// accept user request

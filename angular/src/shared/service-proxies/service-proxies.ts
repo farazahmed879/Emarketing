@@ -169,7 +169,6 @@ export class AdminServiceProxy {
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
             return this.processGetAll(response_);
         })).pipe(_observableCatch((response_: any) => {
-           
             if (response_ instanceof HttpResponseBase) {
                 try {
                     return this.processGetAll(<any>response_);
@@ -256,6 +255,62 @@ export class AdminServiceProxy {
             }));
         }
         return _observableOf<boolean>(<any>null);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    createOrEdit(body: CreateUserRequestDto | undefined): Observable<ResponseMessageDto> {
+        let url_ = this.baseUrl + "/api/services/app/Admin/CreateOrEdit";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreateOrEdit(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateOrEdit(<any>response_);
+                } catch (e) {
+                    return <Observable<ResponseMessageDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<ResponseMessageDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processCreateOrEdit(response: HttpResponseBase): Observable<ResponseMessageDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ResponseMessageDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ResponseMessageDto>(<any>null);
     }
 
     /**
@@ -5961,6 +6016,136 @@ export interface IPackageDto {
     id: number;
 }
 
+export class CreateUserRequestDto implements ICreateUserRequestDto {
+    packageId: number;
+    firstName: string;
+    lastName: string;
+    email: string;
+    userName: string;
+    phoneNumber: string | undefined;
+    password: string;
+    id: number;
+
+    constructor(data?: ICreateUserRequestDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.packageId = _data["packageId"];
+            this.firstName = _data["firstName"];
+            this.lastName = _data["lastName"];
+            this.email = _data["email"];
+            this.userName = _data["userName"];
+            this.phoneNumber = _data["phoneNumber"];
+            this.password = _data["password"];
+            this.id = _data["id"];
+        }
+    }
+
+    static fromJS(data: any): CreateUserRequestDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateUserRequestDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["packageId"] = this.packageId;
+        data["firstName"] = this.firstName;
+        data["lastName"] = this.lastName;
+        data["email"] = this.email;
+        data["userName"] = this.userName;
+        data["phoneNumber"] = this.phoneNumber;
+        data["password"] = this.password;
+        data["id"] = this.id;
+        return data; 
+    }
+
+    clone(): CreateUserRequestDto {
+        const json = this.toJSON();
+        let result = new CreateUserRequestDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface ICreateUserRequestDto {
+    packageId: number;
+    firstName: string;
+    lastName: string;
+    email: string;
+    userName: string;
+    phoneNumber: string | undefined;
+    password: string;
+    id: number;
+}
+
+export class ResponseMessageDto implements IResponseMessageDto {
+    id: number;
+    successMessage: string | undefined;
+    success: boolean;
+    errorMessage: string | undefined;
+    error: boolean;
+
+    constructor(data?: IResponseMessageDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.successMessage = _data["successMessage"];
+            this.success = _data["success"];
+            this.errorMessage = _data["errorMessage"];
+            this.error = _data["error"];
+        }
+    }
+
+    static fromJS(data: any): ResponseMessageDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ResponseMessageDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["successMessage"] = this.successMessage;
+        data["success"] = this.success;
+        data["errorMessage"] = this.errorMessage;
+        data["error"] = this.error;
+        return data; 
+    }
+
+    clone(): ResponseMessageDto {
+        const json = this.toJSON();
+        let result = new ResponseMessageDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IResponseMessageDto {
+    id: number;
+    successMessage: string | undefined;
+    success: boolean;
+    errorMessage: string | undefined;
+    error: boolean;
+}
+
 export class AcceptUserRequestDto implements IAcceptUserRequestDto {
     userRequestId: number;
 
@@ -6424,65 +6609,6 @@ export interface ICreatePackageDto {
     minimumWithdraw: number | undefined;
     isActive: boolean;
     id: number;
-}
-
-export class ResponseMessageDto implements IResponseMessageDto {
-    id: number;
-    successMessage: string | undefined;
-    success: boolean;
-    errorMessage: string | undefined;
-    error: boolean;
-
-    constructor(data?: IResponseMessageDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.successMessage = _data["successMessage"];
-            this.success = _data["success"];
-            this.errorMessage = _data["errorMessage"];
-            this.error = _data["error"];
-        }
-    }
-
-    static fromJS(data: any): ResponseMessageDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new ResponseMessageDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["successMessage"] = this.successMessage;
-        data["success"] = this.success;
-        data["errorMessage"] = this.errorMessage;
-        data["error"] = this.error;
-        return data; 
-    }
-
-    clone(): ResponseMessageDto {
-        const json = this.toJSON();
-        let result = new ResponseMessageDto();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IResponseMessageDto {
-    id: number;
-    successMessage: string | undefined;
-    success: boolean;
-    errorMessage: string | undefined;
-    error: boolean;
 }
 
 export class PackageDtoPagedResultDto implements IPackageDtoPagedResultDto {
@@ -8448,6 +8574,7 @@ export class UserPackageAdDetailDto implements IUserPackageAdDetailDto {
     userName: string | undefined;
     userPackageSubscriptionDetailId: number;
     packageId: number;
+    url: string | undefined;
     adPrice: number;
     adDate: moment.Moment;
     isViewed: boolean;
@@ -8475,6 +8602,7 @@ export class UserPackageAdDetailDto implements IUserPackageAdDetailDto {
             this.userName = _data["userName"];
             this.userPackageSubscriptionDetailId = _data["userPackageSubscriptionDetailId"];
             this.packageId = _data["packageId"];
+            this.url = _data["url"];
             this.adPrice = _data["adPrice"];
             this.adDate = _data["adDate"] ? moment(_data["adDate"].toString()) : <any>undefined;
             this.isViewed = _data["isViewed"];
@@ -8502,6 +8630,7 @@ export class UserPackageAdDetailDto implements IUserPackageAdDetailDto {
         data["userName"] = this.userName;
         data["userPackageSubscriptionDetailId"] = this.userPackageSubscriptionDetailId;
         data["packageId"] = this.packageId;
+        data["url"] = this.url;
         data["adPrice"] = this.adPrice;
         data["adDate"] = this.adDate ? this.adDate.toISOString() : <any>undefined;
         data["isViewed"] = this.isViewed;
@@ -8529,6 +8658,7 @@ export interface IUserPackageAdDetailDto {
     userName: string | undefined;
     userPackageSubscriptionDetailId: number;
     packageId: number;
+    url: string | undefined;
     adPrice: number;
     adDate: moment.Moment;
     isViewed: boolean;
@@ -9416,77 +9546,6 @@ export class UserReferralRequestDtoPagedResultDto implements IUserReferralReques
 export interface IUserReferralRequestDtoPagedResultDto {
     totalCount: number;
     items: UserReferralRequestDto[] | undefined;
-}
-
-export class CreateUserRequestDto implements ICreateUserRequestDto {
-    packageId: number;
-    firstName: string;
-    lastName: string;
-    email: string;
-    userName: string;
-    phoneNumber: string | undefined;
-    password: string;
-    id: number;
-
-    constructor(data?: ICreateUserRequestDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.packageId = _data["packageId"];
-            this.firstName = _data["firstName"];
-            this.lastName = _data["lastName"];
-            this.email = _data["email"];
-            this.userName = _data["userName"];
-            this.phoneNumber = _data["phoneNumber"];
-            this.password = _data["password"];
-            this.id = _data["id"];
-        }
-    }
-
-    static fromJS(data: any): CreateUserRequestDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new CreateUserRequestDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["packageId"] = this.packageId;
-        data["firstName"] = this.firstName;
-        data["lastName"] = this.lastName;
-        data["email"] = this.email;
-        data["userName"] = this.userName;
-        data["phoneNumber"] = this.phoneNumber;
-        data["password"] = this.password;
-        data["id"] = this.id;
-        return data; 
-    }
-
-    clone(): CreateUserRequestDto {
-        const json = this.toJSON();
-        let result = new CreateUserRequestDto();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface ICreateUserRequestDto {
-    packageId: number;
-    firstName: string;
-    lastName: string;
-    email: string;
-    userName: string;
-    phoneNumber: string | undefined;
-    password: string;
-    id: number;
 }
 
 export class UserRequestDto implements IUserRequestDto {
