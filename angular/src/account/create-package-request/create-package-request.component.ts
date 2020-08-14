@@ -213,5 +213,3 @@ export class CreatePackageRequestComponent extends AppComponentBase implements O
     this.emailValidationMessage = "Please prove correct email address";
   }
 }
-
-// [disbaled]="!firstName || !lastName || !userName || !email || !password || !packageId || !passwordConfirm"

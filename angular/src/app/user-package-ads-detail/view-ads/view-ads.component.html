@@ -1,0 +1,38 @@
+﻿<div class="container-fluid">
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-6">
+          <h1>{{ "Withdraw Request" | localize }}</h1>
+        </div>
+        <!-- <div class="col-6 text-right">
+          <a href="javascript:;" class="btn bg-blue" (click)="createUser()">
+            <i class="fa fa-plus-square"></i>
+            {{ "Create" | localize }}
+          </a>
+        </div> -->
+      </div>
+    </div>
+  </section>
+  <section class="content px-2">
+    <div class="container-fluid">
+      <div class="card">
+        <div class="card-body">
+          <iframe [src]="videoUrl" id="video_player" width="640" height="360" frameborder="0"
+            allow="autoplay; fullscreen" allowfullscreen></iframe>
+
+        </div>
+        <!-- <div class="card-footer">
+          <div class="col-md-12">
+            <button href="javascript:;" class="btn bg-primary"
+              (click)="create()">
+              <i class="fa fa-plus-square"></i>
+              {{ "Create" | localize }}
+            </button>
+          </div>
+        </div> -->
+        <countdown #cd [config]="config" (event)="handleEvent($event)"></countdown>
+      </div>
+    </div>
+  </section>
+</div>

@@ -5,6 +5,9 @@ import { finalize } from 'rxjs/operators';
 import { PagedRequestDto, PagedListingComponentBase } from '@shared/paged-listing-component-base';
 import { EditUserPackageAdsDetailComponent } from './edit-user-package-ads-detail/edit-user-package-ads-detail-dialog.component';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { Route } from '@angular/compiler/src/core';
+import { Router } from '@angular/router';
+import { DomSanitizer } from '@angular/platform-browser';
 
 
 class PagedWithdrawHistoryDto extends PagedRequestDto {
@@ -17,7 +20,9 @@ class PagedWithdrawHistoryDto extends PagedRequestDto {
 export class UserPackageAdsDetailComponent extends PagedListingComponentBase<UserPackageAdDetailDto> {
   constructor(injector: Injector,
     private _userPackageDetailService: UserPackageAdDetailServiceProxy,
-    private _modalService: BsModalService
+    private _modalService: BsModalService,
+    private router: Router,
+    public sanitizer: DomSanitizer
   ) {
     super(injector);
   }
@@ -52,7 +57,8 @@ export class UserPackageAdsDetailComponent extends PagedListingComponentBase<Use
   }
 
   viewUserPackageAdDetail(id: number){
-    this.showCreateOrEditUserPackageAdDetailDialog(id);
+    //this.showCreateOrEditUserPackageAdDetailDialog(id);
+    this.router.navigate(['/app/ads-detail',id]);
   }
 
   private showCreateOrEditUserPackageAdDetailDialog(id?: number): void {

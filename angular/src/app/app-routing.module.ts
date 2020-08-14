@@ -17,6 +17,7 @@ import { UserRequestComponent } from './user-request/user-request.component';
 import { UserReferalComponent } from './user-referal/user-referal.component';
 import { UserReferalRequestComponent } from './user-referal-request/user-referal-request.component';
 import { UserPackageAdsDetailComponent } from './user-package-ads-detail/user-package-ads-detail.component';
+import { ViewAds } from './user-package-ads-detail/view-ads/view-ads.component';
 
 @NgModule({
     imports: [
@@ -41,6 +42,7 @@ import { UserPackageAdsDetailComponent } from './user-package-ads-detail/user-pa
                     { path: 'user-referal', component: UserReferalComponent, canActivate: [AppRouteGuard] },
                     { path: 'user-referal-request', component: UserReferalRequestComponent, canActivate: [AppRouteGuard] },
                     { path: 'ads', component: UserPackageAdsDetailComponent, canActivate: [AppRouteGuard] },
+                    { path: 'ads-detail/:adId', component: ViewAds, canActivate: [AppRouteGuard] },
                 ]
             }
         ])

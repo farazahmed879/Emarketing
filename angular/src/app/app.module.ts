@@ -75,8 +75,13 @@ import { UserReferalRequestComponent } from './user-referal-request/user-referal
 import { CreateUserReferalRequestDialogComponent } from './user-referal-request/create-user-referal-request/create-user-referal-request-dialog.component';
 import { EditUserReferalRequestDialogComponent } from './user-referal-request/edit-user-referal-request/edit-user-referal-request-dialog.component';
 //User Package Detail
-import {UserPackageAdsDetailComponent} from './user-package-ads-detail/user-package-ads-detail.component';
-import {EditUserPackageAdsDetailComponent} from './user-package-ads-detail/edit-user-package-ads-detail/edit-user-package-ads-detail-dialog.component';
+import { UserPackageAdsDetailComponent } from './user-package-ads-detail/user-package-ads-detail.component';
+import { EditUserPackageAdsDetailComponent } from './user-package-ads-detail/edit-user-package-ads-detail/edit-user-package-ads-detail-dialog.component';
+
+import { ViewAds } from './user-package-ads-detail/view-ads/view-ads.component'
+
+//count Down
+import { CountdownModule } from 'ngx-countdown';
 @NgModule({
   declarations: [
     AppComponent,
@@ -126,9 +131,11 @@ import {EditUserPackageAdsDetailComponent} from './user-package-ads-detail/edit-
     UserReferalRequestComponent,
     CreateUserReferalRequestDialogComponent,
     EditUserReferalRequestDialogComponent,
-   //User Package Detail
-   EditUserPackageAdsDetailComponent,
-   UserPackageAdsDetailComponent
+    //User Package Detail
+    EditUserPackageAdsDetailComponent,
+    UserPackageAdsDetailComponent,
+    //ViewAds
+    ViewAds
   ],
   imports: [
     CommonModule,
@@ -145,7 +152,8 @@ import {EditUserPackageAdsDetailComponent} from './user-package-ads-detail/edit-
     SharedModule,
     NgxPaginationModule,
     DropdownModule,
-    MultiSelectModule
+    MultiSelectModule,
+    CountdownModule
   ],
   providers: [
     WithdrawRequestServiceProxy,
@@ -195,7 +203,9 @@ import {EditUserPackageAdsDetailComponent} from './user-package-ads-detail/edit-
     EditUserReferalRequestDialogComponent,
     //User Package Detail
     UserPackageAdDetailDto,
-    EditUserPackageAdsDetailComponent
+    EditUserPackageAdsDetailComponent,
+    //ViewAds
+    ViewAds
 
   ],
 })
