@@ -12,6 +12,7 @@ namespace Emarketing.BusinessModels.UserRequest.Dto
         public string PhoneNumber { get; set; }
         public string Password { get; set; }
 
-
+        public bool IsAccepted { get; set; }
+        public bool IsActivated { get; set; }
     }
 }

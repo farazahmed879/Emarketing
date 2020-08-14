@@ -166,6 +166,8 @@ namespace Emarketing.BusinessModels.UserReferralRequest
                         UserId = i.UserId,
                         ReferralRequestStatusId = i.ReferralRequestStatusId,
                         ReferralRequestStatus = i.ReferralRequestStatusId.GetEnumFieldDescription(),
+                        IsActivated = i.IsActivated,
+                        IsAccepted = i.IsAccepted,
                         CreatorUserId = i.CreatorUserId,
                         CreationTime = i.CreationTime,
                         LastModificationTime = i.LastModificationTime
@@ -220,6 +222,8 @@ namespace Emarketing.BusinessModels.UserReferralRequest
                     UserId = i.UserId,
                     ReferralRequestStatusId = i.ReferralRequestStatusId,
                     ReferralRequestStatus = i.ReferralRequestStatusId.GetEnumFieldDescription(),
+                    IsActivated = i.IsActivated,
+                    IsAccepted = i.IsAccepted,
                     CreatorUserId = i.CreatorUserId,
                     CreationTime = i.CreationTime,
                     LastModificationTime = i.LastModificationTime
@@ -230,7 +234,6 @@ namespace Emarketing.BusinessModels.UserReferralRequest
         public async Task<PagedResultDto<UserReferralRequestDto>> GetPaginatedAllAsync(
             UserReferralRequestInputDto input)
         {
-            
             long userId = _abpSession.UserId.Value;
             var filteredUserReferrals = _userReferralRequestRepository.GetAll();
             var isAdmin = await AuthenticateAdminUser();
@@ -264,6 +267,8 @@ namespace Emarketing.BusinessModels.UserReferralRequest
                             UserId = i.UserId,
                             ReferralRequestStatusId = i.ReferralRequestStatusId,
                             ReferralRequestStatus = i.ReferralRequestStatusId.GetEnumFieldDescription(),
+                            IsActivated = i.IsActivated,
+                            IsAccepted = i.IsAccepted,
                             CreatorUserId = i.CreatorUserId,
                             CreationTime = i.CreationTime,
                             LastModificationTime = i.LastModificationTime

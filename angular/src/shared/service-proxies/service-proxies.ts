@@ -9396,6 +9396,8 @@ export class UserReferralRequestDto implements IUserReferralRequestDto {
     userName: string | undefined;
     referralRequestStatusId: ReferralRequestStatus;
     referralRequestStatus: string | undefined;
+    isAccepted: boolean;
+    isActivated: boolean;
     isDeleted: boolean;
     deleterUserId: number | undefined;
     deletionTime: moment.Moment | undefined;
@@ -9425,6 +9427,8 @@ export class UserReferralRequestDto implements IUserReferralRequestDto {
             this.userName = _data["userName"];
             this.referralRequestStatusId = _data["referralRequestStatusId"];
             this.referralRequestStatus = _data["referralRequestStatus"];
+            this.isAccepted = _data["isAccepted"];
+            this.isActivated = _data["isActivated"];
             this.isDeleted = _data["isDeleted"];
             this.deleterUserId = _data["deleterUserId"];
             this.deletionTime = _data["deletionTime"] ? moment(_data["deletionTime"].toString()) : <any>undefined;
@@ -9454,6 +9458,8 @@ export class UserReferralRequestDto implements IUserReferralRequestDto {
         data["userName"] = this.userName;
         data["referralRequestStatusId"] = this.referralRequestStatusId;
         data["referralRequestStatus"] = this.referralRequestStatus;
+        data["isAccepted"] = this.isAccepted;
+        data["isActivated"] = this.isActivated;
         data["isDeleted"] = this.isDeleted;
         data["deleterUserId"] = this.deleterUserId;
         data["deletionTime"] = this.deletionTime ? this.deletionTime.toISOString() : <any>undefined;
@@ -9483,6 +9489,8 @@ export interface IUserReferralRequestDto {
     userName: string | undefined;
     referralRequestStatusId: ReferralRequestStatus;
     referralRequestStatus: string | undefined;
+    isAccepted: boolean;
+    isActivated: boolean;
     isDeleted: boolean;
     deleterUserId: number | undefined;
     deletionTime: moment.Moment | undefined;
@@ -9556,6 +9564,8 @@ export class UserRequestDto implements IUserRequestDto {
     userName: string | undefined;
     phoneNumber: string | undefined;
     password: string | undefined;
+    isAccepted: boolean;
+    isActivated: boolean;
     isDeleted: boolean;
     deleterUserId: number | undefined;
     deletionTime: moment.Moment | undefined;
@@ -9583,6 +9593,8 @@ export class UserRequestDto implements IUserRequestDto {
             this.userName = _data["userName"];
             this.phoneNumber = _data["phoneNumber"];
             this.password = _data["password"];
+            this.isAccepted = _data["isAccepted"];
+            this.isActivated = _data["isActivated"];
             this.isDeleted = _data["isDeleted"];
             this.deleterUserId = _data["deleterUserId"];
             this.deletionTime = _data["deletionTime"] ? moment(_data["deletionTime"].toString()) : <any>undefined;
@@ -9610,6 +9622,8 @@ export class UserRequestDto implements IUserRequestDto {
         data["userName"] = this.userName;
         data["phoneNumber"] = this.phoneNumber;
         data["password"] = this.password;
+        data["isAccepted"] = this.isAccepted;
+        data["isActivated"] = this.isActivated;
         data["isDeleted"] = this.isDeleted;
         data["deleterUserId"] = this.deleterUserId;
         data["deletionTime"] = this.deletionTime ? this.deletionTime.toISOString() : <any>undefined;
@@ -9637,6 +9651,8 @@ export interface IUserRequestDto {
     userName: string | undefined;
     phoneNumber: string | undefined;
     password: string | undefined;
+    isAccepted: boolean;
+    isActivated: boolean;
     isDeleted: boolean;
     deleterUserId: number | undefined;
     deletionTime: moment.Moment | undefined;

@@ -13,5 +13,7 @@ namespace Emarketing.BusinessModels.UserReferralRequest.Dto
         public string UserName { get; set; }
         public ReferralRequestStatus ReferralRequestStatusId { get; set; }
         public string ReferralRequestStatus { get; set; }
+        public bool IsAccepted { get; set; }
+        public bool IsActivated { get; set; }
     }
 }

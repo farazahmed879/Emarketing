@@ -23,6 +23,8 @@ namespace Emarketing.BusinessObjects
         [ForeignKey("UserId")]
         public User User { get; set; }
         public long? UserId { get; set; }
+        public bool IsAccepted { get; set; }
+        public bool IsActivated { get; set; }
 
         // public DateTime DateOfBirth { get; set; }
     }

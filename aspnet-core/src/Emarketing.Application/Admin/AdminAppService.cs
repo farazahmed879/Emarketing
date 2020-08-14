@@ -22,6 +22,7 @@ namespace Emarketing.Admin
         List<PackageDto> GetAll();
 
         Task<bool> SeedPackages();
+
         //Task<bool> SeedRole();
         Task<ResponseMessageDto> CreateOrEditAsync(CreateUserRequestDto requestDto);
         Task<bool> AcceptUserRequest(AcceptUserRequestDto requestDto);
@@ -93,8 +94,6 @@ namespace Emarketing.Admin
         /// <returns></returns>
         public List<PackageDto> GetAll()
         {
-             
-
             var result = _packageRepository.GetAll().Where(i => i.IsDeleted == false)
                 .Select(i => new PackageDto()
                 {
@@ -159,6 +158,7 @@ namespace Emarketing.Admin
             {
                 new Package()
                 {
+                    Id = 1,
                     Name = "Package 1",
                     Code = "Package-1",
                     Description = "",
@@ -176,6 +176,7 @@ namespace Emarketing.Admin
                 },
                 new Package()
                 {
+                    Id = 2,
                     Name = "Package 2",
                     Code = "Package-2",
                     Description = "",
@@ -193,6 +194,7 @@ namespace Emarketing.Admin
                 },
                 new Package()
                 {
+                    Id = 3,
                     Name = "Package 3",
                     Code = "Package-3",
                     Description = "",
@@ -210,6 +212,7 @@ namespace Emarketing.Admin
                 },
                 new Package()
                 {
+                    Id = 4,
                     Name = "Package 4",
                     Code = "Package-4",
                     Description = "",
@@ -227,6 +230,7 @@ namespace Emarketing.Admin
                 },
                 new Package()
                 {
+                    Id = 5,
                     Name = "Package 5",
                     Code = "Package-5",
                     Description = "",
@@ -244,6 +248,7 @@ namespace Emarketing.Admin
                 },
                 new Package()
                 {
+                    Id = 6,
                     Name = "Package 6",
                     Code = "Package-6",
                     Description = "",
@@ -261,6 +266,7 @@ namespace Emarketing.Admin
                 },
                 new Package()
                 {
+                    Id = 7,
                     Name = "Package 7",
                     Code = "Package-7",
                     Description = "",
@@ -284,14 +290,13 @@ namespace Emarketing.Admin
             }
 
 
-            UnitOfWorkManager.Current.SaveChanges();
+            await UnitOfWorkManager.Current.SaveChangesAsync();
 
             return true;
         }
 
         public async Task<ResponseMessageDto> CreateOrEditAsync(CreateUserRequestDto requestDto)
         {
-
             ResponseMessageDto result;
             if (requestDto.Id == 0)
             {
@@ -305,6 +310,7 @@ namespace Emarketing.Admin
                 {
                     throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
                 }
+
                 result = await UpdateUserRequestAsync(requestDto);
             }
 
@@ -321,8 +327,9 @@ namespace Emarketing.Admin
                 Email = userRequestDto.Email,
                 PhoneNumber = userRequestDto.PhoneNumber,
                 Password = userRequestDto.Password,
-                PackageId = userRequestDto.PackageId
-
+                PackageId = userRequestDto.PackageId,
+                IsAccepted = false,
+                IsActivated = false,
             });
 
             await UnitOfWorkManager.Current.SaveChangesAsync();
@@ -359,7 +366,6 @@ namespace Emarketing.Admin
                 Password = userRequestDto.Password,
                 PhoneNumber = userRequestDto.PhoneNumber,
                 PackageId = userRequestDto.PackageId,
-
             });
 
             if (result != null)
@@ -399,7 +405,6 @@ namespace Emarketing.Admin
 
             //create new user from user request
             var userRequest = await _userRequestRepository
-                .GetAll()
                 .FirstOrDefaultAsync(i => i.Id == requestDto.UserRequestId);
             if (userRequest == null)
             {
@@ -409,7 +414,6 @@ namespace Emarketing.Admin
             var userPassword = userRequest.Password;
 
             var package = await _packageRepository
-                .GetAll()
                 .FirstOrDefaultAsync(i => i.Id == userRequest.PackageId);
 
             if (package == null)
@@ -501,6 +505,8 @@ namespace Emarketing.Admin
                     Password = userRequest.Password,
                     PhoneNumber = userRequest.PhoneNumber,
                     PackageId = userRequest.PackageId,
+                    IsAccepted = true,
+                    IsActivated = false,
                     UserId = newUser.Id,
                     LastModificationTime = DateTime.Now,
                     LastModifierUserId = userId,
@@ -538,7 +544,6 @@ namespace Emarketing.Admin
             }
 
             var package = await _packageRepository
-                .GetAll()
                 .FirstOrDefaultAsync(i => i.Id == userPackageSubscriptionDetail.PackageId);
 
             if (package == null)
@@ -546,7 +551,15 @@ namespace Emarketing.Admin
                 return false;
             }
 
-            var updatedUserRequest = await _userPackageSubscriptionDetailRepository.UpdateAsync(
+            var userRequest = await _userRequestRepository
+                .FirstOrDefaultAsync(i => i.UserId == requestDto.UserId);
+
+            if (userRequest == null)
+            {
+                return false;
+            }
+
+            var updated = await _userPackageSubscriptionDetailRepository.UpdateAsync(
                 new UserPackageSubscriptionDetail()
                 {
                     Id = userPackageSubscriptionDetail.Id,
@@ -561,7 +574,27 @@ namespace Emarketing.Admin
                     LastModifierUserId = userId,
                 });
 
-            UnitOfWorkManager.Current.SaveChanges();
+            await UnitOfWorkManager.Current.SaveChangesAsync();
+
+            //update user request detail
+            var updatedUserRequest = await _userRequestRepository.UpdateAsync(new UserRequest()
+            {
+                Id = userRequest.Id,
+                FirstName = userRequest.FirstName,
+                LastName = userRequest.FirstName,
+                UserName = userRequest.FirstName,
+                Email = userRequest.FirstName,
+                Password = userRequest.Password,
+                PhoneNumber = userRequest.PhoneNumber,
+                PackageId = userRequest.PackageId,
+                IsAccepted = true,
+                IsActivated = true,
+                UserId = userRequest.UserId,
+                LastModificationTime = DateTime.Now,
+                LastModifierUserId = userId,
+            });
+            await UnitOfWorkManager.Current.SaveChangesAsync();
+
 
             return true;
         }
@@ -583,9 +616,9 @@ namespace Emarketing.Admin
             foreach (var user in allUsers)
             {
                 var activeSubscription = await _userPackageSubscriptionDetailRepository
-                    .GetAll().FirstOrDefaultAsync(x => x.UserId == user.Id &&
-                                                       x.StatusId == UserPackageSubscriptionStatus.Active &&
-                                                       x.ExpiryDate.Value != DateTime.Now);
+                    .FirstOrDefaultAsync(x => x.UserId == user.Id &&
+                                              x.StatusId == UserPackageSubscriptionStatus.Active &&
+                                              x.ExpiryDate.Value != DateTime.Now);
                 if (activeSubscription == null)
                 {
                     continue;
@@ -610,9 +643,10 @@ namespace Emarketing.Admin
                         LastModificationTime = DateTime.Now,
                         LastModifierUserId = userId,
                     };
-                    newUserPackageAdDetail = await _userPackageAdDetailRepository.InsertOrUpdateAsync(newUserPackageAdDetail);
+                    newUserPackageAdDetail =
+                        await _userPackageAdDetailRepository.InsertOrUpdateAsync(newUserPackageAdDetail);
 
-                    UnitOfWorkManager.Current.SaveChanges();
+                    await UnitOfWorkManager.Current.SaveChangesAsync();
                 }
             }
 
@@ -738,6 +772,8 @@ namespace Emarketing.Admin
                     UserId = userReferralRequest.UserId,
                     PackageId = userReferralRequest.PackageId,
                     UserReferralId = newUser.Id,
+                    IsAccepted = true,
+                    IsActivated = false,
                     ReferralRequestStatusId = ReferralRequestStatus.Active,
                     LastModificationTime = DateTime.Now,
                     LastModifierUserId = userId,
@@ -804,7 +840,7 @@ namespace Emarketing.Admin
                 throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
             }
 
-            //create new user from user request
+            //get user referral request
             var userReferralRequest = await _userReferralRequestRepository
                 .GetAll()
                 .FirstOrDefaultAsync(i => i.Id == requestDto.UserReferralRequestId);
@@ -813,30 +849,70 @@ namespace Emarketing.Admin
                 return false;
             }
 
+            //get user referral
             var userReferral = await _userReferralRepository
                 .FirstOrDefaultAsync(i => i.Id == userReferralRequest.UserReferralId);
-            if (userReferralRequest == null)
+            if (userReferral == null)
             {
                 return false;
             }
-            //var userPassword = EmarketingConsts.SamplePassword;
 
-            //var package = _packageRepository
-            //    .GetAll()
-            //    .FirstOrDefault(i => i.Id == userReferralRequest.PackageId);
+            ////get user package subscription
+            var userPackageSubscriptionDetail = await _userPackageSubscriptionDetailRepository
+                .FirstOrDefaultAsync(i => i.UserId == userReferral.ReferralUserId);
 
-            //if (package == null)
-            //{
-            //    return false;
-            //}
+            if (userPackageSubscriptionDetail == null)
+            {
+                return false;
+            }
+
+            //get package details
+            var package = await _packageRepository
+                .FirstOrDefaultAsync(i => i.Id == userPackageSubscriptionDetail.PackageId);
+
+            if (package == null)
+            {
+                return false;
+            }
+
+            //get user package subscription
+            var updated = await _userPackageSubscriptionDetailRepository.UpdateAsync(
+                new UserPackageSubscriptionDetail()
+                {
+                    Id = userPackageSubscriptionDetail.Id,
+                    PackageId = userPackageSubscriptionDetail.PackageId,
+                    ExpiryDate = DateTime.Now.AddDays(package.DurationInDays),
+                    StartDate = DateTime.Now,
+                    StatusId = UserPackageSubscriptionStatus.Active,
+                    UserId = userPackageSubscriptionDetail.Id,
+                    CreatorUserId = userId,
+                    CreationTime = DateTime.Now,
+                    LastModificationTime = DateTime.Now,
+                    LastModifierUserId = userId,
+                });
+
+            await UnitOfWorkManager.Current.SaveChangesAsync();
 
 
-            //var userPackageSubscriptionDetail = _userPackageSubscriptionDetailRepository
-            //    .FirstOrDefault(i => i.UserId == userReferralRequest.u);
-
-            //await UnitOfWorkManager.Current.SaveChangesAsync();
-
-
+            //update user referral request detail
+            var updatedUserReferralRequest = _userReferralRequestRepository.UpdateAsync(new UserReferralRequest()
+            {
+                Id = userReferralRequest.Id,
+                FirstName = userReferralRequest.FirstName,
+                LastName = userReferralRequest.LastName,
+                UserName = userReferralRequest.UserName,
+                Email = userReferralRequest.Email,
+                PhoneNumber = userReferralRequest.PhoneNumber,
+                UserId = userReferralRequest.UserId,
+                PackageId = userReferralRequest.PackageId,
+                UserReferralId = userReferralRequest.UserReferralId,
+                IsAccepted = true,
+                IsActivated = true,
+                ReferralRequestStatusId = ReferralRequestStatus.Active,
+                LastModificationTime = DateTime.Now,
+                LastModifierUserId = userId,
+            });
+            await UnitOfWorkManager.Current.SaveChangesAsync();
             return true;
         }
     }

@@ -23,5 +23,7 @@ namespace Emarketing.BusinessObjects
 
         [ForeignKey("UserReferralId")] public User UserReferral { get; set; }
         public long? UserReferralId { get; set; }
+        public bool IsAccepted { get; set; }
+        public bool IsActivated { get; set; }
     }
 }
