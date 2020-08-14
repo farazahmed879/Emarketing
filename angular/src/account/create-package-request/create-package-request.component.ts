@@ -1,7 +1,7 @@
 import { Component, Injector, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { AppComponentBase } from '@shared/app-component-base';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
-import { WithdrawRequestDto, WithdrawRequestServiceProxy, CreateWithdrawRequestDto, CreateUserRequestDto, UserRequestServiceProxy } from '@shared/service-proxies/service-proxies';
+import { WithdrawRequestDto, WithdrawRequestServiceProxy, CreateWithdrawRequestDto, CreateUserRequestDto, UserRequestServiceProxy, AdminServiceProxy } from '@shared/service-proxies/service-proxies';
 import { SelectItem } from 'primeng/api';
 import { Router, ActivatedRoute } from '@angular/router';
 import { PrimefacesDropDownObject } from '@app/app.component';
@@ -134,6 +134,7 @@ export class CreatePackageRequestComponent extends AppComponentBase implements O
 
   constructor(injector: Injector,
     private _userRequestService: UserRequestServiceProxy,
+    private _adminService: AdminServiceProxy,
     private router: Router,
     private activatedRoute: ActivatedRoute
   ) {
@@ -174,7 +175,7 @@ export class CreatePackageRequestComponent extends AppComponentBase implements O
     createUserRequestDto.packageId = this.packageId;
 
 
-    this._userRequestService.createOrEdit(createUserRequestDto).subscribe((result) => {
+    this._adminService.createOrEdit(createUserRequestDto).subscribe((result) => {
       if (result) {
         this.notify.info(this.l('SavedSuccessfully'));
         this.router.navigateByUrl('/account/userPackage');
