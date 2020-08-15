@@ -18,8 +18,8 @@ namespace Emarketing.BusinessObjects
 
         public long UserPackageSubscriptionDetailId { get; set; }
         [ForeignKey("PackageAdId")] public PackageAd PackageAd { get; set; }
-        public long PackageId { get; set; }
-
+        public long PackageAdId { get; set; }
+        
         public decimal AdPrice { get; set; }
         public DateTime AdDate { get; set; }
         public bool IsViewed { get; set; }

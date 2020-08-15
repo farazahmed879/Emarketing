@@ -536,62 +536,6 @@ export class AdminServiceProxy {
      * @param body (optional) 
      * @return Success
      */
-    updateWithdrawRequest(body: UpdateWithDrawRequestDto | undefined): Observable<boolean> {
-        let url_ = this.baseUrl + "/api/services/app/Admin/UpdateWithdrawRequest";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_ : any = {
-            body: content_,
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Content-Type": "application/json-patch+json",
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processUpdateWithdrawRequest(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processUpdateWithdrawRequest(<any>response_);
-                } catch (e) {
-                    return <Observable<boolean>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<boolean>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processUpdateWithdrawRequest(response: HttpResponseBase): Observable<boolean> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 !== undefined ? resultData200 : <any>null;
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<boolean>(<any>null);
-    }
-
-    /**
-     * @param body (optional) 
-     * @return Success
-     */
     activateUserReferralRequestSubscription(body: ActivateUserReferralSubscriptionDto | undefined): Observable<boolean> {
         let url_ = this.baseUrl + "/api/services/app/Admin/ActivateUserReferralRequestSubscription";
         url_ = url_.replace(/[?&]$/, "");
@@ -623,6 +567,62 @@ export class AdminServiceProxy {
     }
 
     protected processActivateUserReferralRequestSubscription(response: HttpResponseBase): Observable<boolean> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<boolean>(<any>null);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    updateWithdrawRequest(body: UpdateWithDrawRequestDto | undefined): Observable<boolean> {
+        let url_ = this.baseUrl + "/api/services/app/Admin/UpdateWithdrawRequest";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdateWithdrawRequest(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdateWithdrawRequest(<any>response_);
+                } catch (e) {
+                    return <Observable<boolean>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<boolean>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processUpdateWithdrawRequest(response: HttpResponseBase): Observable<boolean> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -6275,49 +6275,6 @@ export interface IAcceptUserReferralRequestDto {
     userReferralRequestId: number;
 }
 
-export class UpdateWithDrawRequestDto implements IUpdateWithDrawRequestDto {
-    withdrawRequestId: number;
-
-    constructor(data?: IUpdateWithDrawRequestDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.withdrawRequestId = _data["withdrawRequestId"];
-        }
-    }
-
-    static fromJS(data: any): UpdateWithDrawRequestDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new UpdateWithDrawRequestDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["withdrawRequestId"] = this.withdrawRequestId;
-        return data; 
-    }
-
-    clone(): UpdateWithDrawRequestDto {
-        const json = this.toJSON();
-        let result = new UpdateWithDrawRequestDto();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IUpdateWithDrawRequestDto {
-    withdrawRequestId: number;
-}
-
 export class ActivateUserReferralSubscriptionDto implements IActivateUserReferralSubscriptionDto {
     userReferralRequestId: number;
 
@@ -6359,6 +6316,49 @@ export class ActivateUserReferralSubscriptionDto implements IActivateUserReferra
 
 export interface IActivateUserReferralSubscriptionDto {
     userReferralRequestId: number;
+}
+
+export class UpdateWithDrawRequestDto implements IUpdateWithDrawRequestDto {
+    withdrawRequestId: number;
+
+    constructor(data?: IUpdateWithDrawRequestDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.withdrawRequestId = _data["withdrawRequestId"];
+        }
+    }
+
+    static fromJS(data: any): UpdateWithDrawRequestDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateWithDrawRequestDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["withdrawRequestId"] = this.withdrawRequestId;
+        return data; 
+    }
+
+    clone(): UpdateWithDrawRequestDto {
+        const json = this.toJSON();
+        let result = new UpdateWithDrawRequestDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IUpdateWithDrawRequestDto {
+    withdrawRequestId: number;
 }
 
 export class ChangeUiThemeInput implements IChangeUiThemeInput {
@@ -8573,10 +8573,11 @@ export class UserPackageAdDetailDto implements IUserPackageAdDetailDto {
     userId: number;
     userName: string | undefined;
     userPackageSubscriptionDetailId: number;
-    packageId: number;
+    packageAdId: number;
+    title: string | undefined;
     url: string | undefined;
     adPrice: number;
-    adDate: moment.Moment;
+    adDate: string | undefined;
     isViewed: boolean;
     isDeleted: boolean;
     deleterUserId: number | undefined;
@@ -8601,10 +8602,11 @@ export class UserPackageAdDetailDto implements IUserPackageAdDetailDto {
             this.userId = _data["userId"];
             this.userName = _data["userName"];
             this.userPackageSubscriptionDetailId = _data["userPackageSubscriptionDetailId"];
-            this.packageId = _data["packageId"];
+            this.packageAdId = _data["packageAdId"];
+            this.title = _data["title"];
             this.url = _data["url"];
             this.adPrice = _data["adPrice"];
-            this.adDate = _data["adDate"] ? moment(_data["adDate"].toString()) : <any>undefined;
+            this.adDate = _data["adDate"];
             this.isViewed = _data["isViewed"];
             this.isDeleted = _data["isDeleted"];
             this.deleterUserId = _data["deleterUserId"];
@@ -8629,10 +8631,11 @@ export class UserPackageAdDetailDto implements IUserPackageAdDetailDto {
         data["userId"] = this.userId;
         data["userName"] = this.userName;
         data["userPackageSubscriptionDetailId"] = this.userPackageSubscriptionDetailId;
-        data["packageId"] = this.packageId;
+        data["packageAdId"] = this.packageAdId;
+        data["title"] = this.title;
         data["url"] = this.url;
         data["adPrice"] = this.adPrice;
-        data["adDate"] = this.adDate ? this.adDate.toISOString() : <any>undefined;
+        data["adDate"] = this.adDate;
         data["isViewed"] = this.isViewed;
         data["isDeleted"] = this.isDeleted;
         data["deleterUserId"] = this.deleterUserId;
@@ -8657,10 +8660,11 @@ export interface IUserPackageAdDetailDto {
     userId: number;
     userName: string | undefined;
     userPackageSubscriptionDetailId: number;
-    packageId: number;
+    packageAdId: number;
+    title: string | undefined;
     url: string | undefined;
     adPrice: number;
-    adDate: moment.Moment;
+    adDate: string | undefined;
     isViewed: boolean;
     isDeleted: boolean;
     deleterUserId: number | undefined;

@@ -14,6 +14,7 @@ using Emarketing.Authorization;
 using Emarketing.Authorization.Roles;
 using Emarketing.Authorization.Users;
 using Emarketing.BusinessModels.UserPackageAdDetail.Dto;
+using Emarketing.Helper;
 using Emarketing.Sessions;
 using Microsoft.EntityFrameworkCore;
 
@@ -119,12 +120,13 @@ namespace Emarketing.BusinessModels.UserPackageAdDetail
                     new UserPackageAdDetailDto()
                     {
                         Id = i.Id,
-                        PackageId = i.PackageId,
+                        PackageAdId = i.PackageAdId,
                         UserPackageSubscriptionDetailId = i.UserPackageSubscriptionDetailId,
                         IsViewed = i.IsViewed,
                         AdPrice = i.AdPrice,
-                        AdDate = i.AdDate,
+                        AdDate = i.AdDate.FormatDate(EmarketingConsts.DateFormat),
                         Url = i.PackageAd.Url,
+                        Title = i.PackageAd.Title,
                         UserId = i.UserId,
                         UserName = $"{i.User.FullName}",
                         CreatorUserId = i.CreatorUserId,
@@ -145,16 +147,18 @@ namespace Emarketing.BusinessModels.UserPackageAdDetail
                 throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
             }
 
-            var result = await _userPackageAdDetailRepository.GetAll().Where(i => i.IsDeleted == false)
+            var result = await _userPackageAdDetailRepository.GetAll()
+                .Where(i => i.IsDeleted == false)
                 .Select(i => new UserPackageAdDetailDto()
                 {
                     Id = i.Id,
-                    PackageId = i.PackageId,
+                    PackageAdId = i.PackageAdId,
                     UserPackageSubscriptionDetailId = i.UserPackageSubscriptionDetailId,
                     IsViewed = i.IsViewed,
                     AdPrice = i.AdPrice,
-                    AdDate = i.AdDate,
+                    AdDate = i.AdDate.FormatDate(EmarketingConsts.DateFormat),
                     Url = i.PackageAd.Url,
+                    Title = i.PackageAd.Title,
                     UserId = i.UserId,
                     UserName = $"{i.User.FullName}",
                     CreatorUserId = i.CreatorUserId,
@@ -168,13 +172,14 @@ namespace Emarketing.BusinessModels.UserPackageAdDetail
         public async Task<PagedResultDto<UserPackageAdDetailDto>> GetPaginatedAllAsync(
             UserPackageAdDetailInputDto input)
         {
-            var filteredUserPackageAdDetails = _userPackageAdDetailRepository.GetAll();
+            var filteredUserPackageAdDetails = _userPackageAdDetailRepository
+                .GetAll();
             var userId = _abpSession.UserId;
             var isAdminUser = await AuthenticateAdminUser();
             if (!isAdminUser)
             {
                 filteredUserPackageAdDetails = filteredUserPackageAdDetails
-                    .Where(x => x.UserId == userId);
+                    .Where(x => x.UserId == userId && x.AdDate.Date == DateTime.Now.Date);
             }
 
             var pagedAndFilteredUserPackageAdDetails = filteredUserPackageAdDetails
@@ -189,12 +194,13 @@ namespace Emarketing.BusinessModels.UserPackageAdDetail
                         new UserPackageAdDetailDto()
                         {
                             Id = i.Id,
-                            PackageId = i.PackageId,
+                            PackageAdId = i.PackageAdId,
                             UserPackageSubscriptionDetailId = i.UserPackageSubscriptionDetailId,
                             IsViewed = i.IsViewed,
                             AdPrice = i.AdPrice,
-                            AdDate = i.AdDate,
+                            AdDate = i.AdDate.FormatDate(EmarketingConsts.DateFormat),
                             Url = i.PackageAd.Url,
+                            Title = i.PackageAd.Title,
                             UserId = i.UserId,
                             UserName = $"{i.User.FullName}",
                             CreatorUserId = i.CreatorUserId,

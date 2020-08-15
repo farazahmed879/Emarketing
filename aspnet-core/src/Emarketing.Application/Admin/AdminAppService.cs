@@ -611,7 +611,7 @@ namespace Emarketing.Admin
                 {
                     var newUserPackageAdDetail = new UserPackageAdDetail()
                     {
-                        PackageId = packageAd.PackageId,
+                        PackageAdId = packageAd.Id,
                         AdDate = DateTime.Now.Date,
                         AdPrice = packageAd.Price,
                         UserId = user.Id,
