@@ -34,6 +34,7 @@
             public const string AdminAccessRequired = "Admin Access Required";
 
             public const string InvalidLogin = "Please log in.";
+            public const string UserDuplicateWithEmail = "User already exist with this email.Please try with different email.";
         }
     }
 }

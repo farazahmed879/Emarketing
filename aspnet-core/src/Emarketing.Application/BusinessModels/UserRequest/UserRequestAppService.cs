@@ -35,6 +35,8 @@ namespace Emarketing.BusinessModels.UserRequest
     public class UserRequestAppService : AbpServiceBase, IUserRequestAppService
     {
         private readonly IRepository<BusinessObjects.UserRequest, long> _userRequestRepository;
+        private readonly IRepository<User, long> _userRepository;
+        private readonly IRepository<BusinessObjects.UserReferralRequest, long> _userReferralRequestRepository;
         private readonly ISessionAppService _sessionAppService;
 
         private readonly IAbpSession _abpSession;
@@ -43,6 +45,8 @@ namespace Emarketing.BusinessModels.UserRequest
 
         public UserRequestAppService(
             IRepository<BusinessObjects.UserRequest, long> userRequestRepository,
+            IRepository<User, long> userRepository,
+            IRepository<BusinessObjects.UserReferralRequest, long> userReferralRequestRepository,
             ISessionAppService sessionAppService,
             IAbpSession abpSession,
             UserManager userManager,
@@ -50,6 +54,8 @@ namespace Emarketing.BusinessModels.UserRequest
 
         {
             _userRequestRepository = userRequestRepository;
+            _userRepository = userRepository;
+            _userReferralRequestRepository = userReferralRequestRepository;
             _sessionAppService = sessionAppService;
 
             _abpSession = abpSession;
@@ -287,5 +293,34 @@ namespace Emarketing.BusinessModels.UserRequest
             return false;
 
         }
+        private async Task<bool> CheckEmailDuplication(string email)
+        {
+            var isInUser = await _userRepository.GetAll()
+                .Where(i => i.EmailAddress == email)
+                .AnyAsync();
+            if (isInUser)
+            {
+                throw new UserFriendlyException(ErrorMessage.UserFriendly.UserDuplicateWithEmail);
+            }
+
+            var isInUserRequest = await _userRequestRepository.GetAll()
+                .Where(i => i.Email == email)
+                .AnyAsync();
+            if (isInUserRequest)
+            {
+                throw new UserFriendlyException(ErrorMessage.UserFriendly.UserDuplicateWithEmail);
+            }
+
+            var isInUserReferralRequest = await _userReferralRequestRepository.GetAll()
+                .Where(i => i.Email == email)
+                .AnyAsync();
+            if (isInUserReferralRequest)
+            {
+                throw new UserFriendlyException(ErrorMessage.UserFriendly.UserDuplicateWithEmail);
+            }
+            return false;
+
+        }
+
     }
 }
