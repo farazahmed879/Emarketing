@@ -1,7 +1,7 @@
 import { Component, Injector } from '@angular/core';
 import { AppComponentBase } from '@shared/app-component-base';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
-import {  WithdrawRequestDto,  UserRequestServiceProxy, UserRequestDtoPagedResultDto } from '@shared/service-proxies/service-proxies';
+import { WithdrawRequestDto, UserRequestServiceProxy, UserRequestDtoPagedResultDto, AdminServiceProxy, AcceptUserRequestDto, UserRequestDto, ActivateUserSubscriptionDto } from '@shared/service-proxies/service-proxies';
 import { finalize } from 'rxjs/operators';
 import { PagedRequestDto, PagedListingComponentBase } from '@shared/paged-listing-component-base';
 
@@ -17,6 +17,7 @@ class PagedWithdrawHistoryDto extends PagedRequestDto {
 export class UserRequestComponent extends PagedListingComponentBase<WithdrawRequestDto> {
   constructor(injector: Injector,
     private _userRequestService: UserRequestServiceProxy,
+    private _adminService: AdminServiceProxy,
   ) {
     super(injector);
 
@@ -27,7 +28,7 @@ export class UserRequestComponent extends PagedListingComponentBase<WithdrawRequ
   ngOnInIt() {
 
   }
- list(
+  list(
     request: PagedWithdrawHistoryDto,
     pageNumber: number
   ): void {
@@ -58,9 +59,21 @@ export class UserRequestComponent extends PagedListingComponentBase<WithdrawRequ
 
   }
 
-  acceptRequest(event: UserRequestDtoPagedResultDto){
-
+  acceptRequest(event: UserRequestDto) {
+    var acceptUserRequestDto = new AcceptUserRequestDto();
+    acceptUserRequestDto.userRequestId = event.id;
+    this._adminService.acceptUserRequest(acceptUserRequestDto).subscribe((result) => {
+      if (result)
+        this.notify.info(this.l('SavedSuccessfully'));
+    })
   }
 
-
+  activateUser(event: UserRequestDto) {
+    var activateUserRequestDto = new ActivateUserSubscriptionDto();
+    activateUserRequestDto.userId = event.userId;
+    this._adminService.activateUserSubscription(activateUserRequestDto).subscribe((result) => {
+      if (result)
+        this.notify.info(this.l('SavedSuccessfully'));
+    })
+  }
 }

@@ -35,7 +35,7 @@
             </thead>
             <tbody>
               <tr *ngFor="
-                  let withdrawRequest of (userRequest?.items
+                  let item of (userRequest?.items
                     | paginate
                       : {
                           id: 'server',
@@ -44,12 +44,15 @@
                           totalItems: totalItems
                         })
                 ">
-                <td>{{ withdrawRequest.firstName }}</td>
-                <td>{{ withdrawRequest.lastName }}</td>
-                <td>{{ withdrawRequest.userName }}</td>
-                <td>{{ withdrawRequest.email }}</td>
+                <td>{{ item.firstName }}</td>
+                <td>{{ item.lastName }}</td>
+                <td>{{ item.userName }}</td>
+                <td>{{ item.email }}</td>
                 <td>
-                  <button type="button" class="btn btn-sm bg-secondary" (click)="acceptRequest(userReferal)">
+                  <button *ngIf="!item.isActivated" type="button" class="btn btn-sm bg-secondary" (click)="activateUser(item)">
+                    {{ "Activate" | localize }}
+                  </button>
+                  <button  *ngIf="!item.isAccepted" type="button" class="btn btn-sm bg-secondary" (click)="acceptRequest(item)">
                     <!-- <i class="fas fa-pencil-alt"></i> -->
                     {{ "Accept" | localize }}
                   </button>

@@ -9564,6 +9564,7 @@ export class UserRequestDto implements IUserRequestDto {
     userName: string | undefined;
     phoneNumber: string | undefined;
     password: string | undefined;
+    userId: number | undefined;
     isAccepted: boolean;
     isActivated: boolean;
     isDeleted: boolean;
@@ -9593,6 +9594,7 @@ export class UserRequestDto implements IUserRequestDto {
             this.userName = _data["userName"];
             this.phoneNumber = _data["phoneNumber"];
             this.password = _data["password"];
+            this.userId = _data["userId"];
             this.isAccepted = _data["isAccepted"];
             this.isActivated = _data["isActivated"];
             this.isDeleted = _data["isDeleted"];
@@ -9622,6 +9624,7 @@ export class UserRequestDto implements IUserRequestDto {
         data["userName"] = this.userName;
         data["phoneNumber"] = this.phoneNumber;
         data["password"] = this.password;
+        data["userId"] = this.userId;
         data["isAccepted"] = this.isAccepted;
         data["isActivated"] = this.isActivated;
         data["isDeleted"] = this.isDeleted;
@@ -9651,6 +9654,7 @@ export interface IUserRequestDto {
     userName: string | undefined;
     phoneNumber: string | undefined;
     password: string | undefined;
+    userId: number | undefined;
     isAccepted: boolean;
     isActivated: boolean;
     isDeleted: boolean;
