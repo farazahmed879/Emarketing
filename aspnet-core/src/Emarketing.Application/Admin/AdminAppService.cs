@@ -300,7 +300,6 @@ namespace Emarketing.Admin
             ResponseMessageDto result;
             if (requestDto.Id == 0)
             {
-                await CheckEmailDuplication(requestDto.Email);
                 result = await CreateUserRequestAsync(requestDto);
             }
             else
@@ -702,6 +701,7 @@ namespace Emarketing.Admin
                 CreationTime = DateTime.Now,
                 LastModificationTime = DateTime.Now,
                 LastModifierUserId = userId,
+                Password = "Abc@123"
             };
             var result = await _userManager.CreateAsync(newUser, userPassword);
             await UnitOfWorkManager.Current.SaveChangesAsync();
@@ -915,36 +915,6 @@ namespace Emarketing.Admin
             });
             await UnitOfWorkManager.Current.SaveChangesAsync();
             return true;
-        }
-
-
-        private async Task<bool> CheckEmailDuplication(string email)
-        {
-            var isInUser = await _userRepository.GetAll()
-                .Where(i => i.EmailAddress == email)
-                .AnyAsync();
-            if (isInUser)
-            {
-                throw new UserFriendlyException(ErrorMessage.UserFriendly.UserDuplicateWithEmail);
-            }
-
-            var isInUserRequest = await _userRequestRepository.GetAll()
-                .Where(i => i.Email == email)
-                .AnyAsync();
-            if (isInUserRequest)
-            {
-                throw new UserFriendlyException(ErrorMessage.UserFriendly.UserDuplicateWithEmail);
-            }
-
-            var isInUserReferralRequest = await _userReferralRequestRepository.GetAll()
-                .Where(i => i.Email == email)
-                .AnyAsync();
-            if (isInUserReferralRequest)
-            {
-                throw new UserFriendlyException(ErrorMessage.UserFriendly.UserDuplicateWithEmail);
-            }
-            return false;
-
         }
     }
 }

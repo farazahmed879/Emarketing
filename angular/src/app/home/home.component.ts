@@ -19,8 +19,8 @@ export class HomeComponent extends AppComponentBase implements OnInit {
 
 
   ngOnInit(): void {
-    var GetUserCurrentSubscriptionStatsDto = new GetUserCurrentSubscriptionStatsDto();
-    this._dashboardService.getUserCurrentSubscriptionStats(GetUserCurrentSubscriptionStatsDto).subscribe((result) => {
+    var getUserCurrentSubscription = new GetUserCurrentSubscriptionStatsDto();
+    this._dashboardService.getUserCurrentSubscriptionStats(getUserCurrentSubscription).subscribe((result) => {
       this.currentSubscriptionStats = result;
       console.log("currentSubscriptionStats", result);
 

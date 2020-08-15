@@ -32,7 +32,6 @@ export class LoginComponent extends AppComponentBase {
 
     return true;
   }
-
   login(): void {
     this.submitting = true;
     this.authService.authenticate(() => (this.submitting = false));
