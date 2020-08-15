@@ -209,6 +209,6 @@ export class CreatePackageRequestComponent extends AppComponentBase implements O
     if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(this.email)) {
       this.emailValidationMessage = ""
     }
-    this.emailValidationMessage = "Please prove correct email address";
+    this.emailValidationMessage = "Please provide correct email address";
   }
 }

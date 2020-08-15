@@ -262,9 +262,9 @@ namespace Emarketing.BusinessModels.UserRequest
                         {
                             Id = i.Id,
                             FirstName = i.FirstName,
-                            LastName = i.FirstName,
-                            UserName = i.FirstName,
-                            Email = i.FirstName,
+                            LastName = i.LastName,
+                            UserName = i.UserName,
+                            Email = i.Email,
                             Password = i.Password,
                             IsActivated = i.IsActivated,
                             IsAccepted = i.IsAccepted,
