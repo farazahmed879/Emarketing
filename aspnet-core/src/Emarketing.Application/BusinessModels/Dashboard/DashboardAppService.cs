@@ -11,6 +11,7 @@ using Emarketing.Authorization.Users;
 using Emarketing.BusinessModels.Dashboard.Dto;
 using Emarketing.Helper;
 using Emarketing.Sessions;
+using Microsoft.EntityFrameworkCore;
 
 namespace Emarketing.BusinessModels.Dashboard
 {
@@ -112,7 +113,8 @@ namespace Emarketing.BusinessModels.Dashboard
             }
 
             var activeSubscription = _userPackageSubscriptionDetailRepository
-                .GetAll().FirstOrDefault(x => x.UserId == currentUser.Id &&
+                .GetAll().Include(x=>x.Package)
+                .FirstOrDefault(x => x.UserId == currentUser.Id &&
                                               x.StatusId == UserPackageSubscriptionStatus.Active &&
                                               x.ExpiryDate.Value != DateTime.Now);
             if (activeSubscription == null)
