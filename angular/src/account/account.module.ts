@@ -19,7 +19,7 @@ import { TenantChangeComponent } from './tenant/tenant-change.component';
 import { TenantChangeDialogComponent } from './tenant/tenant-change-dialog.component';
 //User Package
 import { CreatePackageRequestComponent } from './create-package-request/create-package-request.component';
-import { UserRequestServiceProxy, PackageServiceProxy } from '@shared/service-proxies/service-proxies';
+import { UserRequestServiceProxy, PackageServiceProxy, AdminServiceProxy } from '@shared/service-proxies/service-proxies';
 import { DropdownModule } from 'primeng/dropdown';
 
 @NgModule({
@@ -36,7 +36,8 @@ import { DropdownModule } from 'primeng/dropdown';
     ],
     providers: [
         UserRequestServiceProxy,
-        PackageServiceProxy
+        PackageServiceProxy,
+        AdminServiceProxy
     ],
     declarations: [
         AccountComponent,

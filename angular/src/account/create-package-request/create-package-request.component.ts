@@ -133,7 +133,6 @@ export class CreatePackageRequestComponent extends AppComponentBase implements O
   ];
 
   constructor(injector: Injector,
-    private _userRequestService: UserRequestServiceProxy,
     private _adminService: AdminServiceProxy,
     private router: Router,
     private activatedRoute: ActivatedRoute
