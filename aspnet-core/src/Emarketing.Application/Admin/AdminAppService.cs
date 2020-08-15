@@ -387,8 +387,7 @@ namespace Emarketing.Admin
                 Error = true,
             };
         }
-
-
+        
         /// <summary>
         /// accept user request
         /// </summary>
@@ -495,22 +494,9 @@ namespace Emarketing.Admin
                 //save permission
 
                 //update user request detail
-                var updatedUserRequest = await _userRequestRepository.UpdateAsync(new UserRequest()
-                {
-                    Id = userRequest.Id,
-                    FirstName = userRequest.FirstName,
-                    LastName = userRequest.FirstName,
-                    UserName = userRequest.FirstName,
-                    Email = userRequest.FirstName,
-                    Password = userRequest.Password,
-                    PhoneNumber = userRequest.PhoneNumber,
-                    PackageId = userRequest.PackageId,
-                    IsAccepted = true,
-                    IsActivated = false,
-                    UserId = newUser.Id,
-                    LastModificationTime = DateTime.Now,
-                    LastModifierUserId = userId,
-                });
+                userRequest.IsAccepted = true;
+                userRequest.UserId = newUser.Id;
+                await _userRequestRepository.UpdateAsync(userRequest);
                 await UnitOfWorkManager.Current.SaveChangesAsync();
                 return true;
             }
@@ -559,6 +545,14 @@ namespace Emarketing.Admin
                 return false;
             }
 
+            var newUser = await _userRepository
+                .FirstOrDefaultAsync(i => i.Id == userRequest.UserId);
+
+            if (newUser == null)
+            {
+                return false;
+            }
+
             var updated = await _userPackageSubscriptionDetailRepository.UpdateAsync(
                 new UserPackageSubscriptionDetail()
                 {
@@ -577,24 +571,14 @@ namespace Emarketing.Admin
             await UnitOfWorkManager.Current.SaveChangesAsync();
 
             //update user request detail
-            var updatedUserRequest = await _userRequestRepository.UpdateAsync(new UserRequest()
-            {
-                Id = userRequest.Id,
-                FirstName = userRequest.FirstName,
-                LastName = userRequest.FirstName,
-                UserName = userRequest.FirstName,
-                Email = userRequest.FirstName,
-                Password = userRequest.Password,
-                PhoneNumber = userRequest.PhoneNumber,
-                PackageId = userRequest.PackageId,
-                IsAccepted = true,
-                IsActivated = true,
-                UserId = userRequest.UserId,
-                LastModificationTime = DateTime.Now,
-                LastModifierUserId = userId,
-            });
+            userRequest.IsActivated = true;
+            await _userRequestRepository.UpdateAsync(userRequest);
             await UnitOfWorkManager.Current.SaveChangesAsync();
 
+            //activate user
+            newUser.IsActive = true;
+            await _userRepository.UpdateAsync(newUser);
+            await UnitOfWorkManager.Current.SaveChangesAsync();
 
             return true;
         }
@@ -687,7 +671,6 @@ namespace Emarketing.Admin
                 return false;
             }
 
-
             var newUser = new User()
             {
                 UserName = userReferralRequest.UserName,
@@ -762,24 +745,11 @@ namespace Emarketing.Admin
                 //save permission
 
                 //update user request detail
-                var updatedUserReferralRequest = _userReferralRequestRepository.UpdateAsync(new UserReferralRequest()
-                {
-                    Id = userReferralRequest.Id,
-                    FirstName = userReferralRequest.FirstName,
-                    LastName = userReferralRequest.LastName,
-                    UserName = userReferralRequest.UserName,
-                    Email = userReferralRequest.Email,
-                    PhoneNumber = userReferralRequest.PhoneNumber,
-                    UserId = userReferralRequest.UserId,
-                    PackageId = userReferralRequest.PackageId,
-                    UserReferralId = newUser.Id,
-                    IsAccepted = true,
-                    IsActivated = false,
-                    ReferralRequestStatusId = ReferralRequestStatus.Active,
-                    LastModificationTime = DateTime.Now,
-                    LastModifierUserId = userId,
-                });
+                userReferralRequest.IsAccepted = true;
+                userReferralRequest.UserId = newUser.Id;
+                await _userReferralRequestRepository.UpdateAsync(userReferralRequest);
                 await UnitOfWorkManager.Current.SaveChangesAsync();
+               
                 return true;
             }
             else
@@ -858,6 +828,14 @@ namespace Emarketing.Admin
                 return false;
             }
 
+            var newUser = await _userRepository
+                .FirstOrDefaultAsync(i => i.Id == userReferralRequest.UserId);
+
+            if (newUser == null)
+            {
+                return false;
+            }
+
             ////get user package subscription
             var userPackageSubscriptionDetail = await _userPackageSubscriptionDetailRepository
                 .FirstOrDefaultAsync(i => i.UserId == userReferral.ReferralUserId);
@@ -893,27 +871,17 @@ namespace Emarketing.Admin
                 });
 
             await UnitOfWorkManager.Current.SaveChangesAsync();
-
-
+            
             //update user referral request detail
-            var updatedUserReferralRequest = _userReferralRequestRepository.UpdateAsync(new UserReferralRequest()
-            {
-                Id = userReferralRequest.Id,
-                FirstName = userReferralRequest.FirstName,
-                LastName = userReferralRequest.LastName,
-                UserName = userReferralRequest.UserName,
-                Email = userReferralRequest.Email,
-                PhoneNumber = userReferralRequest.PhoneNumber,
-                UserId = userReferralRequest.UserId,
-                PackageId = userReferralRequest.PackageId,
-                UserReferralId = userReferralRequest.UserReferralId,
-                IsAccepted = true,
-                IsActivated = true,
-                ReferralRequestStatusId = ReferralRequestStatus.Active,
-                LastModificationTime = DateTime.Now,
-                LastModifierUserId = userId,
-            });
+            userReferralRequest.IsActivated = true;
+            await _userReferralRequestRepository.UpdateAsync(userReferralRequest);
             await UnitOfWorkManager.Current.SaveChangesAsync();
+
+            //activate user
+            newUser.IsActive = true;
+            await _userRepository.UpdateAsync(newUser);
+            await UnitOfWorkManager.Current.SaveChangesAsync();
+            
             return true;
         }
     }
