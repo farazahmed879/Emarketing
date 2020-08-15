@@ -28,6 +28,11 @@ export class ViewAds extends AppComponentBase implements OnInit {
   url: string = "https://player.vimeo.com/video/70591644?autoplay=true&showinfo=0&controls=0";
   videoUrl: any;
   id: number;
+  public YT: any;
+  public video: any;
+  public player: any;
+  public reframed: any;
+
   constructor(injector: Injector,
     public _userPackageAdDetailServiceProxy: UserPackageAdDetailServiceProxy,
     private activatedRoute: ActivatedRoute,
@@ -41,6 +46,7 @@ export class ViewAds extends AppComponentBase implements OnInit {
   ngOnInit() {
     this.id = parseInt(this.activatedRoute.snapshot.paramMap.get('adId'));
 
+    debugger;
     this.getAdsUrlById();
   }
 
@@ -68,7 +74,7 @@ export class ViewAds extends AppComponentBase implements OnInit {
           this._router.navigate(['/app/ads']);
         }
       })
-     
+
     }
   }
 
