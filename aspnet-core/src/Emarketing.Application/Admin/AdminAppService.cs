@@ -289,7 +289,6 @@ namespace Emarketing.Admin
                 var package = await _packageRepository.InsertOrUpdateAsync(item);
             }
 
-
             await UnitOfWorkManager.Current.SaveChangesAsync();
 
             return true;
@@ -387,7 +386,7 @@ namespace Emarketing.Admin
                 Error = true,
             };
         }
-        
+
         /// <summary>
         /// accept user request
         /// </summary>
@@ -522,7 +521,7 @@ namespace Emarketing.Admin
 
             var userPackageSubscriptionDetail = await _userPackageSubscriptionDetailRepository
                 .GetAll()
-                .FirstOrDefaultAsync(i => i.Id == requestDto.UserId);
+                .FirstOrDefaultAsync(i => i.UserId == requestDto.UserId);
 
             if (userPackageSubscriptionDetail == null)
             {
@@ -553,20 +552,16 @@ namespace Emarketing.Admin
                 return false;
             }
 
-            var updated = await _userPackageSubscriptionDetailRepository.UpdateAsync(
-                new UserPackageSubscriptionDetail()
-                {
-                    Id = userPackageSubscriptionDetail.Id,
-                    PackageId = userPackageSubscriptionDetail.PackageId,
-                    ExpiryDate = DateTime.Now.AddDays(package.DurationInDays),
-                    StartDate = DateTime.Now,
-                    StatusId = UserPackageSubscriptionStatus.Active,
-                    UserId = userPackageSubscriptionDetail.Id,
-                    CreatorUserId = userId,
-                    CreationTime = DateTime.Now,
-                    LastModificationTime = DateTime.Now,
-                    LastModifierUserId = userId,
-                });
+            //update user package subscription detail
+            userPackageSubscriptionDetail.ExpiryDate = DateTime.Now.AddDays(package.DurationInDays);
+            userPackageSubscriptionDetail.StartDate = DateTime.Now;
+            userPackageSubscriptionDetail.StatusId = UserPackageSubscriptionStatus.Active;
+            userPackageSubscriptionDetail.CreationTime = DateTime.Now;
+            userPackageSubscriptionDetail.LastModificationTime = DateTime.Now;
+            userPackageSubscriptionDetail.CreatorUserId = userId;
+            userPackageSubscriptionDetail.LastModifierUserId = userId;
+            await _userPackageSubscriptionDetailRepository
+                .UpdateAsync(userPackageSubscriptionDetail);
 
             await UnitOfWorkManager.Current.SaveChangesAsync();
 
@@ -749,7 +744,7 @@ namespace Emarketing.Admin
                 userReferralRequest.UserId = newUser.Id;
                 await _userReferralRequestRepository.UpdateAsync(userReferralRequest);
                 await UnitOfWorkManager.Current.SaveChangesAsync();
-               
+
                 return true;
             }
             else
@@ -758,44 +753,6 @@ namespace Emarketing.Admin
             }
         }
 
-        /// <summary>
-        /// UpdateWithdrawRequest
-        /// </summary>
-        /// <param name="requestDto"></param>
-        /// <returns></returns>
-        public async Task<bool> UpdateWithdrawRequest(UpdateWithDrawRequestDto requestDto)
-        {
-            var userId = _abpSession.UserId;
-            var isAdminUser = await AuthenticateAdminUser();
-            if (!isAdminUser)
-            {
-                throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
-            }
-
-            var withdrawRequest = await _withdrawRequestRepository
-                .GetAll()
-                .FirstOrDefaultAsync(i => i.Id == requestDto.WithdrawRequestId);
-            if (withdrawRequest == null)
-            {
-                return false;
-            }
-
-            withdrawRequest.Status = true;
-
-            var updatedUserRequest = await _withdrawRequestRepository.UpdateAsync(new WithdrawRequest()
-            {
-                Id = withdrawRequest.Id,
-                UserId = withdrawRequest.UserId,
-                Amount = withdrawRequest.Amount,
-                WithdrawTypeId = withdrawRequest.WithdrawTypeId,
-                Status = true,
-                LastModificationTime = DateTime.Now,
-                LastModifierUserId = userId,
-            });
-            await UnitOfWorkManager.Current.SaveChangesAsync();
-
-            return true;
-        }
 
         /// <summary>
         /// ActivateUserReferralRequestSubscription
@@ -853,25 +810,20 @@ namespace Emarketing.Admin
             {
                 return false;
             }
-
-            //get user package subscription
-            var updated = await _userPackageSubscriptionDetailRepository.UpdateAsync(
-                new UserPackageSubscriptionDetail()
-                {
-                    Id = userPackageSubscriptionDetail.Id,
-                    PackageId = userPackageSubscriptionDetail.PackageId,
-                    ExpiryDate = DateTime.Now.AddDays(package.DurationInDays),
-                    StartDate = DateTime.Now,
-                    StatusId = UserPackageSubscriptionStatus.Active,
-                    UserId = userPackageSubscriptionDetail.Id,
-                    CreatorUserId = userId,
-                    CreationTime = DateTime.Now,
-                    LastModificationTime = DateTime.Now,
-                    LastModifierUserId = userId,
-                });
+            
+            //update user package subscription detail
+            userPackageSubscriptionDetail.ExpiryDate = DateTime.Now.AddDays(package.DurationInDays);
+            userPackageSubscriptionDetail.StartDate = DateTime.Now;
+            userPackageSubscriptionDetail.StatusId = UserPackageSubscriptionStatus.Active;
+            userPackageSubscriptionDetail.CreationTime = DateTime.Now;
+            userPackageSubscriptionDetail.LastModificationTime = DateTime.Now;
+            userPackageSubscriptionDetail.CreatorUserId = userId;
+            userPackageSubscriptionDetail.LastModifierUserId = userId;
+            await _userPackageSubscriptionDetailRepository
+                .UpdateAsync(userPackageSubscriptionDetail);
 
             await UnitOfWorkManager.Current.SaveChangesAsync();
-            
+
             //update user referral request detail
             userReferralRequest.IsActivated = true;
             await _userReferralRequestRepository.UpdateAsync(userReferralRequest);
@@ -881,7 +833,38 @@ namespace Emarketing.Admin
             newUser.IsActive = true;
             await _userRepository.UpdateAsync(newUser);
             await UnitOfWorkManager.Current.SaveChangesAsync();
-            
+
+            return true;
+        }
+
+        /// <summary>
+        /// UpdateWithdrawRequest
+        /// </summary>
+        /// <param name="requestDto"></param>
+        /// <returns></returns>
+        public async Task<bool> UpdateWithdrawRequest(UpdateWithDrawRequestDto requestDto)
+        {
+            var userId = _abpSession.UserId;
+            var isAdminUser = await AuthenticateAdminUser();
+            if (!isAdminUser)
+            {
+                throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
+            }
+
+            var withdrawRequest = await _withdrawRequestRepository
+                .GetAll()
+                .FirstOrDefaultAsync(i => i.Id == requestDto.WithdrawRequestId);
+            if (withdrawRequest == null)
+            {
+                return false;
+            }
+
+            withdrawRequest.Status = true;
+            withdrawRequest.LastModificationTime = DateTime.Now;
+            withdrawRequest.LastModifierUserId = userId;
+            await _withdrawRequestRepository.UpdateAsync(withdrawRequest);
+            await UnitOfWorkManager.Current.SaveChangesAsync();
+
             return true;
         }
     }
