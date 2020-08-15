@@ -18,7 +18,7 @@ import { PrimefacesDropDownObject } from '@app/app.component';
   animations: [accountModuleAnimation()]
 })
 export class RegisterComponent extends AppComponentBase implements OnInit {
-   model: RegisterInput = new RegisterInput();
+  model: RegisterInput = new RegisterInput();
   createUserRequestDto: CreateUserRequestDto = new CreateUserRequestDto();
   saving = false;
   packageId: number;
@@ -176,6 +176,11 @@ export class RegisterComponent extends AppComponentBase implements OnInit {
   // }
 
   save(): void {
+   
+    if (!this.checkPassword(this.createUserRequestDto.password)) {    
+      this.passordMessage = "at least one number, one lowercase and one uppercase letter, at least six characters";
+      return;
+    }
     this.saving = true;
     this.createUserRequestDto.packageId = this.packageId
     this._adminService
@@ -207,12 +212,19 @@ export class RegisterComponent extends AppComponentBase implements OnInit {
   checkPassword(str) {
     // at least one number, one lowercase and one uppercase letter
     // at least six characters
-    var re = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/;
+    var re = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
     return re.test(str);
   }
 
+  onConfirmPasswordChange(){
+    this.matchPassword();
+  }
+  onPasswordChange(){
+    this.matchPassword();
+  }
 
-  confirmPassword() {
+
+  matchPassword() {
     debugger;
     if (this.checkPassword(this.createUserRequestDto.password)) {
       if (this.passwordConfirm == this.createUserRequestDto.password) {
@@ -226,7 +238,7 @@ export class RegisterComponent extends AppComponentBase implements OnInit {
         this.passwordMatch = false;
       }
     } else {
-      this.passordMessage = "at least one number, one lowercase and one uppercase letter, at least six characters";
+      this.passordMessage = "Minimum eight characters, at least one letter, one number and one special character:";
     }
   }
 }

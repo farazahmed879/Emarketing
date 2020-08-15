@@ -53,19 +53,8 @@
     <div class="form-group">
       <div class="input-group">
         <input type="password" class="form-control" name="password" placeholder="{{ 'Password' | localize }}"
-          [(ngModel)]="createUserRequestDto.password" required maxlength="32" (change)="confirmPassword()" #passwordModel="ngModel" #passwordEl />
-        <div class="input-group-append">
-          <div class="input-group-text">
-            <span class="fas fa-lock"></span>
-          </div>
-        </div>
-      </div>
-      <abp-validation-summary [control]="passwordModel" [controlEl]="passwordEl"></abp-validation-summary>
-    </div>
-    <div class="form-group">
-      <div class="input-group">
-        <input type="password" class="form-control" name="confirmPassword" placeholder="{{ 'Confirm Password' | localize }}"
-          [(ngModel)]="confirmPassword" required maxlength="32" #cpasswordModel="ngModel" #cpasswordEl (change)="confirmPassword()" />
+          [(ngModel)]="createUserRequestDto.password" required maxlength="32" (change)="onPasswordChange()"
+          #passwordModel="ngModel" #passwordEl />
         <div class="input-group-append">
           <div class="input-group-text">
             <span class="fas fa-lock"></span>
@@ -73,7 +62,22 @@
         </div>
       </div>
       <span style="font-size: 12px;"
-      [style.color]="passwordMatch ? 'green': 'red' ">{{passwordValidationMessage}}</span>
+        [style.color]="passwordMatch ? 'green': 'red' ">{{passordMessage}}</span>
+      <abp-validation-summary [control]="passwordModel" [controlEl]="passwordEl"></abp-validation-summary>
+    </div>
+    <div class="form-group">
+      <div class="input-group">
+        <input type="password" class="form-control" name="confirmPasswordId" id="confirmPasswordId"
+          placeholder="{{ 'Confirm Password' | localize }}" [(ngModel)]="passwordConfirm" required maxlength="32"
+          #cpasswordModel="ngModel" #cpasswordEl (change)="onConfirmPasswordChange()" />
+        <div class="input-group-append">
+          <div class="input-group-text">
+            <span class="fas fa-lock"></span>
+          </div>
+        </div>
+      </div>
+      <span style="font-size: 12px;"
+        [style.color]="passwordMatch ? 'green': 'red' ">{{passwordValidationMessage}}</span>
       <abp-validation-summary [control]="cpasswordModel" [controlEl]="cpasswordEl"></abp-validation-summary>
     </div>
     <div class="form-group">
@@ -97,7 +101,7 @@
         </button>
       </div>
       <div class="col-4">
-        <button type="submit" class="btn btn-primary btn-block" [disabled]="!registerForm.form.valid || saving">
+        <button type="submit" class="btn btn-primary btn-block" [disabled]="!registerForm.form.valid || saving || !this.checkPassword(createUserRequestDto.password) || !passwordMatch">
           {{ "Register" | localize }}
         </button>
       </div>
