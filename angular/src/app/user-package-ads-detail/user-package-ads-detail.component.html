@@ -51,9 +51,10 @@
                 <td>{{ userPackageDetail.adDate }}</td>
                 <td>{{ userPackageDetail.adPrice }}</td>
                 <td>
-                  <a href="javascript:;" class="btn bg-blue" (click)="viewUserPackageAdDetail(userPackageDetail.id)">
+                  <a *ngIf="!userPackageDetail.isViewed" href="javascript:;" class="btn bg-blue"
+                    (click)="viewUserPackageAdDetail(userPackageDetail.id)">
                     <i class="fa fa-plus-square"></i>
-                    {{ "Detail" | localize }}
+                    {{ "View" | localize }}
                   </a>
                 </td>
               </tr>

@@ -1,12 +1,13 @@
 import { Component, Injector, OnInit, ViewChild } from '@angular/core';
 import { AppComponentBase } from '@shared/app-component-base';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
-import { WithdrawRequestDto, WithdrawRequestServiceProxy, CreateWithdrawRequestDto, UserWithdrawDetailServiceProxy, UserPackageAdDetailServiceProxy } from '@shared/service-proxies/service-proxies';
+import { WithdrawRequestDto, WithdrawRequestServiceProxy, CreateWithdrawRequestDto, UserWithdrawDetailServiceProxy, UserPackageAdDetailServiceProxy, UserPackageAdDetailDto } from '@shared/service-proxies/service-proxies';
 import { SelectItem } from 'primeng/api';
 import { PrimefacesDropDownObject } from '@app/app.component';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
-import { CountdownComponent  } from 'ngx-countdown';
+import { CountdownComponent } from 'ngx-countdown';
+import { Route } from '@angular/compiler/src/core';
 
 interface City {
   name: string;
@@ -22,7 +23,7 @@ export class ViewAds extends AppComponentBase implements OnInit {
   // this.countdown.begin();
   //cities1: SelectItem[];
   config: any;
-  createWithdrawRequestDto: WithdrawRequestDto;
+  userPackageAdDetailDto = new UserPackageAdDetailDto();
   //selectedWithdrawType: City;
   url: string = "https://player.vimeo.com/video/70591644?autoplay=true&showinfo=0&controls=0";
   videoUrl: any;
@@ -30,6 +31,7 @@ export class ViewAds extends AppComponentBase implements OnInit {
   constructor(injector: Injector,
     public _userPackageAdDetailServiceProxy: UserPackageAdDetailServiceProxy,
     private activatedRoute: ActivatedRoute,
+    private _router: Router,
     public sanitizer: DomSanitizer) {
     super(injector);
 
@@ -38,14 +40,18 @@ export class ViewAds extends AppComponentBase implements OnInit {
 
   ngOnInit() {
     this.id = parseInt(this.activatedRoute.snapshot.paramMap.get('adId'));
-    this.videoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.url);  
-   // this.getAdsUrlById();
+
+    this.getAdsUrlById();
   }
 
   getAdsUrlById() {
 
-    this._userPackageAdDetailServiceProxy.getById(this.id).subscribe((result)=>{
-
+    this._userPackageAdDetailServiceProxy.getById(this.id).subscribe((result) => {
+      console.log("Ads", result);
+      if (result) {
+        this.userPackageAdDetailDto = result;
+        this.videoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(result.url);
+      }
     })
   }
 
@@ -55,7 +61,15 @@ export class ViewAds extends AppComponentBase implements OnInit {
 
   }
 
-  handleEvent(event){
-
+  handleEvent(event) {
+    if (event.left <= 0) {
+      this._userPackageAdDetailServiceProxy.createOrEdit(this.userPackageAdDetailDto).subscribe((result) => {
+        if (result) {
+          this._router.navigate(['/app/ads']);
+        }
+      })
+     
+    }
   }
+
 }

@@ -41,7 +41,7 @@
             </thead>
             <tbody>
               <tr *ngFor="
-                  let userReferalRequest of (userReferalRequest?.items
+                  let item of (userReferalRequest?.items
                     | paginate
                       : {
                           id: 'server',
@@ -50,16 +50,16 @@
                           totalItems: totalItems
                         })
                 ">
-                <td>{{ userReferalRequest.firstName }}</td>
-                <td>{{ userReferalRequest.lastName }}</td>
-                <td>{{ userReferalRequest.email }}</td>
-                <td>{{ userReferalRequest.userName }}</td>
+                <td>{{ item.firstName }}</td>
+                <td>{{ item.lastName }}</td>
+                <td>{{ item.email }}</td>
+                <td>{{ item.userName }}</td>
                 <td>
-                  <button *ngIf="!userReferalRequest.isActivated" type="button" class="btn btn-sm bg-secondary" (click)="activateReferalRequest(userReferalRequest)">
+                  <button *ngIf="!item.isActivated && item.isAccepted" type="button" class="btn btn-sm bg-secondary" (click)="activateReferalRequest(item)">
                     <!-- <i class="fas fa-pencil-alt"></i> -->
                     Activate
                   </button>
-                  <button *ngIf="!userReferalRequest.isAccepted" style="margin-left: 10px;" type="button" class="btn btn-sm bg-secondary" (click)="acceptReferalRequest(userReferalRequest)">
+                  <button *ngIf="!item.isAccepted && !item.isActivated" style="margin-left: 10px;" type="button" class="btn btn-sm bg-secondary" (click)="acceptReferalRequest(item)">
                     <!-- <i class="fas fa-pencil-alt"></i> -->
                     Accept
                   </button>

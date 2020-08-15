@@ -49,10 +49,10 @@
                 <td>{{ item.userName }}</td>
                 <td>{{ item.email }}</td>
                 <td>
-                  <button *ngIf="!item.isActivated" type="button" class="btn btn-sm bg-secondary" (click)="activateUser(item)">
+                  <button *ngIf="!item.isActivated && item.isAccepted" type="button" class="btn btn-sm bg-secondary" (click)="activateUser(item)">
                     {{ "Activate" | localize }}
                   </button>
-                  <button  *ngIf="!item.isAccepted" type="button" class="btn btn-sm bg-secondary" (click)="acceptRequest(item)">
+                  <button  *ngIf="!item.isAccepted && !item.isActivated" type="button" class="btn btn-sm bg-secondary" (click)="acceptRequest(item)">
                     <!-- <i class="fas fa-pencil-alt"></i> -->
                     {{ "Accept" | localize }}
                   </button>

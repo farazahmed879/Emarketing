@@ -3,7 +3,7 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-6">
-          <h1>{{ "Withdraw Request" | localize }}</h1>
+          <!-- <h1>{{userPackageAdDetailDto.code</h1> -->
         </div>
         <!-- <div class="col-6 text-right">
           <a href="javascript:;" class="btn bg-blue" (click)="createUser()">
@@ -17,8 +17,8 @@
   <section class="content px-2">
     <div class="container-fluid">
       <div class="card">
-        <div class="card-body">
-          <iframe [src]="videoUrl" id="video_player" width="640" height="360" frameborder="0"
+        <div class="card-body" style="text-align: center;">
+          <iframe [src]="videoUrl" id="video_player" width="720" height="360" frameborder="0"
             allow="autoplay; fullscreen" allowfullscreen></iframe>
 
         </div>
@@ -31,7 +31,11 @@
             </button>
           </div>
         </div> -->
-        <countdown #cd [config]="config" (event)="handleEvent($event)"></countdown>
+        <div style="text-align: center;">
+          <countdown #cd [config]="{leftTime: 210, notify: [ 2, 5 ]}" (event)="handleEvent($event)"
+            style="margin-left: 20px; font-size: -webkit-xxx-large;"></countdown>
+        </div>
+
       </div>
     </div>
   </section>

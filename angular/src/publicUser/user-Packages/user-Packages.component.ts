@@ -1,4 +1,4 @@
-import { Component, Injector, ChangeDetectionStrategy, OnInit } from '@angular/core';
+import { Component, Injector, ChangeDetectionStrategy, OnInit, Renderer2 } from '@angular/core';
 import { AppComponentBase } from '@shared/app-component-base';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { PackageServiceProxy, PackageDto, AdminServiceProxy, UserPersonalDetailServiceProxy } from '@shared/service-proxies/service-proxies';
@@ -17,7 +17,7 @@ export class UserPackageComponent extends AppComponentBase
   constructor(injector: Injector,
     private _adminService: AdminServiceProxy,
     private _UserPersonalDetailServiceProxy: UserPersonalDetailServiceProxy,
-    private router: Router) {
+    private router: Router, private renderer: Renderer2) {
     super(injector);
   }
 
@@ -130,7 +130,7 @@ export class UserPackageComponent extends AppComponentBase
   ngOnInit() {
     this.getPackageList();
     this.customPackages = this.customPackages.filter(i => i.isUnlimited == false);
-
+    this.renderer.removeClass(document.body, 'login-page');
   }
   getPackageList() {
     this._adminService.getAll().subscribe((result: any) => {

@@ -16,7 +16,7 @@
         {{ "Url" | localize }}
       </label>
       <div class="col-md-9">
-        <input type="text" class="form-control" name="url" id="url" required maxlength="32" [(ngModel)]="packageAd.url"
+        <input type="text" class="form-control" name="url" id="url" required [(ngModel)]="packageAd.url"
           #urlModel="ngModel" #urlEl />
         <abp-validation-summary [control]="urlModel" [controlEl]="urlEl"></abp-validation-summary>
       </div>

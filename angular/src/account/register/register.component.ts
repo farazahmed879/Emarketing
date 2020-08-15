@@ -18,7 +18,7 @@ import { PrimefacesDropDownObject } from '@app/app.component';
   animations: [accountModuleAnimation()]
 })
 export class RegisterComponent extends AppComponentBase implements OnInit {
-  // model: RegisterInput = new RegisterInput();
+   model: RegisterInput = new RegisterInput();
   createUserRequestDto: CreateUserRequestDto = new CreateUserRequestDto();
   saving = false;
   packageId: number;
@@ -213,6 +213,7 @@ export class RegisterComponent extends AppComponentBase implements OnInit {
 
 
   confirmPassword() {
+    debugger;
     if (this.checkPassword(this.createUserRequestDto.password)) {
       if (this.passwordConfirm == this.createUserRequestDto.password) {
         this.passordMessage = "";

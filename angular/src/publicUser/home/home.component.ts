@@ -1,4 +1,4 @@
-import { Component, Injector, ChangeDetectionStrategy, OnInit } from '@angular/core';
+import { Component, Injector, ChangeDetectionStrategy, OnInit, Renderer2 } from '@angular/core';
 import { AppComponentBase } from '@shared/app-component-base';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { WithdrawRequestServiceProxy, CreateWithdrawRequestDto, CreateUserRequestDto, UserRequestServiceProxy } from '@shared/service-proxies/service-proxies';
@@ -24,15 +24,14 @@ export class HomeComponent extends AppComponentBase implements OnInit {
 
 
 
-  constructor(injector: Injector
+  constructor(injector: Injector,private renderer: Renderer2
   ) {
     super(injector);
 
   }
 
   ngOnInit() {
-    
-
+    this.renderer.removeClass(document.body, 'login-page');
   }
 
 }

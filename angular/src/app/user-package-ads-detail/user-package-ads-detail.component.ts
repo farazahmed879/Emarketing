@@ -47,7 +47,7 @@ export class UserPackageAdsDetailComponent extends PagedListingComponentBase<Use
       .subscribe((result: UserPackageAdDetailDtoPagedResultDto) => {
         this.isTableLoading = false;
         this.userPackageDetail = result;
-        console.log("userPackageDetail", result);
+        console.log("Ads", result);
         this.showPaging(result, pageNumber);
       });
   }
