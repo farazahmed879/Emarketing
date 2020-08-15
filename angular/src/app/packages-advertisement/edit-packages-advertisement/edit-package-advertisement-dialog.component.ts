@@ -44,7 +44,6 @@ export class EditPackagesAdvertisementComponent extends AppComponentBase
   }
 
   show() {
-    this.packageId;
     this._packageAdService.getById(this.id).subscribe((result) => {
       this.packageAd = result;
     }

@@ -225,7 +225,6 @@ export class RegisterComponent extends AppComponentBase implements OnInit {
 
 
   matchPassword() {
-    debugger;
     if (this.checkPassword(this.createUserRequestDto.password)) {
       if (this.passwordConfirm == this.createUserRequestDto.password) {
         this.passordMessage = "";

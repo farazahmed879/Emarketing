@@ -1,6 +1,6 @@
 import { Component, Injector } from '@angular/core';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
-import { PackageServiceProxy, PackageDtoPagedResultDto, PackageDto, UserReferralRequestServiceProxy, UserReferralRequestDtoPagedResultDto, AdminServiceProxy, ActivateUserReferralSubscriptionDto, AcceptUserRequestDto, AcceptUserReferralRequestDto } from '@shared/service-proxies/service-proxies';
+import { PackageDto, UserReferralRequestServiceProxy, UserReferralRequestDtoPagedResultDto, AdminServiceProxy, ActivateUserReferralSubscriptionDto, AcceptUserRequestDto, AcceptUserReferralRequestDto, UserReferralRequestDto } from '@shared/service-proxies/service-proxies';
 import { finalize } from 'rxjs/operators';
 import { PagedRequestDto, PagedListingComponentBase } from '@shared/paged-listing-component-base';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
@@ -16,7 +16,7 @@ class PagedWithdrawHistoryDto extends PagedRequestDto {
   templateUrl: './user-referal-request.component.html',
   animations: [appModuleAnimation()]
 })
-export class UserReferalRequestComponent extends PagedListingComponentBase<PackageDto> {
+export class UserReferalRequestComponent extends PagedListingComponentBase<UserReferralRequestDto> {
   constructor(injector: Injector,
     private _userReferalRequestService: UserReferralRequestServiceProxy,
     private _adminService: AdminServiceProxy,
@@ -56,9 +56,10 @@ export class UserReferalRequestComponent extends PagedListingComponentBase<Packa
         this.showPaging(result, pageNumber);
       });
   }
-  delete(event: PackageDto) {
+
+  delete(event: UserReferralRequestDto) {
     abp.message.confirm(
-      this.l('UserDeleteWarningMessage', event.name),
+      this.l('UserDeleteWarningMessage', event.userName),
       undefined,
       (result: boolean) => {
         if (result) {

@@ -110,7 +110,6 @@ export class PackagesAdvertisementComponent extends PagedListingComponentBase<Pa
         
       );
     } else {
-      this.packageId;
       createOrEditPackageDialog = this._modalService.show(
         EditPackagesAdvertisementComponent,
         {

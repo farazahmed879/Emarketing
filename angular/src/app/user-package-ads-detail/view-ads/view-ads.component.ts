@@ -45,8 +45,6 @@ export class ViewAds extends AppComponentBase implements OnInit {
 
   ngOnInit() {
     this.id = parseInt(this.activatedRoute.snapshot.paramMap.get('adId'));
-
-    debugger;
     this.getAdsUrlById();
   }
 
@@ -56,7 +54,8 @@ export class ViewAds extends AppComponentBase implements OnInit {
       console.log("Ads", result);
       if (result) {
         this.userPackageAdDetailDto = result;
-        this.videoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(result.url);
+        this.videoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(result.url)+'?autoplay=true&showinfo=0&controls=0';
+        
       }
     })
   }
