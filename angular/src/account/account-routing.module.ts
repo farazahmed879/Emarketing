@@ -13,8 +13,8 @@ import { CreatePackageRequestComponent } from './create-package-request/create-p
                 component: AccountComponent,
                 children: [
                     { path: 'login', component: LoginComponent },
-                    { path: 'register', component: RegisterComponent },
-                    { path: 'packageRequest/:packageId', component: CreatePackageRequestComponent, },
+                    { path: 'packageRequest/:packageId', component: RegisterComponent },
+                    // { path: 'packageRequest/:packageId', component: CreatePackageRequestComponent, },
                 ]
             }
         ])

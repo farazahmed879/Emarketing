@@ -73,6 +73,8 @@ export class UserRequestComponent extends PagedListingComponentBase<WithdrawRequ
     activateUserRequestDto.userId = event.userId;
     this._adminService.activateUserSubscription(activateUserRequestDto).subscribe((result) => {
       if (result)
+      var inputObj = new PagedWithdrawHistoryDto();
+      this.list(inputObj,1);
         this.notify.info(this.l('SavedSuccessfully'));
     })
   }

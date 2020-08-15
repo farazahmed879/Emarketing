@@ -177,7 +177,7 @@ export class CreatePackageRequestComponent extends AppComponentBase implements O
     this._adminService.createOrEdit(createUserRequestDto).subscribe((result) => {
       if (result) {
         this.notify.info(this.l('SavedSuccessfully'));
-        this.router.navigateByUrl('/account/userPackage');
+        this.router.navigateByUrl('');
       }
 
     })
