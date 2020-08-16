@@ -83,16 +83,33 @@ namespace Emarketing.BusinessModels.UserPackageAdDetail
 
             var userId = _abpSession.UserId;
 
-            var result = await _userPackageAdDetailRepository.UpdateAsync(
-                new BusinessObjects.UserPackageAdDetail()
-                {
-                    Id = modelDto.Id,
-                    IsViewed = true,
-                    LastModifierUserId = userId,
-                    LastModificationTime = DateTime.Now,
-                });
+            //var result = await _userPackageAdDetailRepository.UpdateAsync(
+            //    new BusinessObjects.UserPackageAdDetail()
+            //    {
+            //        Id = modelDto.Id,
+            //        IsViewed = true,
+            //        //LastModifierUserId = userId,
+            //        LastModificationTime = DateTime.Now,
+            //    });
+            var packageAd = await _userPackageAdDetailRepository.GetAll()
+                .FirstOrDefaultAsync(i => i.Id == modelDto.Id);
 
-            if (result != null)
+            if (packageAd == null)
+            {
+                return new ResponseMessageDto()
+                {
+                    Id = 0,
+                    ErrorMessage = AppConsts.UpdateFailure,
+                    Success = false,
+                    Error = true,
+                };
+            }
+
+            packageAd.IsViewed = true;
+            var result = await _userPackageAdDetailRepository.UpdateAsync(packageAd);
+
+            await UnitOfWorkManager.Current.SaveChangesAsync();
+            if (result!= null)
             {
                 return new ResponseMessageDto()
                 {
