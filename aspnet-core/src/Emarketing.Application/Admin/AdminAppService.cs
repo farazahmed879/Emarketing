@@ -8,6 +8,7 @@ using Emarketing.Authorization.Users;
 using Emarketing.BusinessModels.Package.Dto;
 using Emarketing.BusinessModels.UserRequest.Dto;
 using Emarketing.BusinessObjects;
+using Emarketing.Helper;
 using Emarketing.Sessions;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -31,6 +32,8 @@ namespace Emarketing.Admin
         Task<bool> AcceptUserReferralRequest(AcceptUserReferralRequestDto requestDto);
         Task<bool> UpdateWithdrawRequest(UpdateWithDrawRequestDto requestDto);
         Task<bool> ActivateUserReferralRequestSubscription(ActivateUserReferralSubscriptionDto requestDto);
+
+        Task<List<Object>> GetWithdrawTypes();
     }
 
     public class AdminAppService : AbpServiceBase, IAdminAppService
@@ -837,6 +840,11 @@ namespace Emarketing.Admin
             return true;
         }
 
+        public async Task<List<object>> GetWithdrawTypes()
+        {
+            var list = EnumHelper.GetListObjects<WithdrawType>("WithdrawTypeId");
+            return list;
+        }
         /// <summary>
         /// UpdateWithdrawRequest
         /// </summary>
