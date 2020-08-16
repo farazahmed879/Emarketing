@@ -10246,6 +10246,7 @@ export class UserReferralDto implements IUserReferralDto {
     referralAccountStatusName: string | undefined;
     referralBonusStatusId: ReferralBonusStatus;
     referralBonusStatusName: string | undefined;
+    packageReferralAmount: number;
     isDeleted: boolean;
     deleterUserId: number | undefined;
     deletionTime: moment.Moment | undefined;
@@ -10276,6 +10277,7 @@ export class UserReferralDto implements IUserReferralDto {
             this.referralAccountStatusName = _data["referralAccountStatusName"];
             this.referralBonusStatusId = _data["referralBonusStatusId"];
             this.referralBonusStatusName = _data["referralBonusStatusName"];
+            this.packageReferralAmount = _data["packageReferralAmount"];
             this.isDeleted = _data["isDeleted"];
             this.deleterUserId = _data["deleterUserId"];
             this.deletionTime = _data["deletionTime"] ? moment(_data["deletionTime"].toString()) : <any>undefined;
@@ -10306,6 +10308,7 @@ export class UserReferralDto implements IUserReferralDto {
         data["referralAccountStatusName"] = this.referralAccountStatusName;
         data["referralBonusStatusId"] = this.referralBonusStatusId;
         data["referralBonusStatusName"] = this.referralBonusStatusName;
+        data["packageReferralAmount"] = this.packageReferralAmount;
         data["isDeleted"] = this.isDeleted;
         data["deleterUserId"] = this.deleterUserId;
         data["deletionTime"] = this.deletionTime ? this.deletionTime.toISOString() : <any>undefined;
@@ -10336,6 +10339,7 @@ export interface IUserReferralDto {
     referralAccountStatusName: string | undefined;
     referralBonusStatusId: ReferralBonusStatus;
     referralBonusStatusName: string | undefined;
+    packageReferralAmount: number;
     isDeleted: boolean;
     deleterUserId: number | undefined;
     deletionTime: moment.Moment | undefined;
