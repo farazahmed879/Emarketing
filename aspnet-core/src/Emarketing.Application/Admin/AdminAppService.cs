@@ -16,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Emarketing.BusinessModels.WithdrawRequest.Dto;
 
 namespace Emarketing.Admin
 {
@@ -36,6 +37,7 @@ namespace Emarketing.Admin
 
         Task<List<Object>> GetWithdrawTypes();
         Task<UserWithdrawDetailDto> GetByUserId(long userId);
+        Task<ResponseMessageDto> CreateOrEditAsync(CreateWithdrawRequestDto withdrawRequestDto);
     }
 
     public class AdminAppService : AbpServiceBase, IAdminAppService
@@ -815,7 +817,7 @@ namespace Emarketing.Admin
             {
                 return false;
             }
-            
+
             //update user package subscription detail
             userPackageSubscriptionDetail.ExpiryDate = DateTime.Now.AddDays(package.DurationInDays);
             userPackageSubscriptionDetail.StartDate = DateTime.Now;
@@ -880,7 +882,7 @@ namespace Emarketing.Admin
 
         public async Task<UserWithdrawDetailDto> GetByUserId(long userId)
         {
-           
+
             var result = await _userWithdrawDetailRepository.GetAll()
                 .Where(i => i.UserId == userId)
                 .Select(i =>
@@ -903,5 +905,157 @@ namespace Emarketing.Admin
                 .FirstOrDefaultAsync();
             return result;
         }
+
+        #region Withdraw Request
+        public async Task<ResponseMessageDto> CreateOrEditAsync(CreateWithdrawRequestDto withdrawRequestDto)
+        {
+            ResponseMessageDto result;
+            if (withdrawRequestDto.Id == 0)
+            {
+                result = await CreateWithdrawRequestAsync(withdrawRequestDto);
+            }
+            else
+            {
+                result = await UpdateWithdrawRequestAsync(withdrawRequestDto);
+            }
+
+            return result;
+        }
+
+        private async Task<ResponseMessageDto> CreateWithdrawRequestAsync(CreateWithdrawRequestDto withdrawRequestDto)
+        {
+            long userId = _abpSession.UserId.Value;
+            var isValidate = await ValidateWithdrawRequestAmountAsync(requestDto: withdrawRequestDto);
+            if (isValidate)
+            {
+                var result = await _withdrawRequestRepository.InsertAsync(new BusinessObjects.WithdrawRequest()
+                {
+                    Amount = withdrawRequestDto.Amount,
+                    Status = false,
+                    WithdrawTypeId = withdrawRequestDto.WithdrawTypeId,
+                    UserId = withdrawRequestDto.UserId,
+                    CreatorUserId = userId,
+                    CreationTime = DateTime.Now,
+                    LastModifierUserId = userId,
+                    LastModificationTime = DateTime.Now,
+                });
+                await UnitOfWorkManager.Current.SaveChangesAsync();
+
+                if (result.Id != 0)
+                {
+                    return new ResponseMessageDto()
+                    {
+                        Id = result.Id,
+                        SuccessMessage = AppConsts.SuccessfullyInserted,
+                        Success = true,
+                        Error = false,
+                    };
+                }
+                else
+                {
+                    return new ResponseMessageDto()
+                    {
+                        Id = 0,
+                        ErrorMessage = AppConsts.InsertFailure,
+                        Success = false,
+                        Error = true,
+                    };
+                }
+            }
+            else
+            {
+                return new ResponseMessageDto()
+                {
+                    Id = 0,
+                    ErrorMessage = AppConsts.InsertFailure,
+                    Success = false,
+                    Error = true,
+                };
+            }
+        }
+
+        private async Task<ResponseMessageDto> UpdateWithdrawRequestAsync(CreateWithdrawRequestDto requestDto)
+        {
+            long userId = _abpSession.UserId.Value;
+            var isAdminUser = await AuthenticateAdminUser();
+            if (!isAdminUser)
+            {
+                throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
+            }
+            var result = await _withdrawRequestRepository.UpdateAsync(new BusinessObjects.WithdrawRequest()
+            {
+                Id = requestDto.Id,
+                Amount = requestDto.Amount,
+
+                //Status = requestDto.Status,
+                WithdrawTypeId = requestDto.WithdrawTypeId,
+                UserId = requestDto.UserId,
+                CreatorUserId = userId,
+                CreationTime = DateTime.Now,
+                LastModifierUserId = userId,
+                LastModificationTime = DateTime.Now,
+            });
+
+            if (result != null)
+            {
+                return new ResponseMessageDto()
+                {
+                    Id = result.Id,
+                    SuccessMessage = AppConsts.SuccessfullyUpdated,
+                    Success = true,
+                    Error = false,
+                };
+            }
+
+            return new ResponseMessageDto()
+            {
+                Id = 0,
+                ErrorMessage = AppConsts.UpdateFailure,
+                Success = false,
+                Error = true,
+            };
+        }
+        
+        private async Task<bool> ValidateWithdrawRequestAmountAsync(CreateWithdrawRequestDto requestDto)
+        {
+            long userId = _abpSession.UserId.Value;
+
+            var userSubscriptionDetail = await _userPackageSubscriptionDetailRepository.GetAll()
+                .Where(x => x.UserId == userId && x.StatusId == UserPackageSubscriptionStatus.Active
+                ).FirstOrDefaultAsync();
+
+            if (userSubscriptionDetail == null)
+            {
+                throw new UserFriendlyException("No active package found.");
+            }
+
+            var currentPackage = await _packageRepository.GetAll()
+                    .FirstOrDefaultAsync(x => x.Id == userSubscriptionDetail.PackageId);
+            if (currentPackage == null)
+            {
+                throw new UserFriendlyException("Invalid Package.");
+            }
+
+            if (currentPackage.MaximumWithdraw.HasValue && currentPackage.MinimumWithdraw.HasValue)
+            {
+                if ((requestDto.Amount >= currentPackage.MinimumWithdraw) &&
+                    (requestDto.Amount <= currentPackage.MaximumWithdraw))
+                {
+                    return true;
+                }
+                else
+                {
+                    throw new UserFriendlyException($"WithDraw amount in invalid. It must be in {currentPackage.MinimumWithdraw} - {currentPackage.MaximumWithdraw}");
+                }
+            }
+            else
+            {
+                return true;
+            }
+            return false;
+        }
+        #endregion
+
+
     }
 }
