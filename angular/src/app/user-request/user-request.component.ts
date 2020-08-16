@@ -1,12 +1,12 @@
 import { Component, Injector } from '@angular/core';
 import { AppComponentBase } from '@shared/app-component-base';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
-import { WithdrawRequestDto, UserRequestServiceProxy, UserRequestDtoPagedResultDto, AdminServiceProxy, AcceptUserRequestDto, UserRequestDto, ActivateUserSubscriptionDto } from '@shared/service-proxies/service-proxies';
+import { UserRequestServiceProxy, UserRequestDtoPagedResultDto, AdminServiceProxy, AcceptUserRequestDto, UserRequestDto, ActivateUserSubscriptionDto } from '@shared/service-proxies/service-proxies';
 import { finalize } from 'rxjs/operators';
 import { PagedRequestDto, PagedListingComponentBase } from '@shared/paged-listing-component-base';
 
 
-class PagedWithdrawHistoryDto extends PagedRequestDto {
+class PagedUserRequestDto extends PagedRequestDto {
   keyword: string;
   isActive: boolean | null;
 }
@@ -14,7 +14,7 @@ class PagedWithdrawHistoryDto extends PagedRequestDto {
   templateUrl: './user-request.component.html',
   animations: [appModuleAnimation()]
 })
-export class UserRequestComponent extends PagedListingComponentBase<WithdrawRequestDto> {
+export class UserRequestComponent extends PagedListingComponentBase<UserRequestDto> {
   constructor(injector: Injector,
     private _userRequestService: UserRequestServiceProxy,
     private _adminService: AdminServiceProxy,
@@ -29,7 +29,7 @@ export class UserRequestComponent extends PagedListingComponentBase<WithdrawRequ
 
   }
   list(
-    request: PagedWithdrawHistoryDto,
+    request: PagedUserRequestDto,
     pageNumber: number
   ): void {
     request.keyword = this.keyword;
@@ -73,7 +73,7 @@ export class UserRequestComponent extends PagedListingComponentBase<WithdrawRequ
     activateUserRequestDto.userId = event.userId;
     this._adminService.activateUserSubscription(activateUserRequestDto).subscribe((result) => {
       if (result)
-      var inputObj = new PagedWithdrawHistoryDto();
+      var inputObj = new PagedUserRequestDto();
       this.list(inputObj,1);
         this.notify.info(this.l('SavedSuccessfully'));
     })

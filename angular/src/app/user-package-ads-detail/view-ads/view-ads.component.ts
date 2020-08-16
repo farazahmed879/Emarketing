@@ -25,7 +25,6 @@ export class ViewAds extends AppComponentBase implements OnInit {
   config: any;
   userPackageAdDetailDto = new UserPackageAdDetailDto();
   //selectedWithdrawType: City;
-  url: string = "https://player.vimeo.com/video/70591644?autoplay=true&showinfo=0&controls=0";
   videoUrl: any;
   id: number;
   public YT: any;
@@ -54,8 +53,9 @@ export class ViewAds extends AppComponentBase implements OnInit {
       console.log("Ads", result);
       if (result) {
         this.userPackageAdDetailDto = result;
-        this.videoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(result.url)+'?autoplay=true&showinfo=0&controls=0';
-        
+        //this.videoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(result.url)+'?autoplay=true&showinfo=0&controls=0';
+        this.videoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(result.url + "?autoplay=true&controls=0");
+
       }
     })
   }

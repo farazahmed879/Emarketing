@@ -15,7 +15,8 @@ import {
   PackageDto,
   PackageServiceProxy,
   UserReferralRequestServiceProxy,
-  UserReferralRequestDto
+  UserReferralRequestDto,
+  AdminServiceProxy
 } from '@shared/service-proxies/service-proxies';
 import { PrimefacesDropDownObject } from '@app/app.component';
 
@@ -36,7 +37,7 @@ export class EditUserReferalRequestDialogComponent extends AppComponentBase
   constructor(
     injector: Injector,
     public _userReferalRequestService: UserReferralRequestServiceProxy,
-    public _packageService: PackageServiceProxy,
+    public _packageService: AdminServiceProxy,
     public bsModalRef: BsModalRef,
     private _modalService: BsModalService,
   ) {
