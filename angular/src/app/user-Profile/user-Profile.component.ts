@@ -1,7 +1,7 @@
 import { Component, Injector } from '@angular/core';
 import { AppComponentBase } from '@shared/app-component-base';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
-import { UserServiceProxy, UserWithdrawDetailServiceProxy, UserDto, UserWithdrawDetailDto, UserPersonalDetailServiceProxy, UserPersonalDetailDto } from '@shared/service-proxies/service-proxies';
+import { UserServiceProxy, UserWithdrawDetailServiceProxy, UserDto, UserWithdrawDetailDto, UserPersonalDetailServiceProxy, UserPersonalDetailDto, AdminServiceProxy, CreateWithdrawRequestDto } from '@shared/service-proxies/service-proxies';
 import { finalize } from 'rxjs/operators';
 import { PrimefacesDropDownObject } from '@app/app.component';
 import * as moment from 'moment';
@@ -40,8 +40,8 @@ export class UserProfileComponent extends AppComponentBase {
 
 
   constructor(injector: Injector,
-    public _userService: UserServiceProxy,
-    public _userWithdrawDetailsService: UserWithdrawDetailServiceProxy,
+    public _adminService: AdminServiceProxy,
+    public _withdrawDetailAppService: UserWithdrawDetailServiceProxy,
     public _userPersonalDetailsService: UserPersonalDetailServiceProxy,
   ) {
     super(injector);
@@ -56,13 +56,19 @@ export class UserProfileComponent extends AppComponentBase {
     this.getPersonalInformation();
   }
   getUserInofrmation() {
-    this._userService.get(this.appSession.userId).subscribe((result) => {
-      this.user = result;
+    this._adminService.getUserDetailId(this.appSession.userId).subscribe((result) => {
+      this.user.emailAddress = result.emailAddress;
+      this.user.fullName = result.fullName;
+      this.user.name = result.name;
+      this.user.surname = result.surname;
+      this.user.isActive = result.isActive;
+      this.user.userName = result.userName;
+      this.user.id = result.id;
     });
   }
 
   getWithdrawType() {
-    this._userWithdrawDetailsService.getWithdrawTypes().subscribe((result) => {
+    this._adminService.getWithdrawTypes().subscribe((result) => {
       if (result) {
         this.withdrawTypeArrayObj = result.map(item =>
           ({
@@ -92,7 +98,7 @@ export class UserProfileComponent extends AppComponentBase {
   }
 
   getPaymentDetaiwlByUserId() {
-    this._userWithdrawDetailsService.getByUserId().subscribe((result) => {
+    this._adminService.getByUserId(this.appSession.userId).subscribe((result) => {
       if (result) {
         this.withDrawTypeId = result.withdrawTypeId;
         this.accountNumber = result.accountIBAN;
@@ -106,7 +112,7 @@ export class UserProfileComponent extends AppComponentBase {
 
   saveUserProfile() {
     this.saving = true;
-    this._userService
+    this._adminService
       .update(this.user)
       .pipe(
         finalize(() => {
@@ -122,12 +128,11 @@ export class UserProfileComponent extends AppComponentBase {
     var userWithdrawDetail = new UserWithdrawDetailDto();
     userWithdrawDetail.userId = this.appSession.userId;
     userWithdrawDetail.jazzCashNumber = this.jazzCashNumber;
+    userWithdrawDetail.withdrawTypeId = this.withDrawTypeId;
     userWithdrawDetail.easyPaisaNumber = this.easyPaisaNumber;
     userWithdrawDetail.accountIBAN = this.accountNumber;
     userWithdrawDetail.accountTitle = this.accountTitle;
-    userWithdrawDetail.userId = this.appSession.userId;
-    userWithdrawDetail.withdrawTypeId = this.withDrawTypeId;
-    this._userWithdrawDetailsService.createOrEdit(userWithdrawDetail).pipe(
+    this._withdrawDetailAppService.createOrEdit(userWithdrawDetail).pipe(
       finalize(() => {
         this.saving = false;
       })

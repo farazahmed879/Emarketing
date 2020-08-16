@@ -17,6 +17,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Emarketing.BusinessModels.WithdrawRequest.Dto;
+using Abp.Domain.Entities;
+using Emarketing.Users.Dto;
+using Microsoft.AspNetCore.Identity;
+using Abp.IdentityFramework;
 
 namespace Emarketing.Admin
 {
@@ -37,7 +41,11 @@ namespace Emarketing.Admin
 
         Task<List<Object>> GetWithdrawTypes();
         Task<UserWithdrawDetailDto> GetByUserId(long userId);
-        Task<ResponseMessageDto> CreateOrEditAsync(CreateWithdrawRequestDto withdrawRequestDto);
+        Task<ResponseMessageDto> CreateOrEditWithdrawRequestAsync(CreateWithdrawRequestDto withdrawRequestDto);
+
+        Task<User> GetUserDetailIdAsync(long id);
+
+        Task<User> UpdateAsync(UserDto input);
     }
 
     public class AdminAppService : AbpServiceBase, IAdminAppService
@@ -907,7 +915,7 @@ namespace Emarketing.Admin
         }
 
         #region Withdraw Request
-        public async Task<ResponseMessageDto> CreateOrEditAsync(CreateWithdrawRequestDto withdrawRequestDto)
+        public async Task<ResponseMessageDto> CreateOrEditWithdrawRequestAsync(CreateWithdrawRequestDto withdrawRequestDto)
         {
             ResponseMessageDto result;
             if (withdrawRequestDto.Id == 0)
@@ -1077,6 +1085,42 @@ namespace Emarketing.Admin
             return false;
         }
         #endregion
+
+
+        public async Task<User> GetUserDetailIdAsync(long id)
+        {
+            var user = await _userManager.GetUserByIdAsync(id);
+
+            if (user == null)
+            {
+                throw new EntityNotFoundException(typeof(User), id);
+            }
+
+            return user;
+        }
+
+        public async Task<User> UpdateAsync(UserDto input)
+        {
+            var user = await _userManager.GetUserByIdAsync(input.Id);
+
+            ObjectMapper.Map(input, user);
+            user.SetNormalizedNames();
+
+            CheckErrors(await _userManager.UpdateAsync(user));
+
+            if (input.RoleNames != null)
+            {
+                CheckErrors(await _userManager.SetRolesAsync(user, input.RoleNames));
+            }
+
+            return await GetUserDetailIdAsync(input.Id);
+        }
+
+
+        protected virtual void CheckErrors(IdentityResult identityResult)
+        {
+            identityResult.CheckErrors(LocalizationManager);
+        }
 
 
     }

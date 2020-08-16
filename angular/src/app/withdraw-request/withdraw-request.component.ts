@@ -1,7 +1,7 @@
 import { Component, Injector, OnInit } from '@angular/core';
 import { AppComponentBase } from '@shared/app-component-base';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
-import { WithdrawRequestDto, WithdrawRequestServiceProxy, CreateWithdrawRequestDto, UserWithdrawDetailServiceProxy } from '@shared/service-proxies/service-proxies';
+import { WithdrawRequestDto, WithdrawRequestServiceProxy, CreateWithdrawRequestDto, UserWithdrawDetailServiceProxy, AdminServiceProxy } from '@shared/service-proxies/service-proxies';
 import { SelectItem } from 'primeng/api';
 import { PrimefacesDropDownObject } from '@app/app.component';
 //import {DropdownModule} from 'primeng/dropdown';
@@ -31,7 +31,7 @@ export class WithdrawRequestComponent extends AppComponentBase implements OnInit
     { label: 'Easypaisa', value: 2 },
   ];
   constructor(injector: Injector,
-    private _withdrawRequestService: WithdrawRequestServiceProxy,
+    private _adminService: AdminServiceProxy,
     public _userWithdrawDetailsService: UserWithdrawDetailServiceProxy) {
     super(injector);
 
@@ -66,7 +66,7 @@ export class WithdrawRequestComponent extends AppComponentBase implements OnInit
     createWithdrawRequestDto.withdrawTypeId = this.selectedWithdrawTypeId;
     //createWithdrawRequestDto.status = this.status;
     createWithdrawRequestDto.userId = this.appSession.userId;
-    this._withdrawRequestService.createOrEdit(createWithdrawRequestDto).subscribe((result) => {
+    this._adminService.createOrEditWithdrawRequest(createWithdrawRequestDto).subscribe((result) => {
       if (result) {
         this.notify.info(this.l('SavedSuccessfully'));
       }
