@@ -14,5 +14,6 @@ namespace Emarketing.BusinessModels.UserReferral.Dto
         public string ReferralAccountStatusName { get; set; }
         public ReferralBonusStatus ReferralBonusStatusId { get; set; }
         public string ReferralBonusStatusName { get; set; }
+        public decimal PackageReferralAmount { get; set; }
     }
 }

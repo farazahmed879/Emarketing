@@ -41,24 +41,46 @@ export class UserPackageComponent extends AppComponentBase
       minimumWithdraw: 500,
       maximumWithdraw: 1000
     },
+    // {
+    //   id: 2,
+    //   name: 'Package 2',
+    //   isUnlimited: false,
+    //   durationInDays: 60,
+    //   price: 3000,
+    //   totalEarning: 3900,
+    //   profitValue: 0,
+    //   dailyAdCount: 5,
+    //   pricePerAd: 20,
+    //   referralAmount: 300,
+    //   minimumWithdraw: 1000,
+    //   maximumWithdraw: 1000
+    // },
+    // {
+    //   id: 3,
+    //   name: 'Package 3',
+    //   isUnlimited: true,
+    //   durationInDays: 30,
+    //   price: 5000,
+    //   totalEarning: 11040,
+    //   profitValue: 0,
+    
+    //   dailyAdCount: 5,
+    //   pricePerAd: 73.6,
+    //   referralAmount: 300,
+    //   minimumWithdraw: 500,
+    //   maximumWithdraw: 1000
+
+    // profitValue: 0,
+    // dailyAdCount: 5,
+    // pricePerAd: 36.8,
+    // referralAmount: 700,
+    // minimumWithdraw: 1500,
+    // maximumWithdraw: 2000
+    // },
     {
-      id: 2,
-      name: 'Package 2',
+      id: 4,
+      name: 'Package 4',
       isUnlimited: false,
-      durationInDays: 60,
-      price: 3000,
-      totalEarning: 3900,
-      profitValue: 0,
-      dailyAdCount: 5,
-      pricePerAd: 20,
-      referralAmount: 300,
-      minimumWithdraw: 1000,
-      maximumWithdraw: 1000
-    },
-    {
-      id: 3,
-      name: 'Package 3',
-      isUnlimited: true,
       durationInDays: 30,
       price: 5000,
       totalEarning: 11040,
@@ -68,20 +90,6 @@ export class UserPackageComponent extends AppComponentBase
       referralAmount: 300,
       minimumWithdraw: 500,
       maximumWithdraw: 1000
-    },
-    {
-      id: 4,
-      name: 'Package 4',
-      isUnlimited: false,
-      durationInDays: 60,
-      price: 5000,
-      totalEarning: 11040,
-      profitValue: 0,
-      dailyAdCount: 5,
-      pricePerAd: 36.8,
-      referralAmount: 700,
-      minimumWithdraw: 1500,
-      maximumWithdraw: 2000
     },
     {
       id: 5,
@@ -115,15 +123,15 @@ export class UserPackageComponent extends AppComponentBase
       id: 7,
       name: 'Package 7',
       isUnlimited: false,
-      durationInDays: 90,
-      price: 25000,
-      totalEarning: 47700,
+      durationInDays: 45,
+      price: 1000,
+      totalEarning: 2025.00,
       profitValue: 0,
       dailyAdCount: 5,
-      pricePerAd: 106,
-      referralAmount: 2500,
-      minimumWithdraw: 4500,
-      maximumWithdraw: 6000
+      pricePerAd: 9.00,
+      referralAmount: 200.00,
+      minimumWithdraw: 500.00,
+      maximumWithdraw: 325.00
     }
   ];
 

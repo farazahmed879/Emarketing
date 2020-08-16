@@ -333,6 +333,8 @@ namespace Emarketing.Admin
 
         private async Task<ResponseMessageDto> CreateUserRequestAsync(CreateUserRequestDto userRequestDto)
         {
+            var checkDuplicate = await CheckEmailDuplication(userRequestDto.Email);
+            
             var result = await _userRequestRepository.InsertAsync(new BusinessObjects.UserRequest()
             {
                 FirstName = userRequestDto.FirstName,
@@ -622,6 +624,15 @@ namespace Emarketing.Admin
                     = await _packageAdRepository
                         .GetAll().Where(x => x.PackageId == activeSubscription.PackageId &&
                                              x.IsActive == true).ToListAsync();
+                //condition to ignore already added ads for today....
+                var userPackageAdsForCurrentDay = await _userPackageAdDetailRepository.GetAll()
+                    .Where(x => x.AdDate == DateTime.Now.Date).ToListAsync();
+
+                if (userPackageAdsForCurrentDay.Count > 0)
+                {
+                    continue;
+                }
+
                 foreach (var packageAd in packageAds)
                 {
                     var newUserPackageAdDetail = new UserPackageAdDetail()
@@ -647,7 +658,7 @@ namespace Emarketing.Admin
 
             return true;
         }
-
+        
         /// <summary>
         /// AcceptUserReferralRequest
         /// </summary>
@@ -753,7 +764,7 @@ namespace Emarketing.Admin
 
                 //save user referral details
 
-                var userReferral = _userReferralRepository.InsertAsync(
+                var userReferral = await _userReferralRepository.InsertAsync(
                     new UserReferral()
                     {
                         PackageId = package.Id,
@@ -812,14 +823,14 @@ namespace Emarketing.Admin
 
             //get user referral
             var userReferral = await _userReferralRepository
-                .FirstOrDefaultAsync(i => i.Id == userReferralRequest.UserId);
+                .FirstOrDefaultAsync(i => i.UserId == userReferralRequest.UserId);
             if (userReferral == null)
             {
                 return false;
             }
 
             var newUser = await _userRepository
-                .FirstOrDefaultAsync(i => i.Id == userReferralRequest.UserId);
+                .FirstOrDefaultAsync(i => i.Id == userReferral.ReferralUserId);
 
             if (newUser == null)
             {
@@ -843,15 +854,7 @@ namespace Emarketing.Admin
             {
                 return false;
             }
-
-            //var package = await _packageRepository
-            //    .FirstOrDefaultAsync(i => i.Id == userPackageSubscriptionDetail.PackageId);
-
-            //if (package == null)
-            //{
-            //    return false;
-            //}
-
+            
             //update user package subscription detail
             userPackageSubscriptionDetail.ExpiryDate = DateTime.Now.AddDays(package.DurationInDays);
             userPackageSubscriptionDetail.StartDate = DateTime.Now;
@@ -873,6 +876,11 @@ namespace Emarketing.Admin
             //activate user
             newUser.IsActive = true;
             await _userRepository.UpdateAsync(newUser);
+            await UnitOfWorkManager.Current.SaveChangesAsync();
+
+            //update user referral request detail
+            userReferral.ReferralAccountStatusId = ReferralAccountStatus.Active;
+            await _userReferralRepository.UpdateAsync(userReferral);
             await UnitOfWorkManager.Current.SaveChangesAsync();
 
             return true;
@@ -1147,11 +1155,39 @@ namespace Emarketing.Admin
 
             return await GetUserDetailIdAsync(input.Id);
         }
-
-
+        
         protected virtual void CheckErrors(IdentityResult identityResult)
         {
             identityResult.CheckErrors(LocalizationManager);
+        }
+
+        private async Task<bool> CheckEmailDuplication(string email)
+        {
+            var isInUser = await _userRepository.GetAll()
+                .Where(i => i.EmailAddress == email)
+                .AnyAsync();
+            if (isInUser)
+            {
+                throw new UserFriendlyException(ErrorMessage.UserFriendly.UserDuplicateWithEmail);
+            }
+
+            var isInUserRequest = await _userRequestRepository.GetAll()
+                .Where(i => i.Email == email)
+                .AnyAsync();
+            if (isInUserRequest)
+            {
+                throw new UserFriendlyException(ErrorMessage.UserFriendly.UserDuplicateWithEmail);
+            }
+
+            var isInUserReferralRequest = await _userReferralRequestRepository.GetAll()
+                .Where(i => i.Email == email)
+                .AnyAsync();
+            if (isInUserReferralRequest)
+            {
+                throw new UserFriendlyException(ErrorMessage.UserFriendly.UserDuplicateWithEmail);
+            }
+            return false;
+
         }
     }
 }

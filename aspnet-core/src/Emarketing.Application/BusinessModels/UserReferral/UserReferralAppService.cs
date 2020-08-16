@@ -168,6 +168,7 @@ namespace Emarketing.BusinessModels.UserReferral
                         ReferralBonusStatusId = i.ReferralBonusStatusId,
                         ReferralAccountStatusName = i.ReferralAccountStatusId.GetEnumFieldDescription(),
                         ReferralBonusStatusName = i.ReferralBonusStatusId.GetEnumFieldDescription(),
+                        PackageReferralAmount = i.Package.ReferralAmount,
                         CreatorUserId = i.CreatorUserId,
                         CreationTime = i.CreationTime,
                         LastModificationTime = i.LastModificationTime,
@@ -212,6 +213,7 @@ namespace Emarketing.BusinessModels.UserReferral
                     ReferralBonusStatusId = i.ReferralBonusStatusId,
                     ReferralAccountStatusName = i.ReferralAccountStatusId.GetEnumFieldDescription(),
                     ReferralBonusStatusName = i.ReferralBonusStatusId.GetEnumFieldDescription(),
+                    PackageReferralAmount = i.Package.ReferralAmount,
                     CreatorUserId = i.CreatorUserId,
                     CreationTime = i.CreationTime,
                     LastModificationTime = i.LastModificationTime,
@@ -257,14 +259,14 @@ namespace Emarketing.BusinessModels.UserReferral
                             ReferralBonusStatusId = i.ReferralBonusStatusId,
                             ReferralAccountStatusName = i.ReferralAccountStatusId.GetEnumFieldDescription(),
                             ReferralBonusStatusName = i.ReferralBonusStatusId.GetEnumFieldDescription(),
+                            PackageReferralAmount = i.Package.ReferralAmount,
                             CreatorUserId = i.CreatorUserId,
                             CreationTime = i.CreationTime,
                             LastModificationTime = i.LastModificationTime,
                         })
                     .ToListAsync());
         }
-
-
+        
         private async Task<bool> AuthenticateAdminUser()
         {
             if (_abpSession.UserId == null)
