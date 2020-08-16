@@ -54,7 +54,7 @@
                 <td>{{ item.lastName }}</td>
                 <td>{{ item.email }}</td>
                 <td>{{ item.userName }}</td>
-                <td>
+                <td >
                   <button *ngIf="!item.isActivated && item.isAccepted" type="button" class="btn btn-sm bg-secondary" (click)="activateReferalRequest(item)">
                     <!-- <i class="fas fa-pencil-alt"></i> -->
                     Activate

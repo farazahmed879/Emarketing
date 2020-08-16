@@ -751,6 +751,24 @@ namespace Emarketing.Admin
 
                 await UnitOfWorkManager.Current.SaveChangesAsync();
 
+                //save user referral details
+
+                var userReferral = _userReferralRepository.InsertAsync(
+                    new UserReferral()
+                    {
+                        PackageId = package.Id,
+                        UserId = userReferralRequest.UserId,
+                        ReferralUserId = newUser.Id,
+                        ReferralAccountStatusId = ReferralAccountStatus.Inactive,
+                        ReferralBonusStatusId = ReferralBonusStatus.Inactive,
+                        CreatorUserId = userId,
+                        CreationTime = DateTime.Now,
+                        LastModificationTime = DateTime.Now,
+                        LastModifierUserId = userId,
+                    });
+
+                await UnitOfWorkManager.Current.SaveChangesAsync();
+
                 //assign user role
                 //save permission
 
@@ -794,7 +812,7 @@ namespace Emarketing.Admin
 
             //get user referral
             var userReferral = await _userReferralRepository
-                .FirstOrDefaultAsync(i => i.Id == userReferralRequest.UserReferralId);
+                .FirstOrDefaultAsync(i => i.Id == userReferralRequest.UserId);
             if (userReferral == null)
             {
                 return false;
@@ -825,6 +843,14 @@ namespace Emarketing.Admin
             {
                 return false;
             }
+
+            //var package = await _packageRepository
+            //    .FirstOrDefaultAsync(i => i.Id == userPackageSubscriptionDetail.PackageId);
+
+            //if (package == null)
+            //{
+            //    return false;
+            //}
 
             //update user package subscription detail
             userPackageSubscriptionDetail.ExpiryDate = DateTime.Now.AddDays(package.DurationInDays);
@@ -857,6 +883,7 @@ namespace Emarketing.Admin
             var list = EnumHelper.GetListObjects<WithdrawType>("WithdrawTypeId");
             return list;
         }
+
         /// <summary>
         /// UpdateWithdrawRequest
         /// </summary>
@@ -890,7 +917,6 @@ namespace Emarketing.Admin
 
         public async Task<UserWithdrawDetailDto> GetByUserId(long userId)
         {
-
             var result = await _userWithdrawDetailRepository.GetAll()
                 .Where(i => i.UserId == userId)
                 .Select(i =>
@@ -915,7 +941,9 @@ namespace Emarketing.Admin
         }
 
         #region Withdraw Request
-        public async Task<ResponseMessageDto> CreateOrEditWithdrawRequestAsync(CreateWithdrawRequestDto withdrawRequestDto)
+
+        public async Task<ResponseMessageDto> CreateOrEditWithdrawRequestAsync(
+            CreateWithdrawRequestDto withdrawRequestDto)
         {
             ResponseMessageDto result;
             if (withdrawRequestDto.Id == 0)
@@ -990,6 +1018,7 @@ namespace Emarketing.Admin
             {
                 throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
             }
+
             var result = await _withdrawRequestRepository.UpdateAsync(new BusinessObjects.WithdrawRequest()
             {
                 Id = requestDto.Id,
@@ -1023,7 +1052,7 @@ namespace Emarketing.Admin
                 Error = true,
             };
         }
-        
+
         private async Task<bool> ValidateWithdrawRequestAmountAsync(CreateWithdrawRequestDto requestDto)
         {
             long userId = _abpSession.UserId.Value;
@@ -1038,7 +1067,7 @@ namespace Emarketing.Admin
             }
 
             var currentPackage = await _packageRepository.GetAll()
-                    .FirstOrDefaultAsync(x => x.Id == userSubscriptionDetail.PackageId);
+                .FirstOrDefaultAsync(x => x.Id == userSubscriptionDetail.PackageId);
             if (currentPackage == null)
             {
                 throw new UserFriendlyException("Invalid Package.");
@@ -1061,9 +1090,9 @@ namespace Emarketing.Admin
 
             if (requestDto.Amount > balance)
             {
-                throw new  UserFriendlyException(
+                throw new UserFriendlyException(
                     $"Invalid Withdraw amount. It must be in your balance amount {balance}"
-                    );
+                );
             }
 
             if (currentPackage.MaximumWithdraw.HasValue && currentPackage.MinimumWithdraw.HasValue)
@@ -1075,15 +1104,18 @@ namespace Emarketing.Admin
                 }
                 else
                 {
-                    throw new UserFriendlyException($"WithDraw amount in invalid. It must be in {currentPackage.MinimumWithdraw} - {currentPackage.MaximumWithdraw}");
+                    throw new UserFriendlyException(
+                        $"WithDraw amount in invalid. It must be in {currentPackage.MinimumWithdraw} - {currentPackage.MaximumWithdraw}");
                 }
             }
             else
             {
                 return true;
             }
+
             return false;
         }
+
         #endregion
 
 
@@ -1121,7 +1153,5 @@ namespace Emarketing.Admin
         {
             identityResult.CheckErrors(LocalizationManager);
         }
-
-
     }
 }

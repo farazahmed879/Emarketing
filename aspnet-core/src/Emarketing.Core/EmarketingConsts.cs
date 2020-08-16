@@ -15,7 +15,7 @@
         public const string TimeFormatHoursMinutesSeconds = "hh:mm:ss";
         public const string DateFormatWithDay = "ddd, MMM dd  yyy";
         public const string DateFormatShort = "dd MMM yyyy";
-        public const string SamplePassword = "Qwe1234567";
+        public const string SamplePassword = "Qwe1234567!";
 
         public const string ReplacementString = "";
         public const int ReplacementInt = 0;
