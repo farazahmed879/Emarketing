@@ -11,6 +11,7 @@ using Emarketing.Authorization.Roles;
 using Emarketing.Authorization.Users;
 using Emarketing.BusinessModels.Package.Dto;
 using Emarketing.BusinessModels.UserRequest.Dto;
+using Emarketing.BusinessModels.UserWithdrawDetail.Dto;
 using Emarketing.BusinessObjects;
 using Emarketing.Helper;
 using Emarketing.Sessions;
@@ -34,6 +35,7 @@ namespace Emarketing.Admin
         Task<bool> ActivateUserReferralRequestSubscription(ActivateUserReferralSubscriptionDto requestDto);
 
         Task<List<Object>> GetWithdrawTypes();
+        Task<UserWithdrawDetailDto> GetByUserId(long userId);
     }
 
     public class AdminAppService : AbpServiceBase, IAdminAppService
@@ -874,6 +876,32 @@ namespace Emarketing.Admin
             await UnitOfWorkManager.Current.SaveChangesAsync();
 
             return true;
+        }
+
+        public async Task<UserWithdrawDetailDto> GetByUserId(long userId)
+        {
+           
+            var result = await _userWithdrawDetailRepository.GetAll()
+                .Where(i => i.UserId == userId)
+                .Select(i =>
+                    new UserWithdrawDetailDto()
+                    {
+                        Id = i.Id,
+                        AccountIBAN = i.AccountIBAN,
+                        AccountTitle = i.AccountTitle,
+                        IsPrimary = i.IsPrimary,
+                        JazzCashNumber = i.JazzCashNumber,
+                        EasyPaisaNumber = i.EasyPaisaNumber,
+                        WithdrawTypeId = i.WithdrawTypeId,
+                        UserId = i.UserId,
+                        UserName = $"{i.User.FullName}",
+                        CreatorUserId = i.CreatorUserId,
+                        CreationTime = i.CreationTime,
+                        LastModificationTime = i.LastModificationTime,
+                        LastModifierUserId = i.LastModifierUserId
+                    })
+                .FirstOrDefaultAsync();
+            return result;
         }
     }
 }
