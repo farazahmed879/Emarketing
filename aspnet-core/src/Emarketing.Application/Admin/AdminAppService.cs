@@ -1036,6 +1036,28 @@ namespace Emarketing.Admin
                 throw new UserFriendlyException("Invalid Package.");
             }
 
+            var balance = 0.0m;
+
+            var userPackageAdDetails = _userPackageAdDetailRepository
+                .GetAll().Where(x => x.UserId == userId &&
+                                     x.IsViewed == true).ToList();
+            var totalPackageAdViewedBalance =
+                userPackageAdDetails.Sum(userPackageAdDetail => userPackageAdDetail.AdPrice);
+
+            var withdrawRequests = _withdrawRequestRepository
+                .GetAll().Where(x => x.UserId == userId &&
+                                     x.Status == true).ToList();
+            var totalPaidWithDrawRequestAmount = withdrawRequests.Sum(withdrawRequest => withdrawRequest.Amount);
+
+            balance = totalPackageAdViewedBalance - totalPaidWithDrawRequestAmount;
+
+            if (requestDto.Amount > balance)
+            {
+                throw new  UserFriendlyException(
+                    $"Invalid Withdraw amount. It must be in your balance amount {balance}"
+                    );
+            }
+
             if (currentPackage.MaximumWithdraw.HasValue && currentPackage.MinimumWithdraw.HasValue)
             {
                 if ((requestDto.Amount >= currentPackage.MinimumWithdraw) &&
