@@ -212,7 +212,7 @@ export class RegisterComponent extends AppComponentBase implements OnInit {
   checkPassword(str) {
     // at least one number, one lowercase and one uppercase letter
     // at least six characters
-    var re = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+    var re = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
     return re.test(str);
   }
 
@@ -237,7 +237,7 @@ export class RegisterComponent extends AppComponentBase implements OnInit {
         this.passwordMatch = false;
       }
     } else {
-      this.passordMessage = "Minimum eight characters, at least one letter, one number and one special character:";
+      this.passordMessage = "Minimum eight characters, at least one capital letter, one number and one special character:";
     }
   }
 }
