@@ -6303,6 +6303,7 @@ export class CreateUserRequestDto implements ICreateUserRequestDto {
     userName: string;
     phoneNumber: string | undefined;
     password: string;
+    referralEmail: string | undefined;
     id: number;
 
     constructor(data?: ICreateUserRequestDto) {
@@ -6323,6 +6324,7 @@ export class CreateUserRequestDto implements ICreateUserRequestDto {
             this.userName = _data["userName"];
             this.phoneNumber = _data["phoneNumber"];
             this.password = _data["password"];
+            this.referralEmail = _data["referralEmail"];
             this.id = _data["id"];
         }
     }
@@ -6343,6 +6345,7 @@ export class CreateUserRequestDto implements ICreateUserRequestDto {
         data["userName"] = this.userName;
         data["phoneNumber"] = this.phoneNumber;
         data["password"] = this.password;
+        data["referralEmail"] = this.referralEmail;
         data["id"] = this.id;
         return data; 
     }
@@ -6363,6 +6366,7 @@ export interface ICreateUserRequestDto {
     userName: string;
     phoneNumber: string | undefined;
     password: string;
+    referralEmail: string | undefined;
     id: number;
 }
 

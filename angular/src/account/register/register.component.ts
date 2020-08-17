@@ -262,7 +262,7 @@ export class RegisterComponent extends AppComponentBase implements OnInit {
 
   onChangeValidateUserName() {
     if (this.ValidateUserName(this.createUserRequestDto.userName)) {
-       
+      this.userNameMessage = "";
     } else {
       this.userNameMessage = "User name must be without space.";
     }

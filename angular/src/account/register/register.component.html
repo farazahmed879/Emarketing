@@ -96,6 +96,19 @@
       </div>
       <abp-validation-summary [control]="pakcageModel" [controlEl]="packageEl"></abp-validation-summary>
     </div>
+    <div class="form-group">
+      <div class="input-group">
+        <input type="email" class="form-control" name="referralEmailAddress" placeholder="{{ 'ReferralEmail' | localize }}"
+           maxlength="256" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{1,})+$"
+          [(ngModel)]="createUserRequestDto.referralEmail" #referralEmailAddressModel="ngModel" #referralEmailAddressEl />
+        <div class="input-group-append">
+          <div class="input-group-text">
+            <span class="fas fa-envelope"></span>
+          </div>
+        </div>
+      </div>
+      <abp-validation-summary [control]="referralEmailAddressModel" [controlEl]="referralEmailAddressEl"></abp-validation-summary>
+    </div>
     <div class="row">
       <div class="col-8">
         <button type="button" class="btn btn-default" [disabled]="saving" [routerLink]="['../login']">

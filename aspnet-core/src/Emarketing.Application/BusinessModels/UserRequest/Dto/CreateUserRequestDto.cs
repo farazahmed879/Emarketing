@@ -19,6 +19,6 @@ namespace Emarketing.BusinessModels.UserRequest.Dto
         public string PhoneNumber { get; set; }
         [Required]
         public string Password { get; set; }
-
+        public string ReferralEmail { get; set; }
     }
 }

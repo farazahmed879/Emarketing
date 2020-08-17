@@ -313,9 +313,63 @@ namespace Emarketing.Admin
         public async Task<ResponseMessageDto> CreateOrEditAsync(CreateUserRequestDto requestDto)
         {
             ResponseMessageDto result;
+
             if (requestDto.Id == 0)
             {
-                result = await CreateUserRequestAsync(requestDto);
+                if (requestDto.ReferralEmail.IsNullOrEmptyOrWhiteSpace())
+                {
+                    result = await CreateUserRequestAsync(requestDto);
+                }
+                else
+                {
+                    // validate referral email
+                    var userReferralByEmail = await _userRepository.FirstOrDefaultAsync(x =>
+                        x.EmailAddress.ToLower() == requestDto.ReferralEmail && x.IsActive == true &&
+                        x.IsDeleted == false);
+                    if (userReferralByEmail == null)
+                    {
+                        throw new UserFriendlyException("Invalid Referral Email");
+                    }
+                    var checkDuplicate = await CheckEmailDuplication(requestDto.Email);
+
+                    var newUserReferralRequest = await _userReferralRequestRepository
+                        .InsertAsync(new BusinessObjects.UserReferralRequest()
+                        {
+                            UserId = userReferralByEmail.Id,
+                            FirstName = requestDto.FirstName,
+                            LastName = requestDto.LastName,
+                            Email = requestDto.Email,
+                            UserName = requestDto.UserName,
+                            ReferralRequestStatusId = ReferralRequestStatus.Pending,
+                            PackageId = requestDto.PackageId,
+                            PhoneNumber = requestDto.PhoneNumber,
+                            UserReferralId = null,
+                        });
+
+                    await UnitOfWorkManager.Current.SaveChangesAsync();
+
+                    if (newUserReferralRequest.Id != 0)
+                    {
+                        return new ResponseMessageDto()
+                        {
+                            Id = newUserReferralRequest.Id,
+                            SuccessMessage = AppConsts.SuccessfullyInserted,
+                            Success = true,
+                            Error = false,
+                        };
+                    }
+
+                    return new ResponseMessageDto()
+                    {
+                        Id = 0,
+                        ErrorMessage = AppConsts.InsertFailure,
+                        Success = false,
+                        Error = true,
+                    };
+
+                    //if verified
+                    //then put it as referral
+                }
             }
             else
             {
@@ -511,7 +565,7 @@ namespace Emarketing.Admin
                     });
 
                 await UnitOfWorkManager.Current.SaveChangesAsync();
-                
+
                 //update user request detail
                 userRequest.IsAccepted = true;
                 userRequest.UserId = newUser.Id;
@@ -643,7 +697,6 @@ namespace Emarketing.Admin
             foreach (var user in allUsers)
             {
                 var activeSubscription = await _userPackageSubscriptionDetailRepository
-                    
                     .FirstOrDefaultAsync(x => x.UserId == user.Id &&
                                               x.StatusId == UserPackageSubscriptionStatus.Active &&
                                               x.ExpiryDate.Value != DateTime.Now);
@@ -655,7 +708,7 @@ namespace Emarketing.Admin
                 var packageAdLimit = 5;
                 var package = await _packageRepository
                     .FirstOrDefaultAsync(i => i.Id == activeSubscription.PackageId);
-                 
+
                 if (package != null)
                 {
                     packageAdLimit = package.DailyAdCount;
@@ -667,10 +720,10 @@ namespace Emarketing.Admin
                                              x.IsActive == true).ToListAsync();
                 //condition to ignore already added ads for today....
                 var userPackageAdsForCurrentDay = await _userPackageAdDetailRepository.GetAll()
-                    .Where(x =>x.UserId  == user.Id && x.AdDate == DateTime.Now.Date).ToListAsync();
+                    .Where(x => x.UserId == user.Id && x.AdDate == DateTime.Now.Date).ToListAsync();
 
                 if (userPackageAdsForCurrentDay.Count != 0) continue;
-              
+
                 foreach (var packageAd in packageAds.Take(packageAdLimit))
                 {
                     var newUserPackageAdDetail = new UserPackageAdDetail()
@@ -753,7 +806,7 @@ namespace Emarketing.Admin
                 //assign user role
                 var userRoleName = "User";
 
-                await _userManager.SetRolesAsync(newUser, new[] { userRoleName });
+                await _userManager.SetRolesAsync(newUser, new[] {userRoleName});
 
                 //save personal details
 
@@ -1257,8 +1310,8 @@ namespace Emarketing.Admin
             {
                 throw new UserFriendlyException(ErrorMessage.UserFriendly.UserDuplicateWithEmail);
             }
-            return false;
 
+            return false;
         }
     }
 }
