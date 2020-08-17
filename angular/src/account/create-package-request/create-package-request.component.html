@@ -25,9 +25,10 @@
     </div>
     <div class="form-group">
       <div class="input-group">
-        <input type="text" class="form-control" name="userName" [(ngModel)]="userName" placeholder="User Name" required
-          maxlength="256" #userNameModel="ngModel" #userNameEl />
+        <input type="text" class="form-control" name="userName" [(ngModel)]="userName" placeholder="UserName" required
+          maxlength="256" #userNameModel="ngModel" #userNameEl (change)="ValidateUserName()" />
       </div>
+      <span style="font-size: 12px; color: red;">{{userNameValidationMessage}}</span>
       <abp-validation-summary [control]="userNameModel" [controlEl]="userNameEl"></abp-validation-summary>
     </div>
     <div class="form-group">

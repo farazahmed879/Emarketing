@@ -31,6 +31,7 @@
                 <th>{{ "Referral User Name" | localize }}</th>
                 <th>{{ "Account Status" | localize }}</th>
                 <th>{{ "Bonus Status" | localize }}</th>
+                <th>{{ "Referral Amount" | localize }}</th>
                 <th style="width: 200px;">{{ "Actions" | localize }}</th>
               </tr>
             </thead>
@@ -50,6 +51,7 @@
                 <td>{{ userReferal.referralUserName }}</td>
                 <td>{{ userReferal.referralAccountStatusName }}</td>
                 <td>{{ userReferal.referralBonusStatusName }}</td>
+                <td>{{ userReferal.packageReferralAmount }} PKR</td>
                 <td>
                   <button type="button" class="btn btn-sm bg-secondary" (click)="acceptRequest(userReferal)">
                     <i class="fas fa-pencil-alt"></i>

@@ -27,6 +27,8 @@ export class RegisterComponent extends AppComponentBase implements OnInit {
   passwordMatch = false;
   passwordValidationMessage: string;
   passordMessage: string;
+  userNameValidationMessage: string;
+  userNameMessage: string;
 
   constructor(
     injector: Injector,
@@ -181,6 +183,10 @@ export class RegisterComponent extends AppComponentBase implements OnInit {
       this.passordMessage = "at least one number, one lowercase and one uppercase letter, at least six characters";
       return;
     }
+    if (!this.ValidateUserName(this.createUserRequestDto.userName)) {    
+      this.userNameMessage = "Username must be without space.";
+      return;
+    }
     this.saving = true;
     this.createUserRequestDto.packageId = this.packageId
     this._adminService
@@ -239,5 +245,26 @@ export class RegisterComponent extends AppComponentBase implements OnInit {
     } else {
       this.passordMessage = "Minimum eight characters, at least one capital letter, one number and one special character:";
     }
+  } 
+  ValidateUserName(str) {
+    // at least one number, one lowercase and one uppercase letter
+    // at least six characters
+    var re = /^([A-z0-9!@#$%^&*().,<>{}[\]<>?_=+\-|;:\'\"\/])*[^\s]\1*$/;
+    return re.test(str); 
+     
+     
   }
+
+  onUserNameChange(){
+    this.onChangeValidateUserName();
+  }
+
+
+  onChangeValidateUserName() {
+    if (this.ValidateUserName(this.createUserRequestDto.userName)) {
+       
+    } else {
+      this.userNameMessage = "User name must be without space.";
+    }
+  } 
 }

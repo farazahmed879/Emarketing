@@ -30,6 +30,7 @@ export class CreatePackageRequestComponent extends AppComponentBase implements O
   passwordValidationMessage: string;
   passordMessage: string;
   emailValidationMessage: string;
+  userNameValidationMessage: string;
   packages: PrimefacesDropDownObject[];
 
   customPackages = [
@@ -210,5 +211,12 @@ export class CreatePackageRequestComponent extends AppComponentBase implements O
       this.emailValidationMessage = ""
     }
     this.emailValidationMessage = "Please provide correct email address";
+  }
+
+  ValidateUserName() {
+    if (/^([A-z0-9!@#$%^&*().,<>{}[\]<>?_=+\-|;:\'\"\/])*[^\s]\1*$/.test(this.userName)) {
+      this.userNameValidationMessage = ""
+    }
+    this.userNameValidationMessage = "Username must be without space.";
   }
 }

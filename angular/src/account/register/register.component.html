@@ -41,18 +41,20 @@
     <div class="form-group">
       <div class="input-group">
         <input type="email" class="form-control" name="userName" placeholder=" {{ 'UserName' | localize }}" required
-          maxlength="32" [(ngModel)]="createUserRequestDto.userName" #userNameModel="ngModel" #userNameEl />
+          maxlength="32" [(ngModel)]="createUserRequestDto.userName" #userNameModel="ngModel" #userNameEl (change)="onUserNameChange()" />
         <div class="input-group-append">
           <div class="input-group-text">
             <span class="fas fa-user"></span>
           </div>
         </div>
       </div>
+      <span style="font-size: 12px;"
+        [style.color]="passwordMatch ? 'green': 'red' ">{{userNameMessage}}</span>
       <abp-validation-summary [control]="userNameModel" [controlEl]="userNameEl"></abp-validation-summary>
     </div>
     <div class="form-group">
       <div class="input-group">
-        <input type="password" class="form-control" name="password" placeholder="{{ 'Password : @Abc123' | localize }}"
+        <input type="password" class="form-control" name="password" placeholder="{{ 'Password : @Abc1234' | localize }}"
           [(ngModel)]="createUserRequestDto.password" required maxlength="32" (change)="onPasswordChange()"
           #passwordModel="ngModel" #passwordEl />
         <div class="input-group-append">

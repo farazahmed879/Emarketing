@@ -15,6 +15,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Emarketing.BusinessModels.WithdrawRequest.Dto;
 using Abp.Domain.Entities;
@@ -456,6 +457,11 @@ namespace Emarketing.Admin
 
             if (result.Succeeded)
             {
+                //assign user role
+                var userRoleName = "User";
+
+                await _userManager.SetRolesAsync(newUser, new[] {userRoleName});
+
                 //save personal details
 
                 var userPersonalDetail = await _userPersonalDetailRepository.InsertAsync(
@@ -505,10 +511,7 @@ namespace Emarketing.Admin
                     });
 
                 await UnitOfWorkManager.Current.SaveChangesAsync();
-
-                //assign user role
-                //save permission
-
+                
                 //update user request detail
                 userRequest.IsAccepted = true;
                 userRequest.UserId = newUser.Id;
@@ -592,6 +595,34 @@ namespace Emarketing.Admin
             await _userRepository.UpdateAsync(newUser);
             await UnitOfWorkManager.Current.SaveChangesAsync();
 
+            //seed ads
+            var packageAdLimit = package.DailyAdCount;
+
+            var packageAds
+                = await _packageAdRepository
+                    .GetAll().Where(x => x.PackageId == userPackageSubscriptionDetail.PackageId &&
+                                         x.IsActive == true).ToListAsync();
+            foreach (var packageAd in packageAds.Take(packageAdLimit))
+            {
+                var newUserPackageAdDetail = new UserPackageAdDetail()
+                {
+                    PackageAdId = packageAd.Id,
+                    AdDate = DateTime.Now.Date,
+                    AdPrice = packageAd.Price,
+                    UserId = newUser.Id,
+                    IsViewed = false,
+                    UserPackageSubscriptionDetailId = userPackageSubscriptionDetail.Id,
+                    CreatorUserId = userId,
+                    CreationTime = DateTime.Now,
+                    LastModificationTime = DateTime.Now,
+                    LastModifierUserId = userId,
+                };
+                newUserPackageAdDetail =
+                    await _userPackageAdDetailRepository.InsertAsync(newUserPackageAdDetail);
+
+                await UnitOfWorkManager.Current.SaveChangesAsync();
+            }
+
             return true;
         }
 
@@ -612,12 +643,22 @@ namespace Emarketing.Admin
             foreach (var user in allUsers)
             {
                 var activeSubscription = await _userPackageSubscriptionDetailRepository
+                    
                     .FirstOrDefaultAsync(x => x.UserId == user.Id &&
                                               x.StatusId == UserPackageSubscriptionStatus.Active &&
                                               x.ExpiryDate.Value != DateTime.Now);
                 if (activeSubscription == null)
                 {
                     continue;
+                }
+
+                var packageAdLimit = 5;
+                var package = await _packageRepository
+                    .FirstOrDefaultAsync(i => i.Id == activeSubscription.PackageId);
+                 
+                if (package != null)
+                {
+                    packageAdLimit = package.DailyAdCount;
                 }
 
                 var packageAds
@@ -628,31 +669,28 @@ namespace Emarketing.Admin
                 var userPackageAdsForCurrentDay = await _userPackageAdDetailRepository.GetAll()
                     .Where(x =>x.UserId  == user.Id && x.AdDate == DateTime.Now.Date).ToListAsync();
 
-                if (userPackageAdsForCurrentDay.Count == 0)
+                if (userPackageAdsForCurrentDay.Count != 0) continue;
+              
+                foreach (var packageAd in packageAds.Take(packageAdLimit))
                 {
-                    foreach (var packageAd in packageAds)
+                    var newUserPackageAdDetail = new UserPackageAdDetail()
                     {
-                        var newUserPackageAdDetail = new UserPackageAdDetail()
-                        {
-                            PackageAdId = packageAd.Id,
-                            AdDate = DateTime.Now.Date,
-                            AdPrice = packageAd.Price,
-                            UserId = user.Id,
-                            IsViewed = false,
-                            UserPackageSubscriptionDetailId = activeSubscription.Id,
-                            CreatorUserId = userId,
-                            CreationTime = DateTime.Now,
-                            LastModificationTime = DateTime.Now,
-                            LastModifierUserId = userId,
-                        };
-                        newUserPackageAdDetail =
-                            await _userPackageAdDetailRepository.InsertAsync(newUserPackageAdDetail);
+                        PackageAdId = packageAd.Id,
+                        AdDate = DateTime.Now.Date,
+                        AdPrice = packageAd.Price,
+                        UserId = user.Id,
+                        IsViewed = false,
+                        UserPackageSubscriptionDetailId = activeSubscription.Id,
+                        CreatorUserId = userId,
+                        CreationTime = DateTime.Now,
+                        LastModificationTime = DateTime.Now,
+                        LastModifierUserId = userId,
+                    };
+                    newUserPackageAdDetail =
+                        await _userPackageAdDetailRepository.InsertAsync(newUserPackageAdDetail);
 
-                        await UnitOfWorkManager.Current.SaveChangesAsync();
-                    }
+                    await UnitOfWorkManager.Current.SaveChangesAsync();
                 }
-
-
             }
 
 
@@ -712,6 +750,11 @@ namespace Emarketing.Admin
 
             if (result.Succeeded)
             {
+                //assign user role
+                var userRoleName = "User";
+
+                await _userManager.SetRolesAsync(newUser, new[] { userRoleName });
+
                 //save personal details
 
                 var userPersonalDetail = await _userPersonalDetailRepository.InsertAsync(
@@ -785,7 +828,7 @@ namespace Emarketing.Admin
 
                 //update user request detail
                 userReferralRequest.IsAccepted = true;
-                userReferralRequest.UserId = newUser.Id;
+                userReferralRequest.UserReferralId = newUser.Id;
                 await _userReferralRequestRepository.UpdateAsync(userReferralRequest);
                 await UnitOfWorkManager.Current.SaveChangesAsync();
 
@@ -882,6 +925,34 @@ namespace Emarketing.Admin
             userReferral.ReferralAccountStatusId = ReferralAccountStatus.Active;
             await _userReferralRepository.UpdateAsync(userReferral);
             await UnitOfWorkManager.Current.SaveChangesAsync();
+
+            //seed ads
+            var packageAdLimit = package.DailyAdCount;
+
+            var packageAds
+                = await _packageAdRepository
+                    .GetAll().Where(x => x.PackageId == userPackageSubscriptionDetail.PackageId &&
+                                         x.IsActive == true).ToListAsync();
+            foreach (var packageAd in packageAds.Take(packageAdLimit))
+            {
+                var newUserPackageAdDetail = new UserPackageAdDetail()
+                {
+                    PackageAdId = packageAd.Id,
+                    AdDate = DateTime.Now.Date,
+                    AdPrice = packageAd.Price,
+                    UserId = newUser.Id,
+                    IsViewed = false,
+                    UserPackageSubscriptionDetailId = userPackageSubscriptionDetail.Id,
+                    CreatorUserId = userId,
+                    CreationTime = DateTime.Now,
+                    LastModificationTime = DateTime.Now,
+                    LastModifierUserId = userId,
+                };
+                newUserPackageAdDetail =
+                    await _userPackageAdDetailRepository.InsertAsync(newUserPackageAdDetail);
+
+                await UnitOfWorkManager.Current.SaveChangesAsync();
+            }
 
             return true;
         }
