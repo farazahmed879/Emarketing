@@ -334,7 +334,7 @@ namespace Emarketing.Admin
         private async Task<ResponseMessageDto> CreateUserRequestAsync(CreateUserRequestDto userRequestDto)
         {
             var checkDuplicate = await CheckEmailDuplication(userRequestDto.Email);
-            
+
             var result = await _userRequestRepository.InsertAsync(new BusinessObjects.UserRequest()
             {
                 FirstName = userRequestDto.FirstName,
@@ -626,39 +626,39 @@ namespace Emarketing.Admin
                                              x.IsActive == true).ToListAsync();
                 //condition to ignore already added ads for today....
                 var userPackageAdsForCurrentDay = await _userPackageAdDetailRepository.GetAll()
-                    .Where(x => x.AdDate == DateTime.Now.Date).ToListAsync();
+                    .Where(x =>x.UserId  == user.Id && x.AdDate == DateTime.Now.Date).ToListAsync();
 
-                if (userPackageAdsForCurrentDay.Count > 0)
+                if (userPackageAdsForCurrentDay.Count == 0)
                 {
-                    continue;
-                }
-
-                foreach (var packageAd in packageAds)
-                {
-                    var newUserPackageAdDetail = new UserPackageAdDetail()
+                    foreach (var packageAd in packageAds)
                     {
-                        PackageAdId = packageAd.Id,
-                        AdDate = DateTime.Now.Date,
-                        AdPrice = packageAd.Price,
-                        UserId = user.Id,
-                        IsViewed = false,
-                        UserPackageSubscriptionDetailId = activeSubscription.Id,
-                        CreatorUserId = userId,
-                        CreationTime = DateTime.Now,
-                        LastModificationTime = DateTime.Now,
-                        LastModifierUserId = userId,
-                    };
-                    newUserPackageAdDetail =
-                        await _userPackageAdDetailRepository.InsertOrUpdateAsync(newUserPackageAdDetail);
+                        var newUserPackageAdDetail = new UserPackageAdDetail()
+                        {
+                            PackageAdId = packageAd.Id,
+                            AdDate = DateTime.Now.Date,
+                            AdPrice = packageAd.Price,
+                            UserId = user.Id,
+                            IsViewed = false,
+                            UserPackageSubscriptionDetailId = activeSubscription.Id,
+                            CreatorUserId = userId,
+                            CreationTime = DateTime.Now,
+                            LastModificationTime = DateTime.Now,
+                            LastModifierUserId = userId,
+                        };
+                        newUserPackageAdDetail =
+                            await _userPackageAdDetailRepository.InsertAsync(newUserPackageAdDetail);
 
-                    await UnitOfWorkManager.Current.SaveChangesAsync();
+                        await UnitOfWorkManager.Current.SaveChangesAsync();
+                    }
                 }
+
+
             }
 
 
             return true;
         }
-        
+
         /// <summary>
         /// AcceptUserReferralRequest
         /// </summary>
@@ -854,7 +854,7 @@ namespace Emarketing.Admin
             {
                 return false;
             }
-            
+
             //update user package subscription detail
             userPackageSubscriptionDetail.ExpiryDate = DateTime.Now.AddDays(package.DurationInDays);
             userPackageSubscriptionDetail.StartDate = DateTime.Now;
@@ -1155,7 +1155,7 @@ namespace Emarketing.Admin
 
             return await GetUserDetailIdAsync(input.Id);
         }
-        
+
         protected virtual void CheckErrors(IdentityResult identityResult)
         {
             identityResult.CheckErrors(LocalizationManager);
