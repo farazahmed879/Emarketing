@@ -18,9 +18,9 @@ namespace Emarketing.BusinessObjects
         public string LastName { get; set; }
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
-        public string UserName { get; set; }
+        public string Password { get; set; }
         public ReferralRequestStatus ReferralRequestStatusId { get; set; }
-
+        public string UserName { get; set; }
         [ForeignKey("UserReferralId")] public User UserReferral { get; set; }
         public long? UserReferralId { get; set; }
         public bool IsAccepted { get; set; }

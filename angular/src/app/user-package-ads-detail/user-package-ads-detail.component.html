@@ -30,6 +30,7 @@
           <table class="table table-hover text-nowrap" [busy]="isTableLoading">
             <thead class="bg-light">
               <tr>
+                <th>User</th>
                 <th>Title</th>
                 <th>Url</th>
                 <th>Date</th>
@@ -48,10 +49,11 @@
                           totalItems: totalItems
                         })
                 ">
+                <td>{{ userPackageDetail.userName }}</td>
                 <td>{{ userPackageDetail.title }}</td>
                 <td>{{ userPackageDetail.url }}</td>
                 <td>{{ userPackageDetail.adDate }}</td>
-                <td>{{ userPackageDetail.adPrice }}</td>
+                <td>{{ userPackageDetail.adPrice }} PKR</td>
                 <td>
                   <a *ngIf="!userPackageDetail.isViewed" href="javascript:;" class="btn bg-blue"
                     (click)="viewUserPackageAdDetail(userPackageDetail.id)">

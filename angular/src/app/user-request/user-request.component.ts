@@ -44,6 +44,7 @@ export class UserRequestComponent extends PagedListingComponentBase<UserRequestD
         undefined,
         undefined,
         undefined,
+        request.keyword,
         request.skipCount,
         request.maxResultCount
       )

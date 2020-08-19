@@ -35,6 +35,8 @@
 
             public const string InvalidLogin = "Please log in.";
             public const string UserDuplicateWithEmail = "User already exist with this email.Please try with different email.";
+            public const string UserDuplicateWithUserName = "User already exist with this UserName .Please try with different UserName.";
+            public const string InvalidPassword = "Invlid Password.";
         }
     }
 }

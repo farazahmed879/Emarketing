@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Abp;
 using Abp.Application.Services;
@@ -86,6 +87,10 @@ namespace Emarketing.BusinessModels.UserReferralRequest
         private async Task<ResponseMessageDto> CreateUserReferralRequestAsync(
             CreateUserReferralRequestDto requestDto)
         {
+            await ValidatePassword(requestDto.Password);
+            await CheckEmailDuplication(requestDto.Email);
+            await CheckUserNameDuplication(requestDto.UserName);
+
             var result = await _userReferralRequestRepository.InsertAsync(new BusinessObjects.UserReferralRequest()
             {
                 UserId = requestDto.UserId,
@@ -96,6 +101,7 @@ namespace Emarketing.BusinessModels.UserReferralRequest
                 ReferralRequestStatusId = ReferralRequestStatus.Pending,
                 PackageId = requestDto.PackageId,
                 PhoneNumber = requestDto.PhoneNumber,
+                Password = requestDto.Password,
                 UserReferralId = null,
             });
 
@@ -168,6 +174,7 @@ namespace Emarketing.BusinessModels.UserReferralRequest
                         FirstName = i.FirstName,
                         LastName = i.LastName,
                         PackageId = i.PackageId,
+                        PackageName = i.Package.Name,
                         Email = i.Email,
                         UserName = i.UserName,
                         UserId = i.UserId,
@@ -223,6 +230,7 @@ namespace Emarketing.BusinessModels.UserReferralRequest
                     FirstName = i.FirstName,
                     LastName = i.LastName,
                     PackageId = i.PackageId,
+                    PackageName = i.Package.Name,
                     Email = i.Email,
                     PhoneNumber = i.PhoneNumber,
                     UserName = i.UserName,
@@ -242,17 +250,20 @@ namespace Emarketing.BusinessModels.UserReferralRequest
             UserReferralRequestInputDto input)
         {
             long userId = _abpSession.UserId.Value;
-            var filteredUserReferrals = _userReferralRequestRepository.GetAll();
+            var filteredUserReferrals = _userReferralRequestRepository.GetAll()
+                .WhereIf(!input.Keyword.IsNullOrWhiteSpace(),
+                    x => x.UserName.Contains(input.Keyword) ||
+                         x.FirstName.Contains(input.Keyword) ||
+                         x.LastName.Contains(input.Keyword) ||
+                         x.Email.Contains(input.Keyword) ||
+                         x.UserName.Contains(input.Keyword) ||
+                         x.Package.Name.Contains(input.Keyword));
             var isAdmin = await AuthenticateAdminUser();
             if (!isAdmin)
             {
                 filteredUserReferrals = _userReferralRequestRepository.GetAll().Where(x => x.UserId == userId);
             }
-
-            //var filteredUserReferrals = _userReferralRequestRepository.GetAll()
-            //    .WhereIf(!string.IsNullOrWhiteSpace(input.UserName), x => x.UserId == input.UserId);
-
-
+            
             var pagedAndFilteredUserReferrals = filteredUserReferrals
                 .OrderBy(i => i.Id)
                 .PageBy(input);
@@ -268,6 +279,7 @@ namespace Emarketing.BusinessModels.UserReferralRequest
                             FirstName = i.FirstName,
                             LastName = i.LastName,
                             PackageId = i.PackageId,
+                            PackageName = i.Package.Name,
                             Email = i.Email,
                             PhoneNumber = i.PhoneNumber,
                             UserName = i.UserName,
@@ -309,6 +321,7 @@ namespace Emarketing.BusinessModels.UserReferralRequest
 
             return false;
         }
+
         private async Task<bool> CheckEmailDuplication(string email)
         {
             var isInUser = await _userRepository.GetAll()
@@ -334,8 +347,51 @@ namespace Emarketing.BusinessModels.UserReferralRequest
             {
                 throw new UserFriendlyException(ErrorMessage.UserFriendly.UserDuplicateWithEmail);
             }
-            return false;
 
+            return false;
+        }
+
+        private async Task<bool> CheckUserNameDuplication(string userName)
+        {
+            var isInUser = await _userRepository.GetAll()
+                .Where(i => i.UserName == userName)
+                .AnyAsync();
+            if (isInUser)
+            {
+                throw new UserFriendlyException(ErrorMessage.UserFriendly.UserDuplicateWithUserName);
+            }
+
+            var isInUserRequest = await _userRequestRepository.GetAll()
+                .Where(i => i.UserName == userName)
+                .AnyAsync();
+            if (isInUserRequest)
+            {
+                throw new UserFriendlyException(ErrorMessage.UserFriendly.UserDuplicateWithUserName);
+            }
+
+            var isInUserReferralRequest = await _userReferralRequestRepository.GetAll()
+                .Where(i => i.UserName == userName)
+                .AnyAsync();
+            if (isInUserReferralRequest)
+            {
+                throw new UserFriendlyException(ErrorMessage.UserFriendly.UserDuplicateWithUserName);
+            }
+
+            return false;
+        }
+
+        private async Task<bool> ValidatePassword(string password)
+        {
+            var regex = @"^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$";
+            var match = Regex.Match(password, regex, RegexOptions.IgnoreCase);
+
+            if (!match.Success)
+            {
+                // does not match
+                throw new UserFriendlyException(ErrorMessage.UserFriendly.InvalidPassword);
+            }
+
+            return true;
         }
     }
 }

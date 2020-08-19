@@ -21,5 +21,9 @@ namespace Emarketing.BusinessObjects
 
         public ReferralAccountStatus ReferralAccountStatusId { get; set; }
         public ReferralBonusStatus ReferralBonusStatusId { get; set; }
+
+        [ForeignKey("UserReferralRequestId")]
+        public UserReferralRequest UserReferralRequest { get; set; }
+        public long? UserReferralRequestId { get; set; }
     }
 }

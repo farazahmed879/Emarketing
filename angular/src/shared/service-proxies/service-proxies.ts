@@ -1348,17 +1348,20 @@ export class PackageServiceProxy {
     /**
      * @param code (optional) 
      * @param name (optional) 
+     * @param keyword (optional) 
      * @param isActive (optional) 
      * @param skipCount (optional) 
      * @param maxResultCount (optional) 
      * @return Success
      */
-    getPaginatedAll(code: string | null | undefined, name: string | null | undefined, isActive: boolean | undefined, skipCount: number | undefined, maxResultCount: number | undefined): Observable<PackageDtoPagedResultDto> {
+    getPaginatedAll(code: string | null | undefined, name: string | null | undefined, keyword: string | null | undefined, isActive: boolean | undefined, skipCount: number | undefined, maxResultCount: number | undefined): Observable<PackageDtoPagedResultDto> {
         let url_ = this.baseUrl + "/api/services/app/Package/GetPaginatedAll?";
         if (code !== undefined && code !== null)
             url_ += "Code=" + encodeURIComponent("" + code) + "&";
         if (name !== undefined && name !== null)
             url_ += "Name=" + encodeURIComponent("" + name) + "&";
+        if (keyword !== undefined && keyword !== null)
+            url_ += "Keyword=" + encodeURIComponent("" + keyword) + "&";
         if (isActive === null)
             throw new Error("The parameter 'isActive' cannot be null.");
         else if (isActive !== undefined)
@@ -4792,18 +4795,21 @@ export class UserReferralRequestServiceProxy {
 
     /**
      * @param userId (optional) 
+     * @param keyword (optional) 
      * @param userName (optional) 
      * @param referralRequestStatusId (optional) 
      * @param skipCount (optional) 
      * @param maxResultCount (optional) 
      * @return Success
      */
-    getPaginatedAll(userId: number | undefined, userName: string | null | undefined, referralRequestStatusId: ReferralRequestStatus | undefined, skipCount: number | undefined, maxResultCount: number | undefined): Observable<UserReferralRequestDtoPagedResultDto> {
+    getPaginatedAll(userId: number | undefined, keyword: string | null | undefined, userName: string | null | undefined, referralRequestStatusId: ReferralRequestStatus | undefined, skipCount: number | undefined, maxResultCount: number | undefined): Observable<UserReferralRequestDtoPagedResultDto> {
         let url_ = this.baseUrl + "/api/services/app/UserReferralRequest/GetPaginatedAll?";
         if (userId === null)
             throw new Error("The parameter 'userId' cannot be null.");
         else if (userId !== undefined)
             url_ += "UserId=" + encodeURIComponent("" + userId) + "&";
+        if (keyword !== undefined && keyword !== null)
+            url_ += "Keyword=" + encodeURIComponent("" + keyword) + "&";
         if (userName !== undefined && userName !== null)
             url_ += "UserName=" + encodeURIComponent("" + userName) + "&";
         if (referralRequestStatusId === null)
@@ -5155,6 +5161,7 @@ export class UserRequestServiceProxy {
     }
 
     /**
+     * @param keyword (optional) 
      * @param packageId (optional) 
      * @param firstName (optional) 
      * @param lastName (optional) 
@@ -5166,8 +5173,10 @@ export class UserRequestServiceProxy {
      * @param maxResultCount (optional) 
      * @return Success
      */
-    getPaginatedAll(packageId: number | undefined, firstName: string | null | undefined, lastName: string | null | undefined, email: string | null | undefined, userName: string | null | undefined, phoneNumber: string | null | undefined, password: string | null | undefined, skipCount: number | undefined, maxResultCount: number | undefined): Observable<UserRequestDtoPagedResultDto> {
+    getPaginatedAll(keyword: string | null | undefined, packageId: number | undefined, firstName: string | null | undefined, lastName: string | null | undefined, email: string | null | undefined, userName: string | null | undefined, phoneNumber: string | null | undefined, password: string | null | undefined, skipCount: number | undefined, maxResultCount: number | undefined): Observable<UserRequestDtoPagedResultDto> {
         let url_ = this.baseUrl + "/api/services/app/UserRequest/GetPaginatedAll?";
+        if (keyword !== undefined && keyword !== null)
+            url_ += "Keyword=" + encodeURIComponent("" + keyword) + "&";
         if (packageId === null)
             throw new Error("The parameter 'packageId' cannot be null.");
         else if (packageId !== undefined)
@@ -10423,6 +10432,7 @@ export class CreateUserReferralRequestDto implements ICreateUserReferralRequestD
     email: string | undefined;
     phoneNumber: string | undefined;
     userName: string | undefined;
+    password: string | undefined;
     referralRequestStatusId: ReferralRequestStatus;
     id: number;
 
@@ -10444,6 +10454,7 @@ export class CreateUserReferralRequestDto implements ICreateUserReferralRequestD
             this.email = _data["email"];
             this.phoneNumber = _data["phoneNumber"];
             this.userName = _data["userName"];
+            this.password = _data["password"];
             this.referralRequestStatusId = _data["referralRequestStatusId"];
             this.id = _data["id"];
         }
@@ -10465,6 +10476,7 @@ export class CreateUserReferralRequestDto implements ICreateUserReferralRequestD
         data["email"] = this.email;
         data["phoneNumber"] = this.phoneNumber;
         data["userName"] = this.userName;
+        data["password"] = this.password;
         data["referralRequestStatusId"] = this.referralRequestStatusId;
         data["id"] = this.id;
         return data; 
@@ -10486,6 +10498,7 @@ export interface ICreateUserReferralRequestDto {
     email: string | undefined;
     phoneNumber: string | undefined;
     userName: string | undefined;
+    password: string | undefined;
     referralRequestStatusId: ReferralRequestStatus;
     id: number;
 }
@@ -10493,11 +10506,13 @@ export interface ICreateUserReferralRequestDto {
 export class UserReferralRequestDto implements IUserReferralRequestDto {
     userId: number;
     packageId: number;
+    packageName: string | undefined;
     firstName: string | undefined;
     lastName: string | undefined;
     email: string | undefined;
     phoneNumber: string | undefined;
     userName: string | undefined;
+    password: string | undefined;
     referralRequestStatusId: ReferralRequestStatus;
     referralRequestStatus: string | undefined;
     isAccepted: boolean;
@@ -10524,11 +10539,13 @@ export class UserReferralRequestDto implements IUserReferralRequestDto {
         if (_data) {
             this.userId = _data["userId"];
             this.packageId = _data["packageId"];
+            this.packageName = _data["packageName"];
             this.firstName = _data["firstName"];
             this.lastName = _data["lastName"];
             this.email = _data["email"];
             this.phoneNumber = _data["phoneNumber"];
             this.userName = _data["userName"];
+            this.password = _data["password"];
             this.referralRequestStatusId = _data["referralRequestStatusId"];
             this.referralRequestStatus = _data["referralRequestStatus"];
             this.isAccepted = _data["isAccepted"];
@@ -10555,11 +10572,13 @@ export class UserReferralRequestDto implements IUserReferralRequestDto {
         data = typeof data === 'object' ? data : {};
         data["userId"] = this.userId;
         data["packageId"] = this.packageId;
+        data["packageName"] = this.packageName;
         data["firstName"] = this.firstName;
         data["lastName"] = this.lastName;
         data["email"] = this.email;
         data["phoneNumber"] = this.phoneNumber;
         data["userName"] = this.userName;
+        data["password"] = this.password;
         data["referralRequestStatusId"] = this.referralRequestStatusId;
         data["referralRequestStatus"] = this.referralRequestStatus;
         data["isAccepted"] = this.isAccepted;
@@ -10586,11 +10605,13 @@ export class UserReferralRequestDto implements IUserReferralRequestDto {
 export interface IUserReferralRequestDto {
     userId: number;
     packageId: number;
+    packageName: string | undefined;
     firstName: string | undefined;
     lastName: string | undefined;
     email: string | undefined;
     phoneNumber: string | undefined;
     userName: string | undefined;
+    password: string | undefined;
     referralRequestStatusId: ReferralRequestStatus;
     referralRequestStatus: string | undefined;
     isAccepted: boolean;
@@ -10662,6 +10683,7 @@ export interface IUserReferralRequestDtoPagedResultDto {
 
 export class UserRequestDto implements IUserRequestDto {
     packageId: number;
+    packageName: string | undefined;
     firstName: string | undefined;
     lastName: string | undefined;
     email: string | undefined;
@@ -10692,6 +10714,7 @@ export class UserRequestDto implements IUserRequestDto {
     init(_data?: any) {
         if (_data) {
             this.packageId = _data["packageId"];
+            this.packageName = _data["packageName"];
             this.firstName = _data["firstName"];
             this.lastName = _data["lastName"];
             this.email = _data["email"];
@@ -10722,6 +10745,7 @@ export class UserRequestDto implements IUserRequestDto {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["packageId"] = this.packageId;
+        data["packageName"] = this.packageName;
         data["firstName"] = this.firstName;
         data["lastName"] = this.lastName;
         data["email"] = this.email;
@@ -10752,6 +10776,7 @@ export class UserRequestDto implements IUserRequestDto {
 
 export interface IUserRequestDto {
     packageId: number;
+    packageName: string | undefined;
     firstName: string | undefined;
     lastName: string | undefined;
     email: string | undefined;

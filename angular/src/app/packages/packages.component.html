@@ -38,8 +38,10 @@
               <tr>
                 <th>{{ "Code"}}</th>
                 <th>{{ "Name"}}</th>
+                <th>{{ "Duration"}}</th>
                 <th>{{ "Price"}}</th>
                 <th>{{ "Profit"}}</th>
+                <th>{{ "Per Ad"}}</th>
                 <th style="width: 200px;">{{ "Actions" | localize }}</th>
               </tr>
             </thead>
@@ -56,8 +58,10 @@
                 ">
                 <td>{{ package.code }}</td>
                 <td>{{ package.name }}</td>
-                <td>{{ package.price }}</td>
-                <td>{{ package.profitValue }}</td>
+                <td>{{ package.durationInDays }} Days</td>
+                <td>{{ package.price }} PKR</td>
+                <td>{{ package.profitValue }} PKR</td>
+                <td>{{ package.pricePerAd }} PKR</td>
                 <td>
                   <div class="nav-item dropdown nav-user-menu" dropdown>
                     <a href="javascript:;" class="nav-link" dropdownToggle>

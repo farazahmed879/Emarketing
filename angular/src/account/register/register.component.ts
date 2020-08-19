@@ -249,7 +249,7 @@ export class RegisterComponent extends AppComponentBase implements OnInit {
   ValidateUserName(str) {
     // at least one number, one lowercase and one uppercase letter
     // at least six characters
-    var re = /^([A-z0-9!@#$%^&*().,<>{}[\]<>?_=+\-|;:\'\"\/])*[^\s]\1*$/;
+    var re = /^([A-z0-9!@$%^&*().,<>{}[\]<>?_=+\-|;:\'\"\/])*[^\s]\1*$/;
     return re.test(str); 
      
      

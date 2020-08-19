@@ -88,8 +88,8 @@ export class UserPackageComponent extends AppComponentBase
       dailyAdCount: 5,
       pricePerAd: 73.6,
       referralAmount: 300,
-      minimumWithdraw: 500,
-      maximumWithdraw: 1000
+      minimumWithdraw: 2600,
+      maximumWithdraw: 3500
     },
     {
       id: 5,
@@ -130,8 +130,8 @@ export class UserPackageComponent extends AppComponentBase
       dailyAdCount: 5,
       pricePerAd: 9.00,
       referralAmount: 200.00,
-      minimumWithdraw: 500.00,
-      maximumWithdraw: 325.00
+      minimumWithdraw:325.00 ,
+      maximumWithdraw: 500.00
     }
   ];
 

@@ -6,6 +6,7 @@ using Abp.Application.Services;
 using Abp.Application.Services.Dto;
 using Abp.Authorization;
 using Abp.Domain.Repositories;
+using Abp.Extensions;
 using Abp.Linq.Extensions;
 using Abp.Runtime.Session;
 using Abp.UI;
@@ -306,8 +307,11 @@ namespace Emarketing.BusinessModels.Package
             }
 
             var filteredPackages = _packageRepository.GetAll()
+                .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), x => x.Name.Contains(input.Keyword)
+                                                                   || x.Code.Contains(input.Keyword) || 
+                                                                   x.Description.Contains(input.Keyword))
                 .WhereIf(!string.IsNullOrWhiteSpace(input.Name), x => x.Name.Contains(input.Name));
-            ;
+             
 
             var pagedAndFilteredPackages = filteredPackages
                 .OrderBy(i => i.Id)

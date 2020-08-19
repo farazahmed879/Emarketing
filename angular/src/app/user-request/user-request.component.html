@@ -26,6 +26,7 @@
           <table class="table table-hover text-nowrap" [busy]="isTableLoading">
             <thead class="bg-light">
               <tr>
+                <th>{{ "Package" | localize }}</th>
                 <th>{{ "First Name" | localize }}</th>
                 <th>{{ "Last Name" | localize }}</th>               
                 <th>{{ "User Name" | localize }}</th>
@@ -44,6 +45,7 @@
                           totalItems: totalItems
                         })
                 ">
+                <td>{{ item.packageName }}</td>
                 <td>{{ item.firstName }}</td>
                 <td>{{ item.lastName }}</td>
                 <td>{{ item.userName }}</td>

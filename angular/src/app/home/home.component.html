@@ -3,7 +3,7 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-12">
-          <h1>{{ "HomePage" | localize }}</h1>
+          <h1>{{ "Dashboard" | localize }}</h1>
         </div>
       </div>
     </div>
@@ -12,9 +12,28 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-lg-3 col-6">
+          <div class="small-box bg-primary">
+            <div class="inner">
+              <h3>Hi</h3>
+              <p *ngIf="currentSubscriptionStats">{{currentSubscriptionStats.userName}}</p>
+            </div>
+            <div class="icon">
+              <i class="fas fa-user"></i>
+            </div>
+            <!-- <a
+              href="https://github.com/aspnetboilerplate/aspnetboilerplate/network/members"
+              class="small-box-footer"
+              target="_blank"
+            >
+              More info
+              <i class="fas fa-arrow-circle-right"></i>
+            </a> -->
+          </div>
+        </div>
+        <div class="col-lg-3 col-6">
           <div class="small-box bg-success">
             <div class="inner">
-              <h3>Package</h3>
+              <h3> Package</h3>
               <p *ngIf="currentSubscriptionStats">{{currentSubscriptionStats.package}}</p>
             </div>
             <div class="icon">
@@ -53,7 +72,7 @@
           <div class="small-box bg-warning">
             <div class="inner">
               <h3>Balance</h3>
-              <p *ngIf="currentSubscriptionStats">{{currentSubscriptionStats.balance}}</p>
+              <p *ngIf="currentSubscriptionStats">{{currentSubscriptionStats.balance}} PKR</p>
             </div>
             <div class="icon">
               <i class="fas fa-money-bill-wave"></i>
@@ -68,25 +87,7 @@
             </a> -->
           </div>
         </div>
-        <div class="col-lg-3 col-6">
-          <div class="small-box bg-primary">
-            <div class="inner">
-              <h3>Hi</h3>
-              <p *ngIf="currentSubscriptionStats">{{currentSubscriptionStats.userName}}</p>
-            </div>
-            <div class="icon">
-              <i class="fas fa-user"></i>
-            </div>
-            <!-- <a
-              href="https://github.com/aspnetboilerplate/aspnetboilerplate/network/members"
-              class="small-box-footer"
-              target="_blank"
-            >
-              More info
-              <i class="fas fa-arrow-circle-right"></i>
-            </a> -->
-          </div>
-        </div>
+        
       </div>
       <!-- <div class="row">
         <div class="col-12 col-sm-6 col-md-3">

@@ -13,6 +13,7 @@ using Emarketing.Authorization;
 using Emarketing.Authorization.Roles;
 using Emarketing.Authorization.Users;
 using Emarketing.BusinessModels.UserRequest.Dto;
+using Emarketing.Helper;
 using Emarketing.Sessions;
 using Microsoft.EntityFrameworkCore;
 
@@ -65,7 +66,7 @@ namespace Emarketing.BusinessModels.UserRequest
 
         public async Task<ResponseMessageDto> CreateOrEditAsync(CreateUserRequestDto withdrawRequestDto)
         {
-          
+
             ResponseMessageDto result;
             if (withdrawRequestDto.Id == 0)
             {
@@ -133,7 +134,7 @@ namespace Emarketing.BusinessModels.UserRequest
                 Password = userRequestDto.Password,
                 PhoneNumber = userRequestDto.PhoneNumber,
                 PackageId = userRequestDto.PackageId,
-                
+
             });
 
             if (result != null)
@@ -170,6 +171,8 @@ namespace Emarketing.BusinessModels.UserRequest
                     new UserRequestDto()
                     {
                         Id = i.Id,
+                        PackageId = i.PackageId,
+                        PackageName = i.Package.Name,
                         FirstName = i.FirstName,
                         LastName = i.LastName,
                         UserName = i.UserName,
@@ -217,6 +220,8 @@ namespace Emarketing.BusinessModels.UserRequest
                 .Select(i => new UserRequestDto()
                 {
                     Id = i.Id,
+                    PackageId = i.PackageId,
+                    PackageName = i.Package.Name,
                     FirstName = i.FirstName,
                     LastName = i.LastName,
                     UserName = i.UserName,
@@ -243,11 +248,12 @@ namespace Emarketing.BusinessModels.UserRequest
                 throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
             }
             //var userId = _abpSession.UserId;
-            var filteredUserRequests = _userRequestRepository.GetAll();
-            //.Where(x => x.UserId == userId)
-            // .WhereIf(input.Status.HasValue, x => x.Status == input.Status);
-            //.Where(i => i.IsDeleted == false && (input.TenantId == null || i.TenantId == input.TenantId))
-            //.WhereIf(!string.IsNullOrWhiteSpace(input.UserName), x => x.UserName.Contains(input.Name));
+            var filteredUserRequests = _userRequestRepository.GetAll()
+                .WhereIf(!input.Keyword.IsNullOrEmptyOrWhiteSpace(),
+                    x => x.UserName.Contains(input.Keyword) || x.FirstName.Contains(input.Keyword) ||
+                         x.LastName.Contains(input.Keyword) || x.Email.Contains(input.Keyword) ||
+                         x.Package.Name.Contains(input.Keyword) );
+           
 
             var pagedAndFilteredUserRequests = filteredUserRequests
                 .OrderBy(i => i.Id)
@@ -261,6 +267,8 @@ namespace Emarketing.BusinessModels.UserRequest
                         new UserRequestDto()
                         {
                             Id = i.Id,
+                            PackageId = i.PackageId,
+                            PackageName = i.Package.Name,
                             FirstName = i.FirstName,
                             LastName = i.LastName,
                             UserName = i.UserName,

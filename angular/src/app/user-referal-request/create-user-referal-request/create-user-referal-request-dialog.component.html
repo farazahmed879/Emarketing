@@ -45,6 +45,16 @@
     </div>
     <div class="form-group row required">
       <label class="col-md-3 col-form-label" for="name">
+        {{ "Password" | localize }}
+      </label>
+      <div class="col-md-9">
+        <input type="text" class="form-control" name="password" id="password" required maxlength="32"
+          [(ngModel)]="userReferalRequest.password" #passwordModel="ngModel" #passwordEl />
+        <abp-validation-summary [control]="passwordModel" [controlEl]="passwordEl"></abp-validation-summary>
+      </div>
+    </div>
+    <div class="form-group row required">
+      <label class="col-md-3 col-form-label" for="name">
         {{ "Phone Number" | localize }}
       </label>
       <div class="col-md-9">

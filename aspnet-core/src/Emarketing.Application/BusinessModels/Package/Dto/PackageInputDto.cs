@@ -7,7 +7,7 @@ namespace Emarketing.BusinessModels.Package.Dto
         public string Code { get; set; }
 
         public string Name { get; set; }
-
+        public string Keyword { get; set; }
         // public string Description { get; set; }
         //public decimal Price { get; set; }
         //public decimal ProfitValue { get; set; }
