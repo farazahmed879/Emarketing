@@ -477,6 +477,62 @@ export class AdminServiceProxy {
     }
 
     /**
+     * @param packageId (optional) 
+     * @return Success
+     */
+    renewPackageAdForUsersByPackageId(packageId: number | undefined): Observable<boolean> {
+        let url_ = this.baseUrl + "/api/services/app/Admin/RenewPackageAdForUsersByPackageId?";
+        if (packageId === null)
+            throw new Error("The parameter 'packageId' cannot be null.");
+        else if (packageId !== undefined)
+            url_ += "packageId=" + encodeURIComponent("" + packageId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processRenewPackageAdForUsersByPackageId(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processRenewPackageAdForUsersByPackageId(<any>response_);
+                } catch (e) {
+                    return <Observable<boolean>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<boolean>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processRenewPackageAdForUsersByPackageId(response: HttpResponseBase): Observable<boolean> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<boolean>(<any>null);
+    }
+
+    /**
      * @param body (optional) 
      * @return Success
      */
@@ -10909,6 +10965,7 @@ export interface IUserWithdrawDetailDtoPagedResultDto {
 export class WithdrawRequestDto implements IWithdrawRequestDto {
     userId: number;
     userName: string | undefined;
+    userEmail: string | undefined;
     amount: number;
     withdrawTypeId: WithdrawType;
     withdrawType: string | undefined;
@@ -10939,6 +10996,7 @@ export class WithdrawRequestDto implements IWithdrawRequestDto {
         if (_data) {
             this.userId = _data["userId"];
             this.userName = _data["userName"];
+            this.userEmail = _data["userEmail"];
             this.amount = _data["amount"];
             this.withdrawTypeId = _data["withdrawTypeId"];
             this.withdrawType = _data["withdrawType"];
@@ -10969,6 +11027,7 @@ export class WithdrawRequestDto implements IWithdrawRequestDto {
         data = typeof data === 'object' ? data : {};
         data["userId"] = this.userId;
         data["userName"] = this.userName;
+        data["userEmail"] = this.userEmail;
         data["amount"] = this.amount;
         data["withdrawTypeId"] = this.withdrawTypeId;
         data["withdrawType"] = this.withdrawType;
@@ -10999,6 +11058,7 @@ export class WithdrawRequestDto implements IWithdrawRequestDto {
 export interface IWithdrawRequestDto {
     userId: number;
     userName: string | undefined;
+    userEmail: string | undefined;
     amount: number;
     withdrawTypeId: WithdrawType;
     withdrawType: string | undefined;

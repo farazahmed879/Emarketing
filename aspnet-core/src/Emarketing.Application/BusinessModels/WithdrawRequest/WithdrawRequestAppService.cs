@@ -44,8 +44,7 @@ namespace Emarketing.BusinessModels.WithdrawRequest
         private readonly IAbpSession _abpSession;
         private readonly UserManager _userManager;
         private readonly RoleManager _roleManager;
-
-
+        
         public WithdrawRequestAppService(
             IRepository<BusinessObjects.WithdrawRequest, long> withdrawRequestRepository,
             IRepository<BusinessObjects.UserWithdrawDetail, long> userWithdrawDetailRepository,
@@ -86,6 +85,14 @@ namespace Emarketing.BusinessModels.WithdrawRequest
             }
 
             long userId = _abpSession.UserId.Value;
+            var isAllWithdrawRequestPaid = await _withdrawRequestRepository.GetAll()
+                .Where(x => x.Status && x.UserId == userId).AnyAsync();
+            if (!isAllWithdrawRequestPaid)
+            {
+                throw new UserFriendlyException(ErrorMessage.UserFriendly.WithdrawRequestNeedToPaid);
+            }
+
+
             var userWithdrawDetail = await _userWithdrawDetailRepository.GetAll()
                 .Where(x => x.UserId == userId && x.WithdrawTypeId == withdrawRequestDto.WithdrawTypeId)
                 .FirstOrDefaultAsync();
@@ -201,6 +208,7 @@ namespace Emarketing.BusinessModels.WithdrawRequest
                         WithdrawTypeId = i.WithdrawTypeId,
                         UserId = i.UserId,
                         UserName = $"{i.User.FullName}",
+                        UserEmail = $"{i.User.EmailAddress}",
                         WithdrawType = i.WithdrawTypeId.GetEnumFieldDescription(),
                         Status = i.Status,
                         WithdrawDetails = i.WithdrawDetails,
@@ -255,12 +263,14 @@ namespace Emarketing.BusinessModels.WithdrawRequest
                     WithdrawTypeId = i.WithdrawTypeId,
                     UserId = i.UserId,
                     UserName = $"{i.User.FullName}",
+                    UserEmail = $"{i.User.EmailAddress}",
                     WithdrawType = i.WithdrawTypeId.GetEnumFieldDescription(),
                     Status = i.Status,
                     WithdrawDetails = i.WithdrawDetails,
                     Dated = i.Dated.FormatDate(EmarketingConsts.DateFormat),
                     UserWithdrawDetailId = i.UserWithdrawDetailId,
                     StatusName = i.Status == true ? "Paid" : "Pending",
+
                     CreatorUserId = i.CreatorUserId,
                     CreationTime = i.CreationTime,
                     LastModificationTime = i.LastModificationTime,
@@ -303,6 +313,7 @@ namespace Emarketing.BusinessModels.WithdrawRequest
                             Dated = i.Dated.FormatDate(EmarketingConsts.DateFormat),
                             UserWithdrawDetailId = i.UserWithdrawDetailId,
                             StatusName = i.Status == true ? "Paid" : "Pending",
+                            UserEmail = $"{i.User.EmailAddress}",
                             CreatorUserId = i.CreatorUserId,
                             CreationTime = i.CreationTime,
                             LastModificationTime = i.LastModificationTime,

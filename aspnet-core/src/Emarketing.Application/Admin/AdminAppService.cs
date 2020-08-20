@@ -22,6 +22,7 @@ using Abp.Domain.Entities;
 using Emarketing.Users.Dto;
 using Microsoft.AspNetCore.Identity;
 using Abp.IdentityFramework;
+using Abp.Logging;
 
 namespace Emarketing.Admin
 {
@@ -330,6 +331,7 @@ namespace Emarketing.Admin
                     {
                         throw new UserFriendlyException("Invalid Referral Email");
                     }
+
                     var checkDuplicate = await CheckEmailDuplication(requestDto.Email);
                     var checkDuplicateUserName = await CheckUserNameDuplication(requestDto.UserName);
 
@@ -516,7 +518,7 @@ namespace Emarketing.Admin
                 //assign user role
                 var userRoleName = "User";
 
-                await _userManager.SetRolesAsync(newUser, new[] { userRoleName });
+                await _userManager.SetRolesAsync(newUser, new[] {userRoleName});
 
                 //save personal details
 
@@ -698,6 +700,12 @@ namespace Emarketing.Admin
             var allUsers = await _userRepository.GetAll().Where(x => x.IsActive == true).ToListAsync();
             foreach (var user in allUsers)
             {
+                //condition to ignore already added ads for today....
+                var userPackageAdsForCurrentDay = await _userPackageAdDetailRepository.GetAll()
+                    .Where(x => x.UserId == user.Id && x.AdDate == DateTime.Now.Date).ToListAsync();
+
+                if (userPackageAdsForCurrentDay.Count != 0) continue;
+
                 var activeSubscription = await _userPackageSubscriptionDetailRepository
                     .FirstOrDefaultAsync(x => x.UserId == user.Id &&
                                               x.StatusId == UserPackageSubscriptionStatus.Active &&
@@ -720,11 +728,9 @@ namespace Emarketing.Admin
                     = await _packageAdRepository
                         .GetAll().Where(x => x.PackageId == activeSubscription.PackageId &&
                                              x.IsActive == true).ToListAsync();
-                //condition to ignore already added ads for today....
-                var userPackageAdsForCurrentDay = await _userPackageAdDetailRepository.GetAll()
-                    .Where(x => x.UserId == user.Id && x.AdDate == DateTime.Now.Date).ToListAsync();
 
-                if (userPackageAdsForCurrentDay.Count != 0) continue;
+
+                if (packageAds.Count == 0) continue;
 
                 foreach (var packageAd in packageAds.Take(packageAdLimit))
                 {
@@ -743,11 +749,96 @@ namespace Emarketing.Admin
                     };
                     newUserPackageAdDetail =
                         await _userPackageAdDetailRepository.InsertAsync(newUserPackageAdDetail);
-
-                    await UnitOfWorkManager.Current.SaveChangesAsync();
                 }
+
+                await UnitOfWorkManager.Current.SaveChangesAsync();
             }
 
+            return true;
+        }
+
+        /// <summary>
+        /// RenewPackageAdForUsers By Package Id
+        /// </summary>
+        /// <returns></returns>
+        public async Task<bool> RenewPackageAdForUsersByPackageId(long packageId)
+        {
+            var userId = _abpSession.UserId;
+            var isAdminUser = await AuthenticateAdminUser();
+            if (!isAdminUser)
+            {
+                throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
+            }
+
+            var package = await _packageRepository
+                .FirstOrDefaultAsync(i => i.Id == packageId);
+            if (package == null)
+            {
+                LogHelper.Logger.Error("Invalid package ");
+                return false;
+            }
+
+            ;
+
+            var activeSubscriptions = await _userPackageSubscriptionDetailRepository.GetAll()
+                .Where(x => x.PackageId == packageId &&
+                            x.StatusId == UserPackageSubscriptionStatus.Active &&
+                            x.ExpiryDate.Value != DateTime.Now).ToListAsync();
+            var packageUserIds = activeSubscriptions.Select(x => x.UserId);
+
+            var allUsers = await _userRepository.GetAll()
+                .Where(x => x.IsActive == true && packageUserIds.Contains(x.Id)).ToListAsync();
+
+            var packageAdLimit = package.DailyAdCount;
+
+            var packageAds
+                = await _packageAdRepository
+                    .GetAll().Where(x => x.PackageId == packageId &&
+                                         x.IsActive == true).ToListAsync();
+
+            if (packageAds.Count == 0)
+            {
+                LogHelper.Logger.Error("Missing Packages Ads ");
+                return false;
+            }
+
+            ;
+
+            foreach (var user in allUsers)
+            {
+                var activeSubscription = activeSubscriptions.FirstOrDefault(x => x.UserId == packageId);
+                if (activeSubscription == null)
+                {
+                    continue;
+                }
+
+                //condition to ignore already added ads for today....
+                var userPackageAdsForCurrentDay = await _userPackageAdDetailRepository.GetAll()
+                    .Where(x => x.UserId == user.Id && x.AdDate == DateTime.Now.Date).AnyAsync();
+
+                if (userPackageAdsForCurrentDay) continue;
+
+                foreach (var packageAd in packageAds.Take(packageAdLimit))
+                {
+                    var newUserPackageAdDetail = new UserPackageAdDetail()
+                    {
+                        PackageAdId = packageAd.Id,
+                        AdDate = DateTime.Now.Date,
+                        AdPrice = packageAd.Price,
+                        UserId = user.Id,
+                        IsViewed = false,
+                        UserPackageSubscriptionDetailId = activeSubscription.Id,
+                        CreatorUserId = userId,
+                        CreationTime = DateTime.Now,
+                        LastModificationTime = DateTime.Now,
+                        LastModifierUserId = userId,
+                    };
+                    newUserPackageAdDetail =
+                        await _userPackageAdDetailRepository.InsertAsync(newUserPackageAdDetail);
+                }
+
+                await UnitOfWorkManager.Current.SaveChangesAsync();
+            }
 
             return true;
         }
@@ -812,7 +903,7 @@ namespace Emarketing.Admin
                 //assign user role
                 var userRoleName = "User";
 
-                await _userManager.SetRolesAsync(newUser, new[] { userRoleName });
+                await _userManager.SetRolesAsync(newUser, new[] {userRoleName});
 
                 //save personal details
 
@@ -1107,11 +1198,21 @@ namespace Emarketing.Admin
             }
 
             long userId = _abpSession.UserId.Value;
+
+            var isAnyWithdrawRequestUnPaid = await _withdrawRequestRepository.GetAll()
+                .AnyAsync(x => !x.Status && x.UserId == userId);
+            if (isAnyWithdrawRequestUnPaid)
+            {
+                throw new UserFriendlyException(ErrorMessage.UserFriendly.WithdrawRequestNeedToPaid);
+            }
+
             var isValidate = await ValidateWithdrawRequestAmountAsync(requestDto: withdrawRequestDto);
             if (isValidate)
             {
                 var userWithdrawDetail = await _userWithdrawDetailRepository.GetAll()
-                    .Where(x => x.UserId == userId && x.WithdrawTypeId == withdrawRequestDto.WithdrawTypeId)
+                    .Where(x => x.UserId == userId &&
+                                x.WithdrawTypeId == withdrawRequestDto.WithdrawTypeId
+                                && x.IsPrimary)
                     .FirstOrDefaultAsync();
 
                 if (userWithdrawDetail == null)
@@ -1191,20 +1292,21 @@ namespace Emarketing.Admin
                 throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
             }
 
-            var result = await _withdrawRequestRepository.UpdateAsync(new BusinessObjects.WithdrawRequest()
+            var withdrawRequest = await _withdrawRequestRepository.GetAll().Where(x => x.Id == requestDto.Id)
+                .FirstOrDefaultAsync();
+
+            if (withdrawRequest == null)
             {
-                Id = requestDto.Id,
-                Amount = requestDto.Amount,
+                throw new UserFriendlyException("Invalid Withdraw Request.");
+            }
 
-                Status = true,
-                WithdrawTypeId = requestDto.WithdrawTypeId,
-                UserId = requestDto.UserId,
-                CreatorUserId = userId,
-                CreationTime = DateTime.Now,
-                LastModifierUserId = userId,
-                LastModificationTime = DateTime.Now,
-            });
+            withdrawRequest.Status = true;
+            withdrawRequest.LastModifierUserId = userId;
+            withdrawRequest.LastModificationTime = DateTime.Now;
 
+            var result = await _withdrawRequestRepository.UpdateAsync(withdrawRequest);
+            await UnitOfWorkManager.Current.SaveChangesAsync();
+             
             if (result != null)
             {
                 return new ResponseMessageDto()
@@ -1289,7 +1391,6 @@ namespace Emarketing.Admin
         }
 
         #endregion
-
 
         public async Task<User> GetUserDetailIdAsync(long id)
         {

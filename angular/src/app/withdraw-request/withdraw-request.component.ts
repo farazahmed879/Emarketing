@@ -4,6 +4,7 @@ import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { WithdrawRequestDto, WithdrawRequestServiceProxy, CreateWithdrawRequestDto, UserWithdrawDetailServiceProxy, AdminServiceProxy } from '@shared/service-proxies/service-proxies';
 import { SelectItem } from 'primeng/api';
 import { PrimefacesDropDownObject } from '@app/app.component';
+import { Router } from "@angular/router";
 //import {DropdownModule} from 'primeng/dropdown';
 
 interface City {
@@ -13,7 +14,8 @@ interface City {
 
 @Component({
   templateUrl: './withdraw-request.component.html',
-  animations: [appModuleAnimation()]
+  animations: [appModuleAnimation()],
+  
 })
 export class WithdrawRequestComponent extends AppComponentBase implements OnInit {
   //cities1: SelectItem[];
@@ -32,6 +34,7 @@ export class WithdrawRequestComponent extends AppComponentBase implements OnInit
   ];
   constructor(injector: Injector,
     private _adminService: AdminServiceProxy,
+    private router: Router,
     public _userWithdrawDetailsService: UserWithdrawDetailServiceProxy) {
     super(injector);
 
@@ -69,6 +72,7 @@ export class WithdrawRequestComponent extends AppComponentBase implements OnInit
     this._adminService.createOrEditWithdrawRequest(createWithdrawRequestDto).subscribe((result) => {
       if (result) {
         this.notify.info(this.l('SavedSuccessfully'));
+        this.router.navigate(['/app/withdraw-history'])
       }
 
     })

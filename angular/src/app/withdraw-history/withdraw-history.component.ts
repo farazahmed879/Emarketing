@@ -1,7 +1,7 @@
 import { Component, Injector } from '@angular/core';
 import { AppComponentBase } from '@shared/app-component-base';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
-import { WithdrawRequestServiceProxy, WithdrawRequestDto, WithdrawRequestDtoPagedResultDto } from '@shared/service-proxies/service-proxies';
+import { WithdrawRequestServiceProxy, AdminServiceProxy,  WithdrawRequestDto, WithdrawRequestDtoPagedResultDto, CreateWithdrawRequestDto } from '@shared/service-proxies/service-proxies';
 import { finalize } from 'rxjs/operators';
 import { PagedRequestDto, PagedListingComponentBase } from '@shared/paged-listing-component-base';
 
@@ -16,6 +16,7 @@ class PagedWithdrawHistoryDto extends PagedRequestDto {
 })
 export class WithdrawHistoryComponent extends PagedListingComponentBase<WithdrawRequestDto> {
   constructor(injector: Injector,
+    private _adminService: AdminServiceProxy,
     private _withdrawRequestService: WithdrawRequestServiceProxy,
     ) {
     super(injector);
@@ -56,6 +57,16 @@ export class WithdrawHistoryComponent extends PagedListingComponentBase<Withdraw
   }
   delete(){
 
+  }
+
+  markAsPaidRequest(event: WithdrawRequestDto) {
+    debugger;
+    var createWithdrawRequestDto = new CreateWithdrawRequestDto();
+    createWithdrawRequestDto.id = event.id;
+    this._adminService.createOrEditWithdrawRequest(createWithdrawRequestDto).subscribe((result) => {
+      if (result)
+        this.notify.info(this.l('SavedSuccessfully'));
+    })
   }
 
 

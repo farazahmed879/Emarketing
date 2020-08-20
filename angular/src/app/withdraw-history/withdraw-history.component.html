@@ -37,11 +37,12 @@
             <thead class="bg-light">
               <tr>
                 <th>{{ "User Name" | localize }}</th>
-                <th>{{ "Requested On" | localize }}</th>
-                <th>{{ "Amount" | localize }}</th>
+                <th>{{ "User Email" | localize }}</th>
+                <th>{{ "Date" | localize }}</th>
+                <th>{{ "Amount" | localize }} PKR</th>
                 <th>{{ "Type" | localize }}</th>
                 <th>{{ "Account" | localize }}</th>
-                <!-- <th style="width: 200px;">{{ "Actions" | localize }}</th> -->
+                <th style="width: 200px;">{{ "Actions" | localize }}</th>
               </tr>
             </thead>
             <tbody>
@@ -58,12 +59,16 @@
                 "
               >
                 <td>{{ withdrawHistory?.userName }}</td>
+                <td>{{ withdrawHistory?.userEmail }}</td>
                 <td>{{ withdrawHistory?.dated }}</td>
                 <td>{{ withdrawHistory?.amount }} PKR</td>
                 <td>{{ withdrawHistory?.withdrawType }}</td>
                 <td>{{ withdrawHistory?.withdrawDetails }}</td>
-                <!-- <td>
-                  <button
+                <td>
+                  <button *ngIf="!withdrawHistory.status" type="button" class="btn btn-sm bg-secondary" (click)="markAsPaidRequest(withdrawHistory)">
+                    {{ "Mark as Paid"}}
+                  </button>
+                  <!-- <button
                     type="button"
                     class="btn btn-sm bg-secondary"
                     (click)="editRole(role)"
@@ -78,8 +83,8 @@
                   >
                     <i class="fas fa-trash"></i>
                     {{ "Delete" | localize }}
-                  </button>
-                </td> -->
+                  </button> -->
+                </td>
               </tr>
             </tbody>
           </table>

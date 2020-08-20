@@ -38,6 +38,7 @@
             public const string UserDuplicateWithUserName = "User already exist with this UserName .Please try with different UserName.";
             public const string InvalidPassword = "Invalid Password.";
             public const string MissingUserWithdrawDetail = "Missing Withdraw detail.";
+            public const string WithdrawRequestNeedToPaid = "Unable to add new Withdraw Request. Because you have withdraw request in pending.";
         }
     }
 }
