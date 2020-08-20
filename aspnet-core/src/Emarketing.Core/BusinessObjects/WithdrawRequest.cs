@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 using Abp.Domain.Entities.Auditing;
 using Emarketing.Authorization.Users;
 
@@ -15,6 +16,12 @@ namespace Emarketing.BusinessObjects
 
         public decimal Amount { get; set; }
         public WithdrawType WithdrawTypeId { get; set; }
+        public DateTime Dated { get; set; }
         public bool Status { get; set; }
+        public string WithdrawDetails { get; set; }
+
+        [ForeignKey("UserWithdrawDetailId")] 
+        public UserWithdrawDetail UserWithdrawDetail { get; set; }
+        public long? UserWithdrawDetailId { get; set; }
     }
 }

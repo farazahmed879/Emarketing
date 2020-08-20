@@ -22,10 +22,10 @@ namespace Emarketing
 
     public enum ReferralBonusStatus
     {
-        [Description("Active")]
-        Active = 1,
-        [Description("Inactive")]
-        Inactive = 2,
+        [Description("Paid")]
+        Paid = 1,
+        [Description("Pending")]
+        Pending = 2,
     }
 
     public enum ReferralRequestStatus

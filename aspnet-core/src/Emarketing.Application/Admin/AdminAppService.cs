@@ -873,7 +873,7 @@ namespace Emarketing.Admin
                         UserId = userReferralRequest.UserId,
                         ReferralUserId = newUser.Id,
                         ReferralAccountStatusId = ReferralAccountStatus.Inactive,
-                        ReferralBonusStatusId = ReferralBonusStatus.Inactive,
+                        ReferralBonusStatusId = ReferralBonusStatus.Pending,
                         UserReferralRequestId = userReferralRequest.Id,
                         CreatorUserId = userId,
                         CreationTime = DateTime.Now,
@@ -1101,16 +1101,47 @@ namespace Emarketing.Admin
 
         private async Task<ResponseMessageDto> CreateWithdrawRequestAsync(CreateWithdrawRequestDto withdrawRequestDto)
         {
+            if (_abpSession.UserId == null)
+            {
+                throw new UserFriendlyException(ErrorMessage.UserFriendly.InvalidLogin);
+            }
+
             long userId = _abpSession.UserId.Value;
             var isValidate = await ValidateWithdrawRequestAmountAsync(requestDto: withdrawRequestDto);
             if (isValidate)
             {
+                var userWithdrawDetail = await _userWithdrawDetailRepository.GetAll()
+                    .Where(x => x.UserId == userId && x.WithdrawTypeId == withdrawRequestDto.WithdrawTypeId)
+                    .FirstOrDefaultAsync();
+
+                if (userWithdrawDetail == null)
+                {
+                    throw new UserFriendlyException(ErrorMessage.UserFriendly.MissingUserWithdrawDetail);
+                }
+
+                var withdrawDetail = string.Empty;
+                switch (userWithdrawDetail.WithdrawTypeId)
+                {
+                    case WithdrawType.BankTransfer:
+                        withdrawDetail = $"{userWithdrawDetail.AccountTitle} - {userWithdrawDetail.AccountIBAN}";
+                        break;
+                    case WithdrawType.EasyPaisa:
+                        withdrawDetail = $"{userWithdrawDetail.EasyPaisaNumber}";
+                        break;
+                    case WithdrawType.JazzCash:
+                        withdrawDetail = $"{userWithdrawDetail.JazzCashNumber}";
+                        break;
+                }
+
                 var result = await _withdrawRequestRepository.InsertAsync(new BusinessObjects.WithdrawRequest()
                 {
                     Amount = withdrawRequestDto.Amount,
                     Status = false,
                     WithdrawTypeId = withdrawRequestDto.WithdrawTypeId,
                     UserId = withdrawRequestDto.UserId,
+                    Dated = DateTime.Now,
+                    UserWithdrawDetailId = userWithdrawDetail.Id,
+                    WithdrawDetails = withdrawDetail,
                     CreatorUserId = userId,
                     CreationTime = DateTime.Now,
                     LastModifierUserId = userId,
@@ -1165,7 +1196,7 @@ namespace Emarketing.Admin
                 Id = requestDto.Id,
                 Amount = requestDto.Amount,
 
-                //Status = requestDto.Status,
+                Status = true,
                 WithdrawTypeId = requestDto.WithdrawTypeId,
                 UserId = requestDto.UserId,
                 CreatorUserId = userId,

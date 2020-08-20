@@ -10912,6 +10912,11 @@ export class WithdrawRequestDto implements IWithdrawRequestDto {
     amount: number;
     withdrawTypeId: WithdrawType;
     withdrawType: string | undefined;
+    dated: string | undefined;
+    status: boolean;
+    statusName: string | undefined;
+    withdrawDetails: string | undefined;
+    userWithdrawDetailId: number | undefined;
     isDeleted: boolean;
     deleterUserId: number | undefined;
     deletionTime: moment.Moment | undefined;
@@ -10937,6 +10942,11 @@ export class WithdrawRequestDto implements IWithdrawRequestDto {
             this.amount = _data["amount"];
             this.withdrawTypeId = _data["withdrawTypeId"];
             this.withdrawType = _data["withdrawType"];
+            this.dated = _data["dated"];
+            this.status = _data["status"];
+            this.statusName = _data["statusName"];
+            this.withdrawDetails = _data["withdrawDetails"];
+            this.userWithdrawDetailId = _data["userWithdrawDetailId"];
             this.isDeleted = _data["isDeleted"];
             this.deleterUserId = _data["deleterUserId"];
             this.deletionTime = _data["deletionTime"] ? moment(_data["deletionTime"].toString()) : <any>undefined;
@@ -10962,6 +10972,11 @@ export class WithdrawRequestDto implements IWithdrawRequestDto {
         data["amount"] = this.amount;
         data["withdrawTypeId"] = this.withdrawTypeId;
         data["withdrawType"] = this.withdrawType;
+        data["dated"] = this.dated;
+        data["status"] = this.status;
+        data["statusName"] = this.statusName;
+        data["withdrawDetails"] = this.withdrawDetails;
+        data["userWithdrawDetailId"] = this.userWithdrawDetailId;
         data["isDeleted"] = this.isDeleted;
         data["deleterUserId"] = this.deleterUserId;
         data["deletionTime"] = this.deletionTime ? this.deletionTime.toISOString() : <any>undefined;
@@ -10987,6 +11002,11 @@ export interface IWithdrawRequestDto {
     amount: number;
     withdrawTypeId: WithdrawType;
     withdrawType: string | undefined;
+    dated: string | undefined;
+    status: boolean;
+    statusName: string | undefined;
+    withdrawDetails: string | undefined;
+    userWithdrawDetailId: number | undefined;
     isDeleted: boolean;
     deleterUserId: number | undefined;
     deletionTime: moment.Moment | undefined;

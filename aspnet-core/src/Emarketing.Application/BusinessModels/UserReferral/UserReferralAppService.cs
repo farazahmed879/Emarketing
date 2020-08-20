@@ -84,7 +84,7 @@ namespace Emarketing.BusinessModels.UserReferral
             {
                 UserId = userId.Value,
                 ReferralUserId = userReferralDto.ReferralUserId,
-                ReferralBonusStatusId = ReferralBonusStatus.Inactive,
+                ReferralBonusStatusId = ReferralBonusStatus.Pending,
                 ReferralAccountStatusId = userReferralDto.ReferralAccountStatusId,
                 PackageId = userReferralDto.PackageId,
 

@@ -37,8 +37,10 @@
             <thead class="bg-light">
               <tr>
                 <th>{{ "User Name" | localize }}</th>
+                <th>{{ "Requested On" | localize }}</th>
                 <th>{{ "Amount" | localize }}</th>
                 <th>{{ "Type" | localize }}</th>
+                <th>{{ "Account" | localize }}</th>
                 <!-- <th style="width: 200px;">{{ "Actions" | localize }}</th> -->
               </tr>
             </thead>
@@ -56,8 +58,10 @@
                 "
               >
                 <td>{{ withdrawHistory?.userName }}</td>
+                <td>{{ withdrawHistory?.dated }}</td>
                 <td>{{ withdrawHistory?.amount }} PKR</td>
                 <td>{{ withdrawHistory?.withdrawType }}</td>
+                <td>{{ withdrawHistory?.withdrawDetails }}</td>
                 <!-- <td>
                   <button
                     type="button"

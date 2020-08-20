@@ -47,7 +47,7 @@ namespace Emarketing.BusinessModels.UserWithdrawDetail
         private readonly IAbpSession _abpSession;
         private readonly UserManager _userManager;
         private readonly RoleManager _roleManager;
-        
+
         public UserWithdrawDetailAppService(
             IRepository<BusinessObjects.UserWithdrawDetail, long> userWithdrawDetailRepository,
             ISessionAppService sessionAppService,
@@ -85,39 +85,77 @@ namespace Emarketing.BusinessModels.UserWithdrawDetail
             {
                 throw new UserFriendlyException(ErrorMessage.UserFriendly.InvalidLogin);
             }
-
             var userId = _abpSession.UserId;
-            var result = await _userWithdrawDetailRepository.InsertAsync(new BusinessObjects.UserWithdrawDetail()
+            var userWithdrawDetail = await _userWithdrawDetailRepository.GetAll()
+                .Where(x => x.UserId == userId).FirstOrDefaultAsync();
+           
+            if (userWithdrawDetail == null)
             {
-                WithdrawTypeId = userWithdrawDetailDto.WithdrawTypeId,
-                UserId = userWithdrawDetailDto.UserId,
-                AccountIBAN = userWithdrawDetailDto.AccountIBAN,
-                AccountTitle = userWithdrawDetailDto.AccountTitle,
-                IsPrimary = true,
-                JazzCashNumber = userWithdrawDetailDto.JazzCashNumber,
-                EasyPaisaNumber = userWithdrawDetailDto.EasyPaisaNumber,
-            });
+                var result = await _userWithdrawDetailRepository.InsertAsync(new BusinessObjects.UserWithdrawDetail()
+                {
+                    WithdrawTypeId = userWithdrawDetailDto.WithdrawTypeId,
+                    UserId = userWithdrawDetailDto.UserId,
+                    AccountIBAN = userWithdrawDetailDto.AccountIBAN,
+                    AccountTitle = userWithdrawDetailDto.AccountTitle,
+                    IsPrimary = true,
+                    JazzCashNumber = userWithdrawDetailDto.JazzCashNumber,
+                    EasyPaisaNumber = userWithdrawDetailDto.EasyPaisaNumber,
+                });
 
-            await UnitOfWorkManager.Current.SaveChangesAsync();
-            SetPrimaryUserWithdrawDetail(userId.Value, result.Id);
-            if (result.Id != 0)
-            {
+                await UnitOfWorkManager.Current.SaveChangesAsync();
+                await SetPrimaryUserWithdrawDetail(userId.Value, result.Id);
+                if (result.Id != 0)
+                {
+                    return new ResponseMessageDto()
+                    {
+                        Id = result.Id,
+                        SuccessMessage = AppConsts.SuccessfullyInserted,
+                        Success = true,
+                        Error = false,
+                    };
+                }
                 return new ResponseMessageDto()
                 {
-                    Id = result.Id,
-                    SuccessMessage = AppConsts.SuccessfullyInserted,
-                    Success = true,
-                    Error = false,
+                    Id = 0,
+                    ErrorMessage = AppConsts.InsertFailure,
+                    Success = false,
+                    Error = true,
                 };
             }
-
-            return new ResponseMessageDto()
+            else
             {
-                Id = 0,
-                ErrorMessage = AppConsts.InsertFailure,
-                Success = false,
-                Error = true,
-            };
+                userWithdrawDetail.WithdrawTypeId = userWithdrawDetailDto.WithdrawTypeId;
+                userWithdrawDetail.UserId = userWithdrawDetailDto.UserId;
+                userWithdrawDetail.AccountIBAN = userWithdrawDetailDto.AccountIBAN;
+                userWithdrawDetail.AccountTitle = userWithdrawDetailDto.AccountTitle;
+                userWithdrawDetail.IsPrimary = true;
+                userWithdrawDetail.JazzCashNumber = userWithdrawDetailDto.JazzCashNumber;
+                userWithdrawDetail.EasyPaisaNumber = userWithdrawDetailDto.EasyPaisaNumber;
+                userWithdrawDetail.LastModifierUserId = userId;
+                userWithdrawDetail.LastModificationTime=DateTime.Now;
+
+                var result  =  await _userWithdrawDetailRepository.UpdateAsync(userWithdrawDetail);
+               
+                await UnitOfWorkManager.Current.SaveChangesAsync();
+                await SetPrimaryUserWithdrawDetail(userId.Value, result.Id);
+                if (result.Id != 0)
+                {
+                    return new ResponseMessageDto()
+                    {
+                        Id = result.Id,
+                        SuccessMessage = AppConsts.SuccessfullyInserted,
+                        Success = true,
+                        Error = false,
+                    };
+                }
+                return new ResponseMessageDto()
+                {
+                    Id = 0,
+                    ErrorMessage = AppConsts.InsertFailure,
+                    Success = false,
+                    Error = true,
+                };
+            }
         }
 
         private async Task<ResponseMessageDto> UpdateUserWithdrawDetailAsync(UserWithdrawDetailDto userWithdrawDetailDto)
@@ -144,7 +182,7 @@ namespace Emarketing.BusinessModels.UserWithdrawDetail
                 IsPrimary = userWithdrawDetailDto.IsPrimary,
                 JazzCashNumber = userWithdrawDetailDto.JazzCashNumber,
                 EasyPaisaNumber = userWithdrawDetailDto.EasyPaisaNumber,
-             
+
             });
             SetPrimaryUserWithdrawDetail(userId.Value, result.Id);
             if (result != null)
@@ -247,7 +285,7 @@ namespace Emarketing.BusinessModels.UserWithdrawDetail
             {
                 throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
             }
-            var result = await _userWithdrawDetailRepository.GetAll().Where(i => i.IsDeleted == false )
+            var result = await _userWithdrawDetailRepository.GetAll().Where(i => i.IsDeleted == false)
                 .Select(i => new UserWithdrawDetailDto()
                 {
                     Id = i.Id,
@@ -275,7 +313,7 @@ namespace Emarketing.BusinessModels.UserWithdrawDetail
             var userId = _abpSession.UserId;
             var filteredUserWithdrawDetails = _userWithdrawDetailRepository.GetAll()
                 .Where(x => x.UserId == userId);
-                //.WhereIf(input.Status.HasValue, x => x.Status == input.Status);
+            //.WhereIf(input.Status.HasValue, x => x.Status == input.Status);
             //.Where(i => i.IsDeleted == false && (input.TenantId == null || i.TenantId == input.TenantId))
             //.WhereIf(!string.IsNullOrWhiteSpace(input.UserName), x => x.UserName.Contains(input.Name));
 
@@ -285,7 +323,7 @@ namespace Emarketing.BusinessModels.UserWithdrawDetail
 
             var totalCount = filteredUserWithdrawDetails.Count();
 
-            var result =  new PagedResultDto<UserWithdrawDetailDto>(
+            var result = new PagedResultDto<UserWithdrawDetailDto>(
                 totalCount: totalCount,
                 items: await pagedAndFilteredUserWithdrawDetails.Where(i => i.IsDeleted == false).Select(i =>
                         new UserWithdrawDetailDto()
@@ -347,11 +385,11 @@ namespace Emarketing.BusinessModels.UserWithdrawDetail
                 else
                 {
                     userWithdrawDetail.IsPrimary = false;
-                   
+
                 }
                 await _userWithdrawDetailRepository.UpdateAsync(userWithdrawDetail);
             }
-           
+
             return true;
 
         }
