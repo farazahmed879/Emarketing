@@ -9737,6 +9737,7 @@ export interface IUpdateUserPackageAdDetailDto {
 export class UserPackageAdDetailDto implements IUserPackageAdDetailDto {
     userId: number;
     userName: string | undefined;
+    userEmail: string | undefined;
     userPackageSubscriptionDetailId: number;
     packageAdId: number;
     title: string | undefined;
@@ -9766,6 +9767,7 @@ export class UserPackageAdDetailDto implements IUserPackageAdDetailDto {
         if (_data) {
             this.userId = _data["userId"];
             this.userName = _data["userName"];
+            this.userEmail = _data["userEmail"];
             this.userPackageSubscriptionDetailId = _data["userPackageSubscriptionDetailId"];
             this.packageAdId = _data["packageAdId"];
             this.title = _data["title"];
@@ -9795,6 +9797,7 @@ export class UserPackageAdDetailDto implements IUserPackageAdDetailDto {
         data = typeof data === 'object' ? data : {};
         data["userId"] = this.userId;
         data["userName"] = this.userName;
+        data["userEmail"] = this.userEmail;
         data["userPackageSubscriptionDetailId"] = this.userPackageSubscriptionDetailId;
         data["packageAdId"] = this.packageAdId;
         data["title"] = this.title;
@@ -9824,6 +9827,7 @@ export class UserPackageAdDetailDto implements IUserPackageAdDetailDto {
 export interface IUserPackageAdDetailDto {
     userId: number;
     userName: string | undefined;
+    userEmail: string | undefined;
     userPackageSubscriptionDetailId: number;
     packageAdId: number;
     title: string | undefined;

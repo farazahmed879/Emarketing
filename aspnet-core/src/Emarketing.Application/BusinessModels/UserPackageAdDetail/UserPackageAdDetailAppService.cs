@@ -146,6 +146,7 @@ namespace Emarketing.BusinessModels.UserPackageAdDetail
                         Title = i.PackageAd.Title,
                         UserId = i.UserId,
                         UserName = $"{i.User.FullName}",
+                        UserEmail = $"{i.User.EmailAddress}",
                         CreatorUserId = i.CreatorUserId,
                         CreationTime = i.CreationTime,
                         LastModificationTime = i.LastModificationTime,
@@ -178,6 +179,7 @@ namespace Emarketing.BusinessModels.UserPackageAdDetail
                     Title = i.PackageAd.Title,
                     UserId = i.UserId,
                     UserName = $"{i.User.FullName}",
+                    UserEmail = $"{i.User.EmailAddress}",
                     CreatorUserId = i.CreatorUserId,
                     CreationTime = i.CreationTime,
                     LastModificationTime = i.LastModificationTime,
@@ -220,6 +222,7 @@ namespace Emarketing.BusinessModels.UserPackageAdDetail
                             Title = i.PackageAd.Title,
                             UserId = i.UserId,
                             UserName = $"{i.User.FullName}",
+                            UserEmail = $"{i.User.EmailAddress}",
                             CreatorUserId = i.CreatorUserId,
                             CreationTime = i.CreationTime,
                             LastModificationTime = i.LastModificationTime,
@@ -228,8 +231,7 @@ namespace Emarketing.BusinessModels.UserPackageAdDetail
                     .ToListAsync());
             return result;
         }
-
-
+        
         private async Task<bool> AuthenticateAdminUser()
         {
             if (_abpSession.UserId == null)

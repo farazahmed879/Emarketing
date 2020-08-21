@@ -7,6 +7,7 @@ namespace Emarketing.BusinessModels.UserPackageAdDetail.Dto
     {
         public long UserId { get; set; }
         public string UserName { get; set; }
+        public string UserEmail { get; set; }
         public long UserPackageSubscriptionDetailId { get; set; }
 
         public long PackageAdId { get; set; }
