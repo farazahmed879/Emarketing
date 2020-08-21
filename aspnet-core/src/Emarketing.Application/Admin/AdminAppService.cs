@@ -37,6 +37,7 @@ namespace Emarketing.Admin
         Task<bool> AcceptUserRequest(AcceptUserRequestDto requestDto);
         Task<bool> ActivateUserSubscription(ActivateUserSubscriptionDto requestDto);
         Task<bool> RenewPackageAdForUsers();
+        Task<bool> RenewPackageAdForUsersByPackageId(long packageId);
         Task<bool> AcceptUserReferralRequest(AcceptUserReferralRequestDto requestDto);
         Task<bool> UpdateWithdrawRequest(UpdateWithDrawRequestDto requestDto);
         Task<bool> ActivateUserReferralRequestSubscription(ActivateUserReferralSubscriptionDto requestDto);
