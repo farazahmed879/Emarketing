@@ -101,20 +101,35 @@ namespace Emarketing.BusinessModels.Dashboard
         public async Task<GetUserCurrentSubscriptionStatsDto> GetUserCurrentSubscriptionStats(
             GetUserCurrentSubscriptionStatsRequestDto requestDto)
         {
-            var response = new GetUserCurrentSubscriptionStatsDto();
-            long userId = _abpSession.UserId.Value;
-            var currentUser = _userRepository
+            var response = new GetUserCurrentSubscriptionStatsDto()
+            {
+                Balance = 0.0m,
+                Code = string.Empty,
+                DaysLeft = 0,
+                ExpiredOn = string.Empty,
+                Package = string.Empty,
+                ReferralEarningBalance = 0.0m,
+                StartedOn = string.Empty,
+                UserName = string.Empty
+
+            };
+            var balance = 0.0m;
+
+            var userId = _abpSession.UserId.Value;
+            var currentUser = await _userRepository
                 .GetAll()
-                .FirstOrDefault(i => i.Id == userId);
+                .FirstOrDefaultAsync(i => i.Id == userId);
 
             if (currentUser == null)
             {
                 return response;
             }
+            response.UserName = currentUser.FullName;
+            response.Balance = balance;
 
-            var activeSubscription = _userPackageSubscriptionDetailRepository
-                .GetAll().Include(x=>x.Package)
-                .FirstOrDefault(x => x.UserId == currentUser.Id &&
+            var activeSubscription = await _userPackageSubscriptionDetailRepository
+                .GetAll().Include(x => x.Package)
+                .FirstOrDefaultAsync(x => x.UserId == currentUser.Id &&
                                               x.StatusId == UserPackageSubscriptionStatus.Active &&
                                               x.ExpiryDate.Value != DateTime.Now);
             if (activeSubscription == null)
@@ -122,32 +137,38 @@ namespace Emarketing.BusinessModels.Dashboard
                 return response;
             }
 
-            var balance = 0.0m;
-
-            var userPackageAdDetails = _userPackageAdDetailRepository
+            var userPackageAdDetails = await _userPackageAdDetailRepository
                 .GetAll().Where(x => x.UserId == currentUser.Id &&
-                                     x.IsViewed == true).ToList();
+                                     x.IsViewed == true).ToListAsync();
             var totalPackageAdViewedBalance =
                 userPackageAdDetails.Sum(userPackageAdDetail => userPackageAdDetail.AdPrice);
 
-            var withdrawRequests = _withdrawRequestRepository
+            var withdrawRequests = await _withdrawRequestRepository
                 .GetAll().Where(x => x.UserId == currentUser.Id &&
-                                     x.Status == true).ToList();
+                                     x.Status == true).ToListAsync();
             var totalPaidWithDrawRequestAmount = withdrawRequests.Sum(withdrawRequest => withdrawRequest.Amount);
 
             balance = totalPackageAdViewedBalance - totalPaidWithDrawRequestAmount;
+
+            var referralBalance = 0.0m;
+            var userReferralList = await _userReferralRepository.GetAll()
+                .Where(x => x.ReferralAccountStatusId == ReferralAccountStatus.Active
+                            && x.UserId == userId
+                            && x.ReferralBonusStatusId == ReferralBonusStatus.Pending
+                ).ToListAsync();
+
+            referralBalance = userReferralList.Sum(userReferral => userReferral.Package.ReferralAmount);
 
             response.UserName = currentUser.FullName;
             response.Code = activeSubscription.Package.Code;
             response.Package = activeSubscription.Package.Name;
             response.DaysLeft = activeSubscription.ExpiryDate.HasValue
-                ? (activeSubscription.ExpiryDate.Value - DateTime.Now).Days
+                ? (activeSubscription.ExpiryDate.Value - DateTime.Now).Days + 1
                 : 0;
             response.ExpiredOn = activeSubscription.ExpiryDate.FormatDate();
             response.StartedOn = activeSubscription.StartDate.FormatDate();
             response.Balance = balance;
-
-
+            response.ReferralEarningBalance = referralBalance;
             return response;
         }
     }

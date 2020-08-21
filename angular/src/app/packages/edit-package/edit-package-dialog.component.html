@@ -54,6 +54,16 @@
     </div>
     <div class="form-group row required">
       <label class="col-md-3 col-form-label" for="name">
+        {{ "Per Ad" | localize }}
+      </label>
+      <div class="col-md-9">
+        <input type="number" class="form-control" name="package.pricePerAd" id="package.pricePerAd" required maxlength="32"
+          [(ngModel)]="package.pricePerAd" #pricePerAdModel="ngModel" #pricePerAdEl />
+        <abp-validation-summary [control]="pricePerAdModel" [controlEl]="pricePerAdEl"></abp-validation-summary>
+      </div>
+    </div>
+    <div class="form-group row required">
+      <label class="col-md-3 col-form-label" for="name">
         {{ "Referral Amount" | localize }}
       </label>
       <div class="col-md-9">
@@ -90,6 +100,26 @@
         <input type="number" class="form-control" name="package.totalEarning" id="package.totalEarning" required
           maxlength="32" [(ngModel)]="package.totalEarning" #nameModel="ngModel" #nameEl />
         <abp-validation-summary [control]="nameModel" [controlEl]="nameEl"></abp-validation-summary>
+      </div>
+    </div>
+    <div class="form-group row required">
+      <label class="col-md-3 col-form-label" for="name">
+        {{ "Minimum Withdraw" | localize }}
+      </label>
+      <div class="col-md-9">
+        <input type="number" class="form-control" name="package.minimumWithdraw" id="package.minimumWithdraw" required
+          maxlength="32" [(ngModel)]="package.minimumWithdraw" #minimumWithdrawModel="ngModel" #minimumWithdrawEl />
+        <abp-validation-summary [control]="minimumWithdrawModel" [controlEl]="minimumWithdrawEl"></abp-validation-summary>
+      </div>
+    </div>
+    <div class="form-group row required">
+      <label class="col-md-3 col-form-label" for="name">
+        {{ "Maximum Withdraw" | localize }}
+      </label>
+      <div class="col-md-9">
+        <input type="number" class="form-control" name="package.maximumWithdraw" id="package.maximumWithdraw" required
+          maxlength="32" [(ngModel)]="package.maximumWithdraw" #maximumWithdrawModel="ngModel" #maximumWithdrawEl />
+        <abp-validation-summary [control]="maximumWithdrawModel" [controlEl]="maximumWithdrawEl"></abp-validation-summary>
       </div>
     </div>
   </div>

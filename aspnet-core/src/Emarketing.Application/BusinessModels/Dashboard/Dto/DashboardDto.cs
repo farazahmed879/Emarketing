@@ -10,7 +10,8 @@ namespace Emarketing.BusinessModels.Dashboard.Dto
         public string StartedOn { get; set; }
         public string ExpiredOn { get; set; }
         public decimal Balance { get; set; }
-         
+
+        public decimal ReferralEarningBalance { get; set; }
         public int? DaysLeft { get; set; }
          
     }

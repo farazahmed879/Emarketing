@@ -7696,6 +7696,7 @@ export class GetUserCurrentSubscriptionStatsDto implements IGetUserCurrentSubscr
     startedOn: string | undefined;
     expiredOn: string | undefined;
     balance: number;
+    referralEarningBalance: number;
     daysLeft: number | undefined;
 
     constructor(data?: IGetUserCurrentSubscriptionStatsDto) {
@@ -7715,6 +7716,7 @@ export class GetUserCurrentSubscriptionStatsDto implements IGetUserCurrentSubscr
             this.startedOn = _data["startedOn"];
             this.expiredOn = _data["expiredOn"];
             this.balance = _data["balance"];
+            this.referralEarningBalance = _data["referralEarningBalance"];
             this.daysLeft = _data["daysLeft"];
         }
     }
@@ -7734,6 +7736,7 @@ export class GetUserCurrentSubscriptionStatsDto implements IGetUserCurrentSubscr
         data["startedOn"] = this.startedOn;
         data["expiredOn"] = this.expiredOn;
         data["balance"] = this.balance;
+        data["referralEarningBalance"] = this.referralEarningBalance;
         data["daysLeft"] = this.daysLeft;
         return data; 
     }
@@ -7753,6 +7756,7 @@ export interface IGetUserCurrentSubscriptionStatsDto {
     startedOn: string | undefined;
     expiredOn: string | undefined;
     balance: number;
+    referralEarningBalance: number;
     daysLeft: number | undefined;
 }
 
