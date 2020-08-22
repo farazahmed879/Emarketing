@@ -152,6 +152,7 @@ namespace Emarketing.BusinessModels.Dashboard
 
             var referralBalance = 0.0m;
             var userReferralList = await _userReferralRepository.GetAll()
+                .Include(x=>x.Package)
                 .Where(x => x.ReferralAccountStatusId == ReferralAccountStatus.Active
                             && x.UserId == userId
                             && x.ReferralBonusStatusId == ReferralBonusStatus.Pending
