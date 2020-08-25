@@ -36,10 +36,11 @@
           <table class="table table-hover text-nowrap" [busy]="isTableLoading">
             <thead class="bg-light">
               <tr>
-                <th>{{ "User Name" | localize }}</th>
-                <th>{{ "User Email" | localize }}</th>
+                <th>{{ "User  " | localize }}</th>
+                 
+                <th>{{ "Package" | localize }}</th>
                 <th>{{ "Date" | localize }}</th>
-                <th>{{ "Amount" | localize }} PKR</th>
+                <th>{{ "Amount" | localize }}</th>
                 <th>{{ "Type" | localize }}</th>
                 <th>{{ "Account" | localize }}</th>
                 <th style="width: 200px;">{{ "Actions" | localize }}</th>
@@ -58,8 +59,11 @@
                         })
                 "
               >
-                <td>{{ withdrawHistory?.userName }}</td>
-                <td>{{ withdrawHistory?.userEmail }}</td>
+                 
+                <td>{{ withdrawHistory?.userName }} 
+                  <div style="color:cornflowerblue"> {{ withdrawHistory?.userEmail }} </div> </td> 
+                
+                <td>{{ withdrawHistory?.packageName }}</td>
                 <td>{{ withdrawHistory?.dated }}</td>
                 <td>{{ withdrawHistory?.amount }} PKR</td>
                 <td>{{ withdrawHistory?.withdrawType }}</td>

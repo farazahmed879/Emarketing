@@ -17,6 +17,7 @@ using Emarketing.BusinessModels.WithdrawRequest.Dto;
 using Emarketing.Helper;
 using Emarketing.Sessions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using WithdrawRequestDto = Emarketing.BusinessModels.WithdrawRequest.Dto.WithdrawRequestDto;
 using WithdrawRequestInputDto = Emarketing.BusinessModels.WithdrawRequest.Dto.WithdrawRequestInputDto;
 
@@ -40,14 +41,19 @@ namespace Emarketing.BusinessModels.WithdrawRequest
     {
         private readonly IRepository<BusinessObjects.WithdrawRequest, long> _withdrawRequestRepository;
         private readonly IRepository<BusinessObjects.UserWithdrawDetail, long> _userWithdrawDetailRepository;
+
+        private readonly IRepository<BusinessObjects.UserPackageSubscriptionDetail, long>
+            _userPackageSubscriptionDetailRepository;
+
         private readonly ISessionAppService _sessionAppService;
         private readonly IAbpSession _abpSession;
         private readonly UserManager _userManager;
         private readonly RoleManager _roleManager;
-        
+
         public WithdrawRequestAppService(
             IRepository<BusinessObjects.WithdrawRequest, long> withdrawRequestRepository,
             IRepository<BusinessObjects.UserWithdrawDetail, long> userWithdrawDetailRepository,
+            IRepository<BusinessObjects.UserPackageSubscriptionDetail, long> userPackageSubscriptionDetailRepository,
             ISessionAppService sessionAppService,
             IAbpSession abpSession,
             UserManager userManager,
@@ -56,6 +62,7 @@ namespace Emarketing.BusinessModels.WithdrawRequest
         {
             _withdrawRequestRepository = withdrawRequestRepository;
             _userWithdrawDetailRepository = userWithdrawDetailRepository;
+            _userPackageSubscriptionDetailRepository = userPackageSubscriptionDetailRepository;
             _sessionAppService = sessionAppService;
             _abpSession = abpSession;
             _userManager = userManager;
@@ -214,7 +221,7 @@ namespace Emarketing.BusinessModels.WithdrawRequest
                         WithdrawDetails = i.WithdrawDetails,
                         Dated = i.Dated.FormatDate(EmarketingConsts.DateFormat),
                         UserWithdrawDetailId = i.UserWithdrawDetailId,
-                        StatusName = i.Status==true?"Paid": "Pending",
+                        StatusName = i.Status == true ? "Paid" : "Pending",
                         CreatorUserId = i.CreatorUserId,
                         CreationTime = i.CreationTime,
                         LastModificationTime = i.LastModificationTime,
@@ -283,11 +290,11 @@ namespace Emarketing.BusinessModels.WithdrawRequest
             WithdrawRequestInputDto input)
         {
             var userId = _abpSession.UserId;
-            var filteredWithdrawRequests = _withdrawRequestRepository.GetAll();
+            var filteredWithdrawRequests = _withdrawRequestRepository.GetAll().Include(x=>x.User);
             var isAdminUser = await AuthenticateAdminUser();
             if (!isAdminUser)
             {
-                filteredWithdrawRequests = filteredWithdrawRequests
+                filteredWithdrawRequests = (IIncludableQueryable<BusinessObjects.WithdrawRequest, User>) filteredWithdrawRequests
                     .Where(x => x.UserId == userId);
             }
 
@@ -295,31 +302,80 @@ namespace Emarketing.BusinessModels.WithdrawRequest
                 .OrderBy(i => i.Id)
                 .PageBy(input);
 
+            var userWithdrawRequestUserIds = pagedAndFilteredWithdrawRequests.Select(x => x.UserId).ToList();
+
+            var userPackageSubscriptionDetails = await _userPackageSubscriptionDetailRepository.GetAll()
+                .Include(x => x.Package)
+                .Where(x =>
+                    userWithdrawRequestUserIds.Contains(x.UserId) && x.StatusId == UserPackageSubscriptionStatus.Active)
+                .ToListAsync();
+
             var totalCount = filteredWithdrawRequests.Count();
+
+            //var items = await pagedAndFilteredWithdrawRequests
+            //    .Where(i => i.IsDeleted == false).Select(i =>
+            //        new WithdrawRequestDto()
+            //        {
+            //            Id = i.Id,
+            //            Amount = i.Amount,
+            //            WithdrawTypeId = i.WithdrawTypeId,
+            //            UserId = i.UserId,
+            //            UserName = $"{i.User.FullName}",
+            //            WithdrawType = i.WithdrawTypeId.GetEnumFieldDescription(),
+            //            Status = i.Status,
+            //            WithdrawDetails = i.WithdrawDetails,
+            //            Dated = i.Dated.FormatDate(EmarketingConsts.DateFormat),
+            //            UserWithdrawDetailId = i.UserWithdrawDetailId,
+            //            StatusName = i.Status == true ? "Paid" : "Pending",
+            //            PackageName =
+            //                userPackageSubscriptionDetails.FirstOrDefault(x => x.UserId == i.UserId) != null
+            //                    ? userPackageSubscriptionDetails.FirstOrDefault(x => x.UserId == i.UserId).Package
+            //                        .Name
+            //                    : string.Empty,
+            //            UserEmail = $"{i.User.EmailAddress}",
+            //            CreatorUserId = i.CreatorUserId,
+            //            CreationTime = i.CreationTime,
+            //            LastModificationTime = i.LastModificationTime,
+            //            LastModifierUserId = i.LastModifierUserId
+            //        })
+            //    .ToListAsync();
+
+            var items = new List<WithdrawRequestDto>();
+            foreach (var withdrawRequest in await pagedAndFilteredWithdrawRequests.Where(i => i.IsDeleted == false).ToListAsync())
+            {
+                var userSubscriptionDetail =
+                    userPackageSubscriptionDetails.FirstOrDefault(x =>
+                        x.UserId == withdrawRequest.UserId);
+
+                items.Add(new WithdrawRequestDto()
+                {
+                    Id = withdrawRequest.Id,
+                    Amount = withdrawRequest.Amount,
+                    WithdrawTypeId = withdrawRequest.WithdrawTypeId,
+                    UserId = withdrawRequest.UserId,
+                    UserName = $"{withdrawRequest.User.FullName}",
+                    WithdrawType = withdrawRequest.WithdrawTypeId.GetEnumFieldDescription(),
+                    Status = withdrawRequest.Status,
+                    WithdrawDetails = withdrawRequest.WithdrawDetails,
+                    Dated = withdrawRequest.Dated.FormatDate(EmarketingConsts.DateFormat),
+                    UserWithdrawDetailId = withdrawRequest.UserWithdrawDetailId,
+                    StatusName = withdrawRequest.Status == true ? "Paid" : "Pending",
+                    PackageName =
+                        userSubscriptionDetail != null
+                                    ? userSubscriptionDetail.Package
+                                        .Name
+                                    : string.Empty,
+                    UserEmail = $"{withdrawRequest.User.EmailAddress}",
+                    CreatorUserId = withdrawRequest.CreatorUserId,
+                    CreationTime = withdrawRequest.CreationTime,
+                    LastModificationTime = withdrawRequest.LastModificationTime,
+                    LastModifierUserId = withdrawRequest.LastModifierUserId
+                });
+            }
 
             var result = new PagedResultDto<WithdrawRequestDto>(
                 totalCount: totalCount,
-                items: await pagedAndFilteredWithdrawRequests.Where(i => i.IsDeleted == false).Select(i =>
-                        new WithdrawRequestDto()
-                        {
-                            Id = i.Id,
-                            Amount = i.Amount,
-                            WithdrawTypeId = i.WithdrawTypeId,
-                            UserId = i.UserId,
-                            UserName = $"{i.User.FullName}",
-                            WithdrawType = i.WithdrawTypeId.GetEnumFieldDescription(),
-                            Status = i.Status,
-                            WithdrawDetails = i.WithdrawDetails,
-                            Dated = i.Dated.FormatDate(EmarketingConsts.DateFormat),
-                            UserWithdrawDetailId = i.UserWithdrawDetailId,
-                            StatusName = i.Status == true ? "Paid" : "Pending",
-                            UserEmail = $"{i.User.EmailAddress}",
-                            CreatorUserId = i.CreatorUserId,
-                            CreationTime = i.CreationTime,
-                            LastModificationTime = i.LastModificationTime,
-                            LastModifierUserId = i.LastModifierUserId
-                        })
-                    .ToListAsync());
+                items: items);
             return result;
         }
 

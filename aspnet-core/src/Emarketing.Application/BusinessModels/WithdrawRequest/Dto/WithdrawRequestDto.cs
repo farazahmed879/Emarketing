@@ -17,5 +17,6 @@ namespace Emarketing.BusinessModels.WithdrawRequest.Dto
         public string StatusName { get; set; }
         public string WithdrawDetails { get; set; }
         public long? UserWithdrawDetailId { get; set; }
+        public string PackageName { get; set; }
     }
 }

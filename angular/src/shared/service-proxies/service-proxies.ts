@@ -10982,6 +10982,7 @@ export class WithdrawRequestDto implements IWithdrawRequestDto {
     statusName: string | undefined;
     withdrawDetails: string | undefined;
     userWithdrawDetailId: number | undefined;
+    packageName: string | undefined;
     isDeleted: boolean;
     deleterUserId: number | undefined;
     deletionTime: moment.Moment | undefined;
@@ -11013,6 +11014,7 @@ export class WithdrawRequestDto implements IWithdrawRequestDto {
             this.statusName = _data["statusName"];
             this.withdrawDetails = _data["withdrawDetails"];
             this.userWithdrawDetailId = _data["userWithdrawDetailId"];
+            this.packageName = _data["packageName"];
             this.isDeleted = _data["isDeleted"];
             this.deleterUserId = _data["deleterUserId"];
             this.deletionTime = _data["deletionTime"] ? moment(_data["deletionTime"].toString()) : <any>undefined;
@@ -11044,6 +11046,7 @@ export class WithdrawRequestDto implements IWithdrawRequestDto {
         data["statusName"] = this.statusName;
         data["withdrawDetails"] = this.withdrawDetails;
         data["userWithdrawDetailId"] = this.userWithdrawDetailId;
+        data["packageName"] = this.packageName;
         data["isDeleted"] = this.isDeleted;
         data["deleterUserId"] = this.deleterUserId;
         data["deletionTime"] = this.deletionTime ? this.deletionTime.toISOString() : <any>undefined;
@@ -11075,6 +11078,7 @@ export interface IWithdrawRequestDto {
     statusName: string | undefined;
     withdrawDetails: string | undefined;
     userWithdrawDetailId: number | undefined;
+    packageName: string | undefined;
     isDeleted: boolean;
     deleterUserId: number | undefined;
     deletionTime: moment.Moment | undefined;
