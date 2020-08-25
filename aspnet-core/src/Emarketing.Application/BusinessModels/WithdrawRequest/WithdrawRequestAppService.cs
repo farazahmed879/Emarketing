@@ -290,11 +290,11 @@ namespace Emarketing.BusinessModels.WithdrawRequest
             WithdrawRequestInputDto input)
         {
             var userId = _abpSession.UserId;
-            var filteredWithdrawRequests = _withdrawRequestRepository.GetAll().Include(x=>x.User);
+            IQueryable<BusinessObjects.WithdrawRequest> filteredWithdrawRequests = _withdrawRequestRepository.GetAll().Include(x=>x.User);
             var isAdminUser = await AuthenticateAdminUser();
             if (!isAdminUser)
             {
-                filteredWithdrawRequests = (IIncludableQueryable<BusinessObjects.WithdrawRequest, User>) filteredWithdrawRequests
+                filteredWithdrawRequests =  filteredWithdrawRequests
                     .Where(x => x.UserId == userId);
             }
 

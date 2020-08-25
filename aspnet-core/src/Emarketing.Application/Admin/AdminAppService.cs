@@ -16,13 +16,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Abp.Authorization;
 using Emarketing.BusinessModels.WithdrawRequest.Dto;
 using Abp.Domain.Entities;
 using Emarketing.Users.Dto;
 using Microsoft.AspNetCore.Identity;
 using Abp.IdentityFramework;
 using Abp.Logging;
+using Emarketing.Authorization;
+using Emarketing.Authorization.Accounts;
 
 namespace Emarketing.Admin
 {
@@ -49,6 +53,7 @@ namespace Emarketing.Admin
         Task<User> GetUserDetailIdAsync(long id);
 
         Task<User> UpdateAsync(UserDto input);
+        Task<bool> ChangePassword(ChangePasswordDto input);
     }
 
     public class AdminAppService : AbpServiceBase, IAdminAppService
@@ -71,6 +76,8 @@ namespace Emarketing.Admin
         private readonly IAbpSession _abpSession;
         private readonly UserManager _userManager;
         private readonly RoleManager _roleManager;
+        private readonly IPasswordHasher<User> _passwordHasher;
+        private readonly LogInManager _logInManager;
 
         public AdminAppService(
             IRepository<User, long> userRepository,
@@ -87,7 +94,9 @@ namespace Emarketing.Admin
             ISessionAppService sessionAppService,
             IAbpSession abpSession,
             UserManager userManager,
-            RoleManager roleManager)
+            RoleManager roleManager,
+            IPasswordHasher<User> passwordHasher,
+            LogInManager logInManager)
         {
             _userRepository = userRepository;
             _packageRepository = packageRepository;
@@ -104,6 +113,8 @@ namespace Emarketing.Admin
             _abpSession = abpSession;
             _userManager = userManager;
             _roleManager = roleManager;
+            _passwordHasher = passwordHasher;
+            _logInManager = logInManager;
         }
 
         /// <summary>
@@ -1307,7 +1318,7 @@ namespace Emarketing.Admin
 
             var result = await _withdrawRequestRepository.UpdateAsync(withdrawRequest);
             await UnitOfWorkManager.Current.SaveChangesAsync();
-             
+
             if (result != null)
             {
                 return new ResponseMessageDto()
@@ -1483,6 +1494,33 @@ namespace Emarketing.Admin
             }
 
             return false;
+        }
+
+        public async Task<bool> ChangePassword(ChangePasswordDto input)
+        {
+            if (_abpSession.UserId == null)
+            {
+                throw new UserFriendlyException("Please log in before attempting to change password.");
+            }
+
+            long userId = _abpSession.UserId.Value;
+            var user = await _userManager.GetUserByIdAsync(userId);
+            var loginAsync = await _logInManager.LoginAsync(user.UserName, input.CurrentPassword, shouldLockout: false);
+            if (loginAsync.Result != AbpLoginResultType.Success)
+            {
+                throw new UserFriendlyException(
+                    "Your 'Existing Password' did not match the one on record.  Please try again or contact an administrator for assistance in resetting your password.");
+            }
+
+            if (!new Regex(AccountAppService.PasswordRegex).IsMatch(input.NewPassword))
+            {
+                throw new UserFriendlyException(
+                    "Passwords must be at least 8 characters, contain a lowercase, uppercase, and number.");
+            }
+
+            user.Password = _passwordHasher.HashPassword(user, input.NewPassword);
+            await CurrentUnitOfWork.SaveChangesAsync();
+            return true;
         }
     }
 }
