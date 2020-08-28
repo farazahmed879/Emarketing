@@ -41,20 +41,20 @@ export class UserPackageComponent extends AppComponentBase
       minimumWithdraw: 500,
       maximumWithdraw: 1000
     },
-    // {
-    //   id: 2,
-    //   name: 'Package 2',
-    //   isUnlimited: false,
-    //   durationInDays: 60,
-    //   price: 3000,
-    //   totalEarning: 3900,
-    //   profitValue: 0,
-    //   dailyAdCount: 5,
-    //   pricePerAd: 20,
-    //   referralAmount: 300,
-    //   minimumWithdraw: 1000,
-    //   maximumWithdraw: 1000
-    // },
+    {
+      id: 2,
+      name: 'Package 3000',
+      isUnlimited: false,
+      durationInDays: 30,
+      price: 3000,
+      totalEarning: 6300,
+      profitValue: 0,
+      dailyAdCount: 1,
+      pricePerAd: 215,
+      referralAmount: 200,
+      minimumWithdraw: 500,
+      maximumWithdraw: 3500
+    },
     // {
     //   id: 3,
     //   name: 'Package 3',

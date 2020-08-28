@@ -1458,20 +1458,14 @@ export class PackageServiceProxy {
     }
 
     /**
-     * @param code (optional) 
-     * @param name (optional) 
      * @param keyword (optional) 
      * @param isActive (optional) 
      * @param skipCount (optional) 
      * @param maxResultCount (optional) 
      * @return Success
      */
-    getPaginatedAll(code: string | null | undefined, name: string | null | undefined, keyword: string | null | undefined, isActive: boolean | undefined, skipCount: number | undefined, maxResultCount: number | undefined): Observable<PackageDtoPagedResultDto> {
+    getPaginatedAll(keyword: string | null | undefined, isActive: boolean | undefined, skipCount: number | undefined, maxResultCount: number | undefined): Observable<PackageDtoPagedResultDto> {
         let url_ = this.baseUrl + "/api/services/app/Package/GetPaginatedAll?";
-        if (code !== undefined && code !== null)
-            url_ += "Code=" + encodeURIComponent("" + code) + "&";
-        if (name !== undefined && name !== null)
-            url_ += "Name=" + encodeURIComponent("" + name) + "&";
         if (keyword !== undefined && keyword !== null)
             url_ += "Keyword=" + encodeURIComponent("" + keyword) + "&";
         if (isActive === null)

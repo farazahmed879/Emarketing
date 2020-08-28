@@ -308,9 +308,9 @@ namespace Emarketing.BusinessModels.Package
 
             var filteredPackages = _packageRepository.GetAll()
                 .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), x => x.Name.Contains(input.Keyword)
-                                                                   || x.Code.Contains(input.Keyword) || 
-                                                                   x.Description.Contains(input.Keyword))
-                .WhereIf(!string.IsNullOrWhiteSpace(input.Name), x => x.Name.Contains(input.Name));
+                                                                   || x.Code.Contains(input.Keyword) ||
+                                                                   x.Description.Contains(input.Keyword));
+               // .WhereIf(!string.IsNullOrWhiteSpace(input.Name), x => x.Name.Contains(input.Name));
              
 
             var pagedAndFilteredPackages = filteredPackages

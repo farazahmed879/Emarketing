@@ -42,8 +42,7 @@ export class PackagesComponent extends PagedListingComponentBase<PackageDto> {
     request.isActive = false;
     this._packageService
       .getPaginatedAll(
-        undefined,
-        undefined,
+         
         
         this.keyword,
         request.isActive,
