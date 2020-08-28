@@ -1,6 +1,6 @@
 {
-  "remoteServiceBaseUrl": "http://api.earnonnets.com",
-  "appBaseUrl": "http://www.earnonnets.com",
+  "remoteServiceBaseUrl": "https://api.earnonnets.com",
+  "appBaseUrl": "https://www.earnonnets.com",
   "localeMappings": [
     {
       "from": "pt-BR",
