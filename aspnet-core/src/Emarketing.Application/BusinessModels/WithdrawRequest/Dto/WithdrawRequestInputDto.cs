@@ -4,8 +4,8 @@ namespace Emarketing.BusinessModels.WithdrawRequest.Dto
 {
     public class WithdrawRequestInputDto : PagedResultRequestDto
     {
-       
-        public WithdrawType? WithdrawTypeId { get; set; }
-        public bool? Status { get; set; }
+       public string Keyword { get; set; }
+        //public WithdrawType? WithdrawTypeId { get; set; }
+        //public bool? Status { get; set; }
     }
 }

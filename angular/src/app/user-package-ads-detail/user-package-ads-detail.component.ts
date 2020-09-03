@@ -39,8 +39,7 @@ export class UserPackageAdsDetailComponent extends PagedListingComponentBase<Use
 
     this._userPackageDetailService
       .getPaginatedAll(
-        undefined,
-        undefined,
+        this.keyword, 
         request.skipCount,
         request.maxResultCount
       )

@@ -248,7 +248,7 @@ namespace Emarketing.BusinessModels.UserRequest
                 throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
             }
             //var userId = _abpSession.UserId;
-            var filteredUserRequests = _userRequestRepository.GetAll()
+            IQueryable<BusinessObjects.UserRequest>  filteredUserRequests = _userRequestRepository.GetAll()
                 .WhereIf(!input.Keyword.IsNullOrEmptyOrWhiteSpace(),
                     x => x.UserName.Contains(input.Keyword) || x.FirstName.Contains(input.Keyword) ||
                          x.LastName.Contains(input.Keyword) || x.Email.Contains(input.Keyword) ||

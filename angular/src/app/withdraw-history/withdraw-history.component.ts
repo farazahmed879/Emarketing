@@ -38,8 +38,8 @@ export class WithdrawHistoryComponent extends PagedListingComponentBase<Withdraw
 
     this._withdrawRequestService
       .getPaginatedAll(
-        undefined,
-        request.isActive,
+        request.keyword,
+        
         request.skipCount,
         request.maxResultCount
       )

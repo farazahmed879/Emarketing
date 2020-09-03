@@ -41,13 +41,8 @@ export class UserReferalRequestComponent extends PagedListingComponentBase<UserR
     request.keyword = this.keyword;
     request.isActive = false;
     this._userReferalRequestService
-      .getPaginatedAll(
-         undefined,
+      .getPaginatedAll(         
          request.keyword,
-         undefined,
-        undefined,
-
-        
         request.skipCount,
         request.maxResultCount
       )

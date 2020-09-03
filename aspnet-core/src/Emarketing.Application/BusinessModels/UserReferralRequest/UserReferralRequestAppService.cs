@@ -48,7 +48,6 @@ namespace Emarketing.BusinessModels.UserReferralRequest
         private readonly UserManager _userManager;
         private readonly RoleManager _roleManager;
 
-
         public UserReferralRequestAppService(
             IRepository<BusinessObjects.UserReferralRequest, long> userReferralRequestRepository,
             IRepository<BusinessObjects.UserRequest, long> userRequestRepository,
@@ -178,6 +177,8 @@ namespace Emarketing.BusinessModels.UserReferralRequest
                         Email = i.Email,
                         UserName = i.UserName,
                         UserId = i.UserId,
+                        UserFullName = i.User.FullName,
+                        UserEmail = i.User.EmailAddress,
                         ReferralRequestStatusId = i.ReferralRequestStatusId,
                         ReferralRequestStatus = i.ReferralRequestStatusId.GetEnumFieldDescription(),
                         IsActivated = i.IsActivated,
@@ -235,6 +236,8 @@ namespace Emarketing.BusinessModels.UserReferralRequest
                     PhoneNumber = i.PhoneNumber,
                     UserName = i.UserName,
                     UserId = i.UserId,
+                    UserFullName = i.User.FullName,
+                    UserEmail = i.User.EmailAddress,
                     ReferralRequestStatusId = i.ReferralRequestStatusId,
                     ReferralRequestStatus = i.ReferralRequestStatusId.GetEnumFieldDescription(),
                     IsActivated = i.IsActivated,
@@ -250,14 +253,19 @@ namespace Emarketing.BusinessModels.UserReferralRequest
             UserReferralRequestInputDto input)
         {
             long userId = _abpSession.UserId.Value;
-            var filteredUserReferrals = _userReferralRequestRepository.GetAll()
+            IQueryable<BusinessObjects.UserReferralRequest> filteredUserReferrals = _userReferralRequestRepository.GetAll()
                 .WhereIf(!input.Keyword.IsNullOrWhiteSpace(),
                     x => x.UserName.Contains(input.Keyword) ||
-                         x.FirstName.Contains(input.Keyword) ||
-                         x.LastName.Contains(input.Keyword) ||
-                         x.Email.Contains(input.Keyword) ||
-                         x.UserName.Contains(input.Keyword) ||
-                         x.Package.Name.Contains(input.Keyword));
+                    x.User.Surname.Contains(input.Keyword) ||
+                    x.User.Name.Contains(input.Keyword) ||
+                    x.User.UserName.Contains(input.Keyword) ||
+                    x.User.EmailAddress.Contains(input.Keyword) ||
+                    x.FirstName.Contains(input.Keyword) ||
+                    x.LastName.Contains(input.Keyword) ||
+                    x.Email.Contains(input.Keyword) ||
+                    x.UserName.Contains(input.Keyword) ||
+                    x.Package.Name.Contains(input.Keyword));
+            
             var isAdmin = await AuthenticateAdminUser();
             if (!isAdmin)
             {
@@ -284,6 +292,8 @@ namespace Emarketing.BusinessModels.UserReferralRequest
                             PhoneNumber = i.PhoneNumber,
                             UserName = i.UserName,
                             UserId = i.UserId,
+                            UserFullName = i.User.FullName,
+                            UserEmail = i.User.EmailAddress,
                             ReferralRequestStatusId = i.ReferralRequestStatusId,
                             ReferralRequestStatus = i.ReferralRequestStatusId.GetEnumFieldDescription(),
                             IsActivated = i.IsActivated,

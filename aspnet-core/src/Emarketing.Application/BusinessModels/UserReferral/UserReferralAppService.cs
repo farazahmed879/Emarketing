@@ -230,18 +230,20 @@ namespace Emarketing.BusinessModels.UserReferral
             UserRefferalInputDto input)
         {
             var userId = _abpSession.UserId.Value;
-            var filteredUserReferrals = _userReferralRepository.GetAll()
+            IQueryable<BusinessObjects.UserReferral> filteredUserReferrals = _userReferralRepository.GetAll()               
                 .WhereIf(!input.Keyword.IsNullOrWhiteSpace(),
-                    x => x.User.FullName.Contains(input.Keyword) ||
-                         x.User.EmailAddress.Contains(input.Keyword) ||
-                         x.ReferralUser.FullName.Contains(input.Keyword) ||
-                         x.ReferralUser.EmailAddress.Contains(input.Keyword) ||
-                         x.Package.Name.Contains(input.Keyword));
-           
+                    x => x.User.Name.Contains(input.Keyword) ||
+                    x.User.Surname.Contains(input.Keyword) || 
+                    x.User.EmailAddress.Contains(input.Keyword) ||
+                    x.ReferralUser.Name.Contains(input.Keyword) ||
+                    x.ReferralUser.Surname.Contains(input.Keyword) ||
+                    x.ReferralUser.EmailAddress.Contains(input.Keyword) ||
+                    x.Package.Name.Contains(input.Keyword));
+
             var isAdmin = await AuthenticateAdminUser();
             if (!isAdmin)
             {
-                filteredUserReferrals = _userReferralRepository.GetAll().Where(x => x.UserId == userId);
+                filteredUserReferrals = filteredUserReferrals.Where(x => x.UserId == userId);
             }
 
             var pagedAndFilteredUserReferrals = filteredUserReferrals

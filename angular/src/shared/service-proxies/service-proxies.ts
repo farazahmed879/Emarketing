@@ -3535,22 +3535,15 @@ export class UserPackageAdDetailServiceProxy {
     }
 
     /**
-     * @param packageId (optional) 
-     * @param statusId (optional) 
+     * @param keyword (optional) 
      * @param skipCount (optional) 
      * @param maxResultCount (optional) 
      * @return Success
      */
-    getPaginatedAll(packageId: number | undefined, statusId: UserPackageSubscriptionStatus | undefined, skipCount: number | undefined, maxResultCount: number | undefined): Observable<UserPackageAdDetailDtoPagedResultDto> {
+    getPaginatedAll(keyword: string | null | undefined, skipCount: number | undefined, maxResultCount: number | undefined): Observable<UserPackageAdDetailDtoPagedResultDto> {
         let url_ = this.baseUrl + "/api/services/app/UserPackageAdDetail/GetPaginatedAll?";
-        if (packageId === null)
-            throw new Error("The parameter 'packageId' cannot be null.");
-        else if (packageId !== undefined)
-            url_ += "PackageId=" + encodeURIComponent("" + packageId) + "&";
-        if (statusId === null)
-            throw new Error("The parameter 'statusId' cannot be null.");
-        else if (statusId !== undefined)
-            url_ += "StatusId=" + encodeURIComponent("" + statusId) + "&";
+        if (keyword !== undefined && keyword !== null)
+            url_ += "Keyword=" + encodeURIComponent("" + keyword) + "&";
         if (skipCount === null)
             throw new Error("The parameter 'skipCount' cannot be null.");
         else if (skipCount !== undefined)
@@ -4877,28 +4870,15 @@ export class UserReferralRequestServiceProxy {
     }
 
     /**
-     * @param userId (optional) 
      * @param keyword (optional) 
-     * @param userName (optional) 
-     * @param referralRequestStatusId (optional) 
      * @param skipCount (optional) 
      * @param maxResultCount (optional) 
      * @return Success
      */
-    getPaginatedAll(userId: number | undefined, keyword: string | null | undefined, userName: string | null | undefined, referralRequestStatusId: ReferralRequestStatus | undefined, skipCount: number | undefined, maxResultCount: number | undefined): Observable<UserReferralRequestDtoPagedResultDto> {
+    getPaginatedAll(keyword: string | null | undefined, skipCount: number | undefined, maxResultCount: number | undefined): Observable<UserReferralRequestDtoPagedResultDto> {
         let url_ = this.baseUrl + "/api/services/app/UserReferralRequest/GetPaginatedAll?";
-        if (userId === null)
-            throw new Error("The parameter 'userId' cannot be null.");
-        else if (userId !== undefined)
-            url_ += "UserId=" + encodeURIComponent("" + userId) + "&";
         if (keyword !== undefined && keyword !== null)
             url_ += "Keyword=" + encodeURIComponent("" + keyword) + "&";
-        if (userName !== undefined && userName !== null)
-            url_ += "UserName=" + encodeURIComponent("" + userName) + "&";
-        if (referralRequestStatusId === null)
-            throw new Error("The parameter 'referralRequestStatusId' cannot be null.");
-        else if (referralRequestStatusId !== undefined)
-            url_ += "ReferralRequestStatusId=" + encodeURIComponent("" + referralRequestStatusId) + "&";
         if (skipCount === null)
             throw new Error("The parameter 'skipCount' cannot be null.");
         else if (skipCount !== undefined)
@@ -5245,37 +5225,14 @@ export class UserRequestServiceProxy {
 
     /**
      * @param keyword (optional) 
-     * @param packageId (optional) 
-     * @param firstName (optional) 
-     * @param lastName (optional) 
-     * @param email (optional) 
-     * @param userName (optional) 
-     * @param phoneNumber (optional) 
-     * @param password (optional) 
      * @param skipCount (optional) 
      * @param maxResultCount (optional) 
      * @return Success
      */
-    getPaginatedAll(keyword: string | null | undefined, packageId: number | undefined, firstName: string | null | undefined, lastName: string | null | undefined, email: string | null | undefined, userName: string | null | undefined, phoneNumber: string | null | undefined, password: string | null | undefined, skipCount: number | undefined, maxResultCount: number | undefined): Observable<UserRequestDtoPagedResultDto> {
+    getPaginatedAll(keyword: string | null | undefined, skipCount: number | undefined, maxResultCount: number | undefined): Observable<UserRequestDtoPagedResultDto> {
         let url_ = this.baseUrl + "/api/services/app/UserRequest/GetPaginatedAll?";
         if (keyword !== undefined && keyword !== null)
             url_ += "Keyword=" + encodeURIComponent("" + keyword) + "&";
-        if (packageId === null)
-            throw new Error("The parameter 'packageId' cannot be null.");
-        else if (packageId !== undefined)
-            url_ += "PackageId=" + encodeURIComponent("" + packageId) + "&";
-        if (firstName !== undefined && firstName !== null)
-            url_ += "FirstName=" + encodeURIComponent("" + firstName) + "&";
-        if (lastName !== undefined && lastName !== null)
-            url_ += "LastName=" + encodeURIComponent("" + lastName) + "&";
-        if (email !== undefined && email !== null)
-            url_ += "Email=" + encodeURIComponent("" + email) + "&";
-        if (userName !== undefined && userName !== null)
-            url_ += "UserName=" + encodeURIComponent("" + userName) + "&";
-        if (phoneNumber !== undefined && phoneNumber !== null)
-            url_ += "PhoneNumber=" + encodeURIComponent("" + phoneNumber) + "&";
-        if (password !== undefined && password !== null)
-            url_ += "Password=" + encodeURIComponent("" + password) + "&";
         if (skipCount === null)
             throw new Error("The parameter 'skipCount' cannot be null.");
         else if (skipCount !== undefined)
@@ -5985,20 +5942,15 @@ export class WithdrawRequestServiceProxy {
     }
 
     /**
-     * @param withdrawTypeId (optional) 
-     * @param status (optional) 
+     * @param keyword (optional) 
      * @param skipCount (optional) 
      * @param maxResultCount (optional) 
      * @return Success
      */
-    getPaginatedAll(withdrawTypeId: WithdrawType | undefined, status: boolean | null | undefined, skipCount: number | undefined, maxResultCount: number | undefined): Observable<WithdrawRequestDtoPagedResultDto> {
+    getPaginatedAll(keyword: string | null | undefined, skipCount: number | undefined, maxResultCount: number | undefined): Observable<WithdrawRequestDtoPagedResultDto> {
         let url_ = this.baseUrl + "/api/services/app/WithdrawRequest/GetPaginatedAll?";
-        if (withdrawTypeId === null)
-            throw new Error("The parameter 'withdrawTypeId' cannot be null.");
-        else if (withdrawTypeId !== undefined)
-            url_ += "WithdrawTypeId=" + encodeURIComponent("" + withdrawTypeId) + "&";
-        if (status !== undefined && status !== null)
-            url_ += "Status=" + encodeURIComponent("" + status) + "&";
+        if (keyword !== undefined && keyword !== null)
+            url_ += "Keyword=" + encodeURIComponent("" + keyword) + "&";
         if (skipCount === null)
             throw new Error("The parameter 'skipCount' cannot be null.");
         else if (skipCount !== undefined)
@@ -9872,12 +9824,6 @@ export interface IUserPackageAdDetailDto {
     id: number;
 }
 
-export enum UserPackageSubscriptionStatus {
-    _1 = 1,
-    _2 = 2,
-    _3 = 3,
-}
-
 export class UserPackageAdDetailDtoPagedResultDto implements IUserPackageAdDetailDtoPagedResultDto {
     totalCount: number;
     items: UserPackageAdDetailDto[] | undefined;
@@ -9931,6 +9877,12 @@ export class UserPackageAdDetailDtoPagedResultDto implements IUserPackageAdDetai
 export interface IUserPackageAdDetailDtoPagedResultDto {
     totalCount: number;
     items: UserPackageAdDetailDto[] | undefined;
+}
+
+export enum UserPackageSubscriptionStatus {
+    _1 = 1,
+    _2 = 2,
+    _3 = 3,
 }
 
 export class UserPackageSubscriptionDetailDto implements IUserPackageSubscriptionDetailDto {
@@ -10604,6 +10556,8 @@ export interface ICreateUserReferralRequestDto {
 
 export class UserReferralRequestDto implements IUserReferralRequestDto {
     userId: number;
+    userFullName: string | undefined;
+    userEmail: string | undefined;
     packageId: number;
     packageName: string | undefined;
     firstName: string | undefined;
@@ -10637,6 +10591,8 @@ export class UserReferralRequestDto implements IUserReferralRequestDto {
     init(_data?: any) {
         if (_data) {
             this.userId = _data["userId"];
+            this.userFullName = _data["userFullName"];
+            this.userEmail = _data["userEmail"];
             this.packageId = _data["packageId"];
             this.packageName = _data["packageName"];
             this.firstName = _data["firstName"];
@@ -10670,6 +10626,8 @@ export class UserReferralRequestDto implements IUserReferralRequestDto {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["userId"] = this.userId;
+        data["userFullName"] = this.userFullName;
+        data["userEmail"] = this.userEmail;
         data["packageId"] = this.packageId;
         data["packageName"] = this.packageName;
         data["firstName"] = this.firstName;
@@ -10703,6 +10661,8 @@ export class UserReferralRequestDto implements IUserReferralRequestDto {
 
 export interface IUserReferralRequestDto {
     userId: number;
+    userFullName: string | undefined;
+    userEmail: string | undefined;
     packageId: number;
     packageName: string | undefined;
     firstName: string | undefined;

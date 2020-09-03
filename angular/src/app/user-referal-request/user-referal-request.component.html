@@ -32,6 +32,7 @@
           <table class="table table-hover text-nowrap">
             <thead class="bg-light">
               <tr>
+                <th>User</th>
                 <th>Package</th>
                 <th>First Name</th>
                 <th>Last Name</th>
@@ -51,6 +52,8 @@
                           totalItems: totalItems
                         })
                 ">
+                <td>{{ item.userFullName }} 
+                  <div style="color:cornflowerblue"> {{ item.userEmail }} </div></td>
                 <td>{{ item.packageName }}</td>
                 <td>{{ item.firstName }}</td>
                 <td>{{ item.lastName }}</td>

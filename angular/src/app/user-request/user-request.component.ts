@@ -37,13 +37,7 @@ export class UserRequestComponent extends PagedListingComponentBase<UserRequestD
 
     this._userRequestService
       .getPaginatedAll(
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
+        
         request.keyword,
         request.skipCount,
         request.maxResultCount

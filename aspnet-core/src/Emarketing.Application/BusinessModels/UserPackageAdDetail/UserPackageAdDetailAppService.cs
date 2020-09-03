@@ -109,7 +109,7 @@ namespace Emarketing.BusinessModels.UserPackageAdDetail
             var result = await _userPackageAdDetailRepository.UpdateAsync(packageAd);
 
             await UnitOfWorkManager.Current.SaveChangesAsync();
-            if (result!= null)
+            if (result != null)
             {
                 return new ResponseMessageDto()
                 {
@@ -191,8 +191,14 @@ namespace Emarketing.BusinessModels.UserPackageAdDetail
         public async Task<PagedResultDto<UserPackageAdDetailDto>> GetPaginatedAllAsync(
             UserPackageAdDetailInputDto input)
         {
-            var filteredUserPackageAdDetails = _userPackageAdDetailRepository
-                .GetAll();
+            IQueryable<BusinessObjects.UserPackageAdDetail> filteredUserPackageAdDetails = _userPackageAdDetailRepository
+                .GetAll()
+                .WhereIf(!input.Keyword.IsNullOrWhiteSpace(),
+                    x => x.User.Name.Contains(input.Keyword) ||
+                    x.User.Surname.Contains(input.Keyword) ||
+                    x.User.EmailAddress.Contains(input.Keyword) ||
+                    x.AdDate.ToString().Contains(input.Keyword));
+            
             var userId = _abpSession.UserId;
             var isAdminUser = await AuthenticateAdminUser();
             if (!isAdminUser)
@@ -231,7 +237,7 @@ namespace Emarketing.BusinessModels.UserPackageAdDetail
                     .ToListAsync());
             return result;
         }
-        
+
         private async Task<bool> AuthenticateAdminUser()
         {
             if (_abpSession.UserId == null)

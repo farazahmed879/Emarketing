@@ -289,12 +289,23 @@ namespace Emarketing.BusinessModels.WithdrawRequest
         public async Task<PagedResultDto<WithdrawRequestDto>> GetPaginatedAllAsync(
             WithdrawRequestInputDto input)
         {
-            var userId = _abpSession.UserId;
-            IQueryable<BusinessObjects.WithdrawRequest> filteredWithdrawRequests = _withdrawRequestRepository.GetAll().Include(x=>x.User);
+           var userId = _abpSession.UserId;
+            IQueryable<BusinessObjects.WithdrawRequest> filteredWithdrawRequests =
+                _withdrawRequestRepository.GetAll()
+                .Include(x => x.User);
+                //.WhereIf(!input.Keyword.IsNullOrWhiteSpace(),
+                //    x =>
+                //    x.User.Surname.Contains(input.Keyword) ||
+                //    x.User.Name.Contains(input.Keyword) ||
+                //    x.User.UserName.Contains(input.Keyword) ||
+                //    x.User.EmailAddress.Contains(input.Keyword) ||
+                //   // x.WithdrawTypeId.ToString().Contains(input.Keyword) ||
+                //    x.Amount.ToString().Contains(input.Keyword) ||
+                //    x.WithdrawDetails.ToString().Contains(input.Keyword)); 
             var isAdminUser = await AuthenticateAdminUser();
             if (!isAdminUser)
             {
-                filteredWithdrawRequests =  filteredWithdrawRequests
+                filteredWithdrawRequests = filteredWithdrawRequests
                     .Where(x => x.UserId == userId);
             }
 
