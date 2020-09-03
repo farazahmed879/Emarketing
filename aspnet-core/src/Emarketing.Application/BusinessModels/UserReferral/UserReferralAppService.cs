@@ -161,8 +161,10 @@ namespace Emarketing.BusinessModels.UserReferral
                         PackageId = i.PackageId,
                         PackageName = i.Package.Name,
                         UserName = i.User.FullName,
+                        UserEmail = i.User.EmailAddress,
                         UserId = i.UserId,
                         ReferralUserName = i.ReferralUser.FullName,
+                        ReferralUserEmail = i.ReferralUser.EmailAddress,
                         ReferralUserId = i.ReferralUserId,
                         ReferralAccountStatusId = i.ReferralAccountStatusId,
                         ReferralBonusStatusId = i.ReferralBonusStatusId,
@@ -206,8 +208,10 @@ namespace Emarketing.BusinessModels.UserReferral
                     PackageId = i.PackageId,
                     PackageName = i.Package.Name,
                     UserName = i.User.FullName,
+                    UserEmail = i.User.EmailAddress,
                     UserId = i.UserId,
                     ReferralUserName = i.ReferralUser.FullName,
+                    ReferralUserEmail = i.ReferralUser.EmailAddress,
                     ReferralUserId = i.ReferralUserId,
                     ReferralAccountStatusId = i.ReferralAccountStatusId,
                     ReferralBonusStatusId = i.ReferralBonusStatusId,
@@ -225,17 +229,20 @@ namespace Emarketing.BusinessModels.UserReferral
         public async Task<PagedResultDto<UserReferralDto>> GetPaginatedAllAsync(
             UserRefferalInputDto input)
         {
-            long userId = _abpSession.UserId.Value;
-            var filteredUserReferrals = _userReferralRepository.GetAll();
+            var userId = _abpSession.UserId.Value;
+            var filteredUserReferrals = _userReferralRepository.GetAll()
+                .WhereIf(!input.Keyword.IsNullOrWhiteSpace(),
+                    x => x.User.FullName.Contains(input.Keyword) ||
+                         x.User.EmailAddress.Contains(input.Keyword) ||
+                         x.ReferralUser.FullName.Contains(input.Keyword) ||
+                         x.ReferralUser.EmailAddress.Contains(input.Keyword) ||
+                         x.Package.Name.Contains(input.Keyword));
+           
             var isAdmin = await AuthenticateAdminUser();
             if (!isAdmin)
             {
                 filteredUserReferrals = _userReferralRepository.GetAll().Where(x => x.UserId == userId);
             }
-
-
-            //.WhereIf(!string.IsNullOrWhiteSpace(input.UserName), x => x.UserId == input.UserId);
-
 
             var pagedAndFilteredUserReferrals = filteredUserReferrals
                 .OrderBy(i => i.Id)
@@ -252,8 +259,10 @@ namespace Emarketing.BusinessModels.UserReferral
                             PackageId = i.PackageId,
                             PackageName = i.Package.Name,
                             UserName = i.User.FullName,
+                            UserEmail = i.User.EmailAddress,
                             UserId = i.UserId,
                             ReferralUserName = i.ReferralUser.FullName,
+                            ReferralUserEmail = i.ReferralUser.EmailAddress,
                             ReferralUserId = i.ReferralUserId,
                             ReferralAccountStatusId = i.ReferralAccountStatusId,
                             ReferralBonusStatusId = i.ReferralBonusStatusId,
@@ -266,7 +275,7 @@ namespace Emarketing.BusinessModels.UserReferral
                         })
                     .ToListAsync());
         }
-        
+
         private async Task<bool> AuthenticateAdminUser()
         {
             if (_abpSession.UserId == null)

@@ -261,7 +261,7 @@ namespace Emarketing.BusinessModels.UserReferralRequest
             var isAdmin = await AuthenticateAdminUser();
             if (!isAdmin)
             {
-                filteredUserReferrals = _userReferralRequestRepository.GetAll().Where(x => x.UserId == userId);
+                filteredUserReferrals = filteredUserReferrals.Where(x => x.UserId == userId);
             }
             
             var pagedAndFilteredUserReferrals = filteredUserReferrals

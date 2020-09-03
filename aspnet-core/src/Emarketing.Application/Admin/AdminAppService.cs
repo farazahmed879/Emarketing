@@ -818,7 +818,7 @@ namespace Emarketing.Admin
 
             foreach (var user in allUsers)
             {
-                var activeSubscription = activeSubscriptions.FirstOrDefault(x => x.UserId == packageId);
+                var activeSubscription = activeSubscriptions.FirstOrDefault(x => x.PackageId == packageId);
                 if (activeSubscription == null)
                 {
                     continue;

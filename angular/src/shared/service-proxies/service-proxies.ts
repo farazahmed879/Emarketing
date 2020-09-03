@@ -4578,38 +4578,15 @@ export class UserReferralServiceProxy {
     }
 
     /**
-     * @param userId (optional) 
-     * @param userName (optional) 
-     * @param referralUserId (optional) 
-     * @param referralUserName (optional) 
-     * @param referralAccountStatusId (optional) 
-     * @param referralBonusStatusId (optional) 
+     * @param keyword (optional) 
      * @param skipCount (optional) 
      * @param maxResultCount (optional) 
      * @return Success
      */
-    getPaginatedAll(userId: number | undefined, userName: string | null | undefined, referralUserId: number | undefined, referralUserName: string | null | undefined, referralAccountStatusId: ReferralAccountStatus | undefined, referralBonusStatusId: ReferralBonusStatus | undefined, skipCount: number | undefined, maxResultCount: number | undefined): Observable<UserReferralDtoPagedResultDto> {
+    getPaginatedAll(keyword: string | null | undefined, skipCount: number | undefined, maxResultCount: number | undefined): Observable<UserReferralDtoPagedResultDto> {
         let url_ = this.baseUrl + "/api/services/app/UserReferral/GetPaginatedAll?";
-        if (userId === null)
-            throw new Error("The parameter 'userId' cannot be null.");
-        else if (userId !== undefined)
-            url_ += "UserId=" + encodeURIComponent("" + userId) + "&";
-        if (userName !== undefined && userName !== null)
-            url_ += "UserName=" + encodeURIComponent("" + userName) + "&";
-        if (referralUserId === null)
-            throw new Error("The parameter 'referralUserId' cannot be null.");
-        else if (referralUserId !== undefined)
-            url_ += "ReferralUserId=" + encodeURIComponent("" + referralUserId) + "&";
-        if (referralUserName !== undefined && referralUserName !== null)
-            url_ += "ReferralUserName=" + encodeURIComponent("" + referralUserName) + "&";
-        if (referralAccountStatusId === null)
-            throw new Error("The parameter 'referralAccountStatusId' cannot be null.");
-        else if (referralAccountStatusId !== undefined)
-            url_ += "ReferralAccountStatusId=" + encodeURIComponent("" + referralAccountStatusId) + "&";
-        if (referralBonusStatusId === null)
-            throw new Error("The parameter 'referralBonusStatusId' cannot be null.");
-        else if (referralBonusStatusId !== undefined)
-            url_ += "ReferralBonusStatusId=" + encodeURIComponent("" + referralBonusStatusId) + "&";
+        if (keyword !== undefined && keyword !== null)
+            url_ += "Keyword=" + encodeURIComponent("" + keyword) + "&";
         if (skipCount === null)
             throw new Error("The parameter 'skipCount' cannot be null.");
         else if (skipCount !== undefined)
@@ -10365,10 +10342,12 @@ export interface ICreateUserReferralDto {
 export class UserReferralDto implements IUserReferralDto {
     userId: number;
     userName: string | undefined;
+    userEmail: string | undefined;
     packageId: number;
     packageName: string | undefined;
     referralUserId: number;
     referralUserName: string | undefined;
+    referralUserEmail: string | undefined;
     referralAccountStatusId: ReferralAccountStatus;
     referralAccountStatusName: string | undefined;
     referralBonusStatusId: ReferralBonusStatus;
@@ -10396,10 +10375,12 @@ export class UserReferralDto implements IUserReferralDto {
         if (_data) {
             this.userId = _data["userId"];
             this.userName = _data["userName"];
+            this.userEmail = _data["userEmail"];
             this.packageId = _data["packageId"];
             this.packageName = _data["packageName"];
             this.referralUserId = _data["referralUserId"];
             this.referralUserName = _data["referralUserName"];
+            this.referralUserEmail = _data["referralUserEmail"];
             this.referralAccountStatusId = _data["referralAccountStatusId"];
             this.referralAccountStatusName = _data["referralAccountStatusName"];
             this.referralBonusStatusId = _data["referralBonusStatusId"];
@@ -10427,10 +10408,12 @@ export class UserReferralDto implements IUserReferralDto {
         data = typeof data === 'object' ? data : {};
         data["userId"] = this.userId;
         data["userName"] = this.userName;
+        data["userEmail"] = this.userEmail;
         data["packageId"] = this.packageId;
         data["packageName"] = this.packageName;
         data["referralUserId"] = this.referralUserId;
         data["referralUserName"] = this.referralUserName;
+        data["referralUserEmail"] = this.referralUserEmail;
         data["referralAccountStatusId"] = this.referralAccountStatusId;
         data["referralAccountStatusName"] = this.referralAccountStatusName;
         data["referralBonusStatusId"] = this.referralBonusStatusId;
@@ -10458,10 +10441,12 @@ export class UserReferralDto implements IUserReferralDto {
 export interface IUserReferralDto {
     userId: number;
     userName: string | undefined;
+    userEmail: string | undefined;
     packageId: number;
     packageName: string | undefined;
     referralUserId: number;
     referralUserName: string | undefined;
+    referralUserEmail: string | undefined;
     referralAccountStatusId: ReferralAccountStatus;
     referralAccountStatusName: string | undefined;
     referralBonusStatusId: ReferralBonusStatus;

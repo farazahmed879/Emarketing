@@ -46,9 +46,12 @@
                           totalItems: totalItems
                         })
                 ">
-                <td>{{ userReferal.userName }}</td>
+                <td>{{ userReferal.userName }} 
+                  <div style="color:cornflowerblue"> {{ userReferal?.userEmail }} </div></td>
                 <td>{{ userReferal.packageName }}</td>
-                <td>{{ userReferal.referralUserName }}</td>
+                <td>{{ userReferal.referralUserName }}
+                  <div style="color:cornflowerblue"> {{ userReferal?.referralUserEmail }} </div>
+                </td>
                 <td>{{ userReferal.referralAccountStatusName }}</td>
                 <td>{{ userReferal.referralBonusStatusName }}</td>
                 <td>{{ userReferal.packageReferralAmount }} PKR</td>

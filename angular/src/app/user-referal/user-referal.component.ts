@@ -34,12 +34,7 @@ export class UserReferalComponent extends PagedListingComponentBase<WithdrawRequ
 
     this._userReferalService
       .getPaginatedAll(
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
+        this.keyword,
         request.skipCount,
         request.maxResultCount
       )

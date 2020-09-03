@@ -146,6 +146,20 @@ export class RegisterComponent extends AppComponentBase implements OnInit {
       referralAmount: 200.00,
       minimumWithdraw:325.00 ,
       maximumWithdraw: 500.00
+    },
+    {
+      id: 3,
+      name: 'Package 500',
+      isUnlimited: false,
+      durationInDays: 7,
+      price: 500,
+      totalEarning: 700,
+      profitValue: 0,
+      dailyAdCount: 1,
+      pricePerAd: 100,
+      referralAmount: 50.00,
+      minimumWithdraw: '-' ,
+      maximumWithdraw: '-'
     }
   ];
 
