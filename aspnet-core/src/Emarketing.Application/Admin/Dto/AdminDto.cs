@@ -40,4 +40,10 @@ namespace Emarketing.BusinessModels.Package.Dto
     {
         public long UserReferralRequestId { get; set; }
     }
+
+    public class UpdateUserReferralDto
+    {
+        public long UserReferralId { get; set; }
+    }
+
 }

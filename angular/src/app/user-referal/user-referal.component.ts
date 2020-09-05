@@ -1,7 +1,7 @@
 import { Component, Injector } from '@angular/core';
 import { AppComponentBase } from '@shared/app-component-base';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
-import { WithdrawRequestServiceProxy, WithdrawRequestDto, WithdrawRequestDtoPagedResultDto, UserRequestServiceProxy, UserRequestDtoPagedResultDto, UserReferralServiceProxy, UserReferralDtoPagedResultDto } from '@shared/service-proxies/service-proxies';
+import { WithdrawRequestServiceProxy, WithdrawRequestDto, WithdrawRequestDtoPagedResultDto, UserRequestServiceProxy, UserRequestDtoPagedResultDto, UserReferralServiceProxy, UserReferralDtoPagedResultDto, UserReferralDto, UpdateUserReferralDto ,AdminServiceProxy} from '@shared/service-proxies/service-proxies';
 import { finalize } from 'rxjs/operators';
 import { PagedRequestDto, PagedListingComponentBase } from '@shared/paged-listing-component-base';
 
@@ -15,6 +15,7 @@ class PagedWithdrawHistoryDto extends PagedRequestDto {
 })
 export class UserReferalComponent extends PagedListingComponentBase<WithdrawRequestDto> {
   constructor(injector: Injector,
+    private _adminService: AdminServiceProxy,
     private _userReferalService: UserReferralServiceProxy,
   ) {
     super(injector);
@@ -52,6 +53,16 @@ export class UserReferalComponent extends PagedListingComponentBase<WithdrawRequ
 
   acceptRequest(event: UserReferralDtoPagedResultDto){
 
+  }
+
+  markAsPaidReferral(event: UserReferralDto) {
+    debugger;
+    var updateUserReferralDto = new UpdateUserReferralDto();
+    updateUserReferralDto.userReferralId = event.id;
+    this._adminService.updateUserReferral(updateUserReferralDto).subscribe((result) => {
+      if (result)
+        this.notify.info(this.l('SavedSuccessfully'));
+    })
   }
 
 }

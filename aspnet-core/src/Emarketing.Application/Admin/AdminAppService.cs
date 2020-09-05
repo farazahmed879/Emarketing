@@ -54,6 +54,8 @@ namespace Emarketing.Admin
 
         Task<User> UpdateAsync(UserDto input);
         Task<bool> ChangePassword(ChangePasswordDto input);
+
+        Task<bool> UpdateUserReferral(UpdateUserReferralDto requestDto);
     }
 
     public class AdminAppService : AbpServiceBase, IAdminAppService
@@ -1520,6 +1522,32 @@ namespace Emarketing.Admin
 
             user.Password = _passwordHasher.HashPassword(user, input.NewPassword);
             await CurrentUnitOfWork.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> UpdateUserReferral(UpdateUserReferralDto requestDto)
+        {
+            var userId = _abpSession.UserId;
+            var isAdminUser = await AuthenticateAdminUser();
+            if (!isAdminUser)
+            {
+                throw new UserFriendlyException(ErrorMessage.UserFriendly.AdminAccessRequired);
+            }
+
+            var userReferral = await _userReferralRepository
+                .GetAll()
+                .FirstOrDefaultAsync(i => i.Id == requestDto.UserReferralId);
+            if (userReferral == null)
+            {
+                return false;
+            }
+
+            userReferral.ReferralBonusStatusId = ReferralBonusStatus.Paid;
+            userReferral.LastModificationTime = DateTime.Now;
+            userReferral.LastModifierUserId = userId;
+            await _userReferralRepository.UpdateAsync(userReferral);
+            await UnitOfWorkManager.Current.SaveChangesAsync();
+
             return true;
         }
     }
