@@ -33,6 +33,7 @@
                 <th>{{ "Bonus Status" | localize }}</th>
                 <th>{{ "Referral Amount" | localize }}</th>
                 <th style="width: 200px;">{{ "Actions" | localize }}</th>
+                <th style="width: 200px;">{{ "View" | localize }}</th>
               </tr>
             </thead>
             <tbody>
@@ -56,6 +57,7 @@
                 <td>{{ userReferal.referralBonusStatusName }}</td>
                 <td>{{ userReferal.packageReferralAmount }} PKR</td>
                 <td>
+                 
                   <button *ngIf="userReferal.referralBonusStatusId==2" type="button" class="btn btn-sm bg-secondary" (click)="markAsPaidReferral(userReferal)">
                     {{ "Mark as Paid"}}
                   </button>
@@ -75,6 +77,14 @@
                     <i class="fas fa-trash"></i>
                     {{ "Delete" | localize }}
                   </button> -->
+                </td>
+
+                <td>
+                 
+                  <button  type="button" class="btn btn-sm bg-secondary" (click)="viewUserReferral(userReferal)">
+                    {{ "View"}}
+                  </button>
+                  
                 </td>
               </tr>
             </tbody>

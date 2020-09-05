@@ -1,0 +1,200 @@
+<form
+  class="form-horizontal"
+  autocomplete="off"
+  #editUserRefferalModal="ngForm"
+  (ngSubmit)="save()"
+>
+  <abp-modal-header
+    [title]="'User Referral' | localize"
+    (onCloseClick)="bsModalRef.hide()"
+  ></abp-modal-header>
+  <div class="modal-body">
+    
+        <div class="form-group row ">
+            <div class="col"> 
+                          <label class="col-md-9 col-form-label" for="name">
+                                          {{ " User Name" | localize }}
+                           </label>
+                           <div class="col-md-12"> 
+                               <input
+                                  type="text"
+                                  class="form-control"
+                                  name="userName"
+                                  id="userName"
+                                  required
+                                  maxlength="32"
+                                  [(ngModel)]="userReferral.userName"
+                                  #userNameModel="ngModel"
+                                  #userNameEl
+                                />
+                            <abp-validation-summary
+                                [control]="userNameModel"
+                                [controlEl]="userNameEl"
+                            ></abp-validation-summary>
+                            </div>
+            </div>
+            <div class="col">
+                <label class="col-md-9 col-form-label" for="name">
+                    {{ " User Email" | localize }}
+                  </label>
+                  <div class="col-md-12">
+                    <input
+                      type="text"
+                      class="form-control"
+                      name="userEmail"
+                      id="userEmail"
+                      required
+                      maxlength="32"
+                      [(ngModel)]="userReferral.userEmail"
+                      #userEmailModel="ngModel"
+                      #userEmailEl
+                    />
+                    <abp-validation-summary
+                      [control]="userEmailModel"
+                      [controlEl]="userEmailEl"
+                    ></abp-validation-summary>
+                  </div>
+            </div>
+        </div>
+        
+          <div class="form-group row ">
+              <div class="col" >
+                   <label class="col-md-6 col-form-label" for="name">
+              {{ " Refferal User Name" | localize }}
+            </label>
+            <div class="col-md-12">
+              <input
+                type="text"
+                class="form-control"
+                name="referralUserName"
+                id="referralUserName"
+                required
+                maxlength="32"
+                [(ngModel)]="userReferral.referralUserName"
+                #referralUserNameModel="ngModel"
+                #referralUserNameEl
+              />
+              <abp-validation-summary
+                [control]="referralUserNameModel"
+                [controlEl]="referralUserNameEl"
+              ></abp-validation-summary>
+            </div>
+              </div>
+              <div class="col">
+
+                <label class="col-md-6 col-form-label" for="name">
+                    {{ " Refferal User Email" | localize }}
+                  </label>
+                  <div class="col-md-12">
+                    <input
+                      type="text"
+                      class="form-control"
+                      name="referralUserEmail"
+                      id="referralUserEmail"
+                      required
+                      maxlength="32"
+                      [(ngModel)]="userReferral.referralUserEmail"
+                      #referralUserEmailModel="ngModel"
+                      #referralUserEmailEl
+                    />
+                    <abp-validation-summary
+                      [control]="referralUserEmailModel"
+                      [controlEl]="referralUserEmailEl"
+                    ></abp-validation-summary>
+                  </div>
+              </div>
+           
+          </div>
+
+          
+          <div class="form-group row ">
+              <div class="col">
+                <label class="col-md-8 col-form-label" for="name">
+                  {{ " Package" | localize }}
+                </label>
+                <div class="col-md-12">
+                    <input
+                        type="text"
+                        class="form-control"
+                        name="packageName"
+                        id="packageName"
+                        required
+                        maxlength="32"
+                        [(ngModel)]="userReferral.packageName"
+                        #packageNameModel="ngModel"
+                        #packageNameEl/>
+                    <abp-validation-summary
+                        [control]="packageNameModel"
+                        [controlEl]="packageNameEl"
+                    ></abp-validation-summary>
+                </div>
+            </div>
+            <div class="col">
+                <label class="col-md-8 col-form-label" for="name">
+                    {{ " Package Referral Amount" | localize }}
+                  </label>
+                  <div class="col-md-12">
+                      <input
+                          type="text"
+                          class="form-control"
+                          name="packageReferralAmount"
+                          id="packageReferralAmount"
+                          required
+                          maxlength="32"
+                          [(ngModel)]="userReferral.packageReferralAmount"
+                          #packageReferralAmountModel="ngModel"
+                          #packageReferralAmountEl/>
+                      <abp-validation-summary
+                          [control]="packageReferralAmountModel"
+                          [controlEl]="packageReferralAmountEl"
+                      ></abp-validation-summary>
+                  </div>
+            </div>           
+          </div>
+
+          <div class="form-group row ">
+            <div class="col">
+              <label class="col-md-8 col-form-label" for="name">
+                {{ " Referral User Account Status" | localize }}
+              </label>
+              <div class="col-md-12">
+                  <input
+                      type="text"
+                      class="form-control"
+                      name="referralAccountStatusName"
+                      id="referralAccountStatusName"
+                      required
+                      maxlength="32"
+                      [(ngModel)]="userReferral.referralAccountStatusName"
+                      #referralAccountStatusNameModel="ngModel"
+                      #referralAccountStatusNameEl/>
+                  <abp-validation-summary
+                      [control]="referralAccountStatusNameModel"
+                      [controlEl]="referralAccountStatusNameEl"
+                  ></abp-validation-summary>
+              </div>
+          </div>
+          <div class="col">
+              <label class="col-md-8 col-form-label" for="name">
+                  {{ " Referral  Bonus Status" | localize }}
+                </label>
+                <div class="col-md-12">
+                    <input
+                        type="text"
+                        class="form-control"
+                        name="referralBonusStatusName"
+                        id="referralBonusStatusName"
+                        required
+                        maxlength="32"
+                        [(ngModel)]="userReferral.referralBonusStatusName"
+                        #referralBonusStatusNameModel="ngModel"
+                        #referralBonusStatusNameEl/>
+                    <abp-validation-summary
+                        [control]="referralBonusStatusNameModel"
+                        [controlEl]="referralBonusStatusNameEl"
+                    ></abp-validation-summary>
+                </div>
+          </div>           
+        </div>
+  </div> 
+</form>

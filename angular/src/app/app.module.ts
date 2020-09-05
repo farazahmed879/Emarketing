@@ -70,6 +70,7 @@ import { CreatePackagesAdvertisementComponent } from './packages-advertisement/c
 import { UserRequestComponent } from './user-request/user-request.component';
 //User Referal
 import { UserReferalComponent } from './user-referal/user-referal.component';
+import { ViewUserReferralComponent } from '@app/user-referal/view-user-referral/view-user-referral.component';
 //User Referal Request
 import { UserReferalRequestComponent } from './user-referal-request/user-referal-request.component';
 import { CreateUserReferalRequestDialogComponent } from './user-referal-request/create-user-referal-request/create-user-referal-request-dialog.component';
@@ -82,6 +83,7 @@ import { ViewAds } from './user-package-ads-detail/view-ads/view-ads.component'
 
 //count Down
 import { CountdownModule } from 'ngx-countdown';
+// import { ViewUserReferralComponent } from './app/user-referal/view-user-referral/view-user-referral.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -135,7 +137,8 @@ import { CountdownModule } from 'ngx-countdown';
     EditUserPackageAdsDetailComponent,
     UserPackageAdsDetailComponent,
     //ViewAds
-    ViewAds
+    ViewAds,
+    ViewUserReferralComponent
   ],
   imports: [
     CommonModule,
